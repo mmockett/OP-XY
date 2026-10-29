@@ -150,7 +150,7 @@ window.SITE = {
         {
           id: "ghost", name: "Ghost", kind: "sample engine", status: "lab",
           after: "the Huggins pitch",
-          description: "Binaural phantom pitches, for headphones: notes made of breath and hum whose pitch lives between the ears. Orbit walks the voice round your head; a loaded sample becomes its bed.",
+          description: "Binaural phantom pitches, for headphones: notes made of breath and hum whose pitch lives between the ears. Orbit walks the voice round your head. Load a sample and it becomes the bed; without one, Ghost breathes its own.",
           screen: "Screen: a Pepper's ghost stage. Split parts the apparition into twins; ring gives it halos.",
           pages: [["ring", "voice", "split", "trade"], ["beat", "orbit", "near", "bed"]],
           media: { type: "video", src: "assets/media/nonagon/ghost.mp4", poster: "assets/media/nonagon/ghost.jpg", alt: "Ghost's stage, the apparition parting into twins as split rises" },

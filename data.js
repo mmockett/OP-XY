@@ -17,7 +17,7 @@ window.SITE = {
   catalog: "https://github.com/etcetc000/open-xy/blob/main/catalog/machines.json",
 
   // The hero screen at the top of the page.
-  hero: { type: "video", src: "assets/media/hexagon/hexagon.mp4", poster: "assets/media/hexagon/hexagon.jpg", alt: "Hexagon's six screens playing together: Wane, Bloom and Hollow on top; Orbit, Bend and Moth below" },
+  hero: { type: "video", src: "assets/media/hexagon/hexagon.mp4", poster: "assets/media/hexagon/hexagon.jpg", alt: "The Hexagon Suite's six screens playing together: Wane, Bloom and Hollow on top; Orbit, Bend and Moth below" },
 
   statuses: {
     live:   { label: "live",        note: "In the open-xy.com builder. Pick it, build, install." },
@@ -29,7 +29,7 @@ window.SITE = {
   projects: [
     {
       id: "hexagon",
-      name: "Hexagon",
+      name: "Hexagon Suite",
       kicker: "six synths",
       status: "review",
       version: "v1.0.0",

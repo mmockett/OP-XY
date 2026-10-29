@@ -62,6 +62,12 @@ licensed Univers webfont to everyone, add it as `assets/fonts/xy.woff2` and
 add its `url()` to the `@font-face` at the top of `style.css`. The recorded
 screens were rendered with Helvetica Neue standing in for Univers.
 
+## Icons
+
+[Lucide](https://lucide.dev) (ISC licence), inlined as SVG: the page's own
+icons in `index.html`, the rest in `ICONS` at the top of `app.js`. Copy a new
+one's paths from its page on lucide.dev. No emoji or arrow glyphs.
+
 ## Licence
 
 MIT. Not affiliated with teenage engineering or Elektron.

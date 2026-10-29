@@ -12,6 +12,20 @@
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
   let filter = "all";
 
+  // Lucide icons (lucide.dev, ISC licence), inlined so the page needs no library.
+  const ICONS = {
+    "arrow-up-right": '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>',
+    github: '<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/>',
+    code: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
+    cpu: '<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/>',
+    hourglass: '<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>',
+    "git-merge": '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/>',
+    "git-pull-request": '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M6 9v12"/>',
+    "git-pull-request-closed": '<circle cx="6" cy="6" r="3"/><path d="M6 9v12"/><path d="m21 3-6 6"/><path d="m21 9-6-6"/><path d="M18 11.5V15"/><circle cx="18" cy="18" r="3"/>'
+  };
+  const icon = name => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
+  const PR_ICON = { merged: "git-merge", open: "git-pull-request", closed: "git-pull-request-closed" };
+
   // ---- the OP–XY screen header ------------------------------------------
   function header(pages, values = [[], []], from = 0, to = 4, pad = 0) {
     const [p1, p2] = pages;
@@ -105,7 +119,7 @@
   const best = list => list.reduce((a, m) => (RANK[m.status] > RANK[a] ? m.status : a), "diy");
   const all = () => SITE.projects.flatMap(p => p.machines);
   const count = st => all().filter(m => m.status === st).length;
-  const ext = (href, label, cls = "btn") => `<a class="${cls}" href="${esc(href)}">${esc(label)} <span aria-hidden="true">↗</span></a>`;
+  const ext = (href, label, cls = "btn", lead = "") => `<a class="${cls}" href="${esc(href)}">${lead ? icon(lead) : ""}${esc(label)}${icon("arrow-up-right")}</a>`;
 
   function card(m, p) {
     const el = document.createElement("article");
@@ -114,9 +128,9 @@
     const rows = m.pages.map((row, i) => `<span>${m.pages.length > 1 ? `page ${i + 1}` : "controls"}</span>` +
       row.map(c => (c ? `<b style="font-weight:400">${esc(c)}</b>` : `<em>–</em>`)).join("")).join("");
     const meta = [
-      m.cpu ? `<span>cpu ${esc(m.cpu)} a voice</span>` : "",
-      m.waiting && m.status === "soon" ? `<span>waiting on <a href="${esc(m.waiting.href)}">${esc(m.waiting.label)}</a></span>` : "",
-      m.source ? `<a href="${esc(m.source)}">source ↗</a>` : ""
+      m.cpu ? `<span>${icon("cpu")}${esc(m.cpu)} a voice</span>` : "",
+      m.waiting && m.status === "soon" ? `<span>${icon("hourglass")}waiting on&nbsp;<a href="${esc(m.waiting.href)}">${esc(m.waiting.label)}</a></span>` : "",
+      m.source ? `<a href="${esc(m.source)}">${icon("code")}source</a>` : ""
     ].join("");
     const gallery = m.gallery ? [m.media, ...m.gallery] : null;
     el.innerHTML = `
@@ -160,7 +174,7 @@
       ${p.media ? `<figure class="device p-media"><div class="screen"></div></figure>` : ""}
       <div class="p-body">
         <div class="p-desc">${p.description.map(t => `<p>${esc(t)}</p>`).join("")}
-          <p class="actions">${ext(p.repo, "repository", "btn btn-ink")}${ext(SITE.builder, "open-xy")}${p.links.map(l => ext(l.href, l.label)).join("")}</p>
+          <p class="actions">${ext(p.repo, "repository", "btn btn-ink", "github")}${ext(SITE.builder, "open-xy")}${p.links.map(l => ext(l.href, l.label)).join("")}</p>
         </div>
         <dl class="facts">${p.facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}<dt>status</dt><dd>${esc(tally)}</dd></dl>
       </div>`;
@@ -241,13 +255,13 @@
   function prs() {
     $("#prs").innerHTML = SITE.sdk.map(s => {
       const p = SITE.projects.find(x => x.id === s.for);
-      return `<li><span class="n">#${s.pr}</span><span><a href="${SITE.sdkRepo}/pull/${s.pr}">${esc(s.title)}</a><span class="for">${esc(p ? p.name.toLowerCase() : "every machine")}</span></span><span class="pr-st ${s.state}">${esc(s.state)}</span></li>`;
+      return `<li><span class="n">#${s.pr}</span><span><a href="${SITE.sdkRepo}/pull/${s.pr}">${esc(s.title)}</a><span class="for">${esc(p ? p.name.toLowerCase() : "every machine")}</span></span><span class="pr-st ${s.state}">${icon(PR_ICON[s.state])}${esc(s.state)}</span></li>`;
     }).join("");
   }
 
   function nav() {
     $("#nav").innerHTML = SITE.projects.map(p => `<a href="#${p.id}">${esc(p.name.toLowerCase())}</a>`).join("") +
-      `<a class="opt" href="#sdk">sdk</a><a class="opt" href="${SITE.github}">github ↗</a>`;
+      `<a class="opt" href="#sdk">sdk</a><a class="opt" href="${SITE.github}">${icon("github")}github</a>`;
   }
 
   function render() {

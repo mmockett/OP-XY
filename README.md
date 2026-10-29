@@ -22,6 +22,8 @@ A static page with no build step. GitHub Pages serves it from `main`.
    Open-XY catalog. `specs` is the project's header strip: two rows of four
    `[title, value]` pairs, values kept to about five characters. Without
    `media` the page draws a blank OP–XY screen with its real control labels.
+   A project with one machine shows its screen and controls directly,
+   without a card.
 3. Commit and push. Pages republishes in about a minute.
 
 Open `index.html` straight from disk to check it first.
@@ -33,7 +35,7 @@ Open `index.html` straight from disk to check it first.
 | `live` | Published in the Open-XY catalog on `main`, so it is in the open-xy.com builder |
 | `soon` | Coming soon: runs on the OP–XY, not yet in the builder |
 | `diy` | Needs samples from your own ROM; built from source only |
-| `lab` | Experimental: passes the SDK's tests, not yet played on the OP–XY; built from source only |
+| `lab` | Experimental: not yet played on the OP–XY; built from source only |
 
 Each time the page loads, it reads etcetc000/open-xy's
 `catalog/machines.json` on `main` and shows a published machine as `live`.

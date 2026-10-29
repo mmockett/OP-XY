@@ -156,6 +156,11 @@ img, video, svg { display: block; max-width: 100%; }
 
 .p-media { margin: 36px 6px 0; }
 .p-media .screen { aspect-ratio: 1932 / 444; }
+/* One machine's screen, the spec strip's width and lined up with it. */
+.p-media.solo { max-width: 600px; margin-top: 16px; }
+.p-media.solo .screen { aspect-ratio: 480 / 220; }
+@media (min-width: 900px) { .p-media.solo { margin-left: 150px; } }
+.p-desc .ctrls { max-width: 600px; margin-top: 28px; }
 .p-body { display: grid; gap: 32px; margin-top: 40px; }
 @media (min-width: 900px) { .p-body { grid-template-columns: 120px 1fr; gap: 24px; } }
 .p-desc p { font-size: 17px; line-height: 1.6; max-width: 38em; }

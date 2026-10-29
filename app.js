@@ -116,13 +116,17 @@
   const count = st => all().filter(m => m.status === st).length;
   const ext = (href, label, cls = "btn", lead = "") => `<a class="${cls}" href="${esc(href)}">${lead ? icon(lead) : ""}${esc(label)}${icon("arrow-up-right")}</a>`;
 
+  // A kit's controls are its first key's machine (bd); each key's machine has its own.
+  function ctrlRows(m) {
+    return m.pages.map((row, i) => `<span>${m.kit ? (i ? "" : "bd") : m.pages.length > 1 ? `page ${i + 1}` : "controls"}</span>` +
+      row.map(c => (c ? `<b style="font-weight:400">${esc(c)}</b>` : `<em>–</em>`)).join("")).join("");
+  }
+
   function card(m, p) {
     const el = document.createElement("article");
     el.className = "card";
     el.dataset.status = m.status;
-    // A kit's controls are its first key's machine (bd); each key's machine has its own.
-    const rows = m.pages.map((row, i) => `<span>${m.kit ? (i ? "" : "bd") : m.pages.length > 1 ? `page ${i + 1}` : "controls"}</span>` +
-      row.map(c => (c ? `<b style="font-weight:400">${esc(c)}</b>` : `<em>–</em>`)).join("")).join("");
+    const rows = ctrlRows(m);
     const meta = [
       m.cpu ? `<span>${icon("cpu")}${esc(m.cpu)} a voice</span>` : "",
       m.source ? `<a href="${esc(m.source)}">${icon("code")}source</a>` : ""
@@ -154,8 +158,11 @@
     sec.className = "project wrap";
     sec.id = p.id;
     sec.setAttribute("aria-labelledby", `${p.id}-h`);
-    const status = RANK[p.status] > RANK[best(p.machines)] ? p.status : best(p.machines);
-    const tally = ORDER.map(st => [st, p.machines.filter(m => m.status === st).length]).filter(([, n]) => n)
+    // A project of one machine shows that machine's screen and controls itself, with no cards.
+    const solo = p.machines.length === 1 ? p.machines[0] : null;
+    const status = solo ? solo.status : RANK[p.status] > RANK[best(p.machines)] ? p.status : best(p.machines);
+    if (solo) { sec.dataset.solo = ""; sec.dataset.status = status; }
+    const tally = solo ? solo.kind : ORDER.map(st => [st, p.machines.filter(m => m.status === st).length]).filter(([, n]) => n)
       .map(([st, n]) => `${n} ${SITE.statuses[st].label}`).join(" · ");
     sec.innerHTML = `
       <div class="sec-head">
@@ -167,9 +174,11 @@
         <div class="sec-tools">${pill(status)}<span class="tally">${esc(tally)}</span></div>
       </div>
       ${p.specs ? specStrip(p.specs) : ""}
+      ${solo ? `<figure class="device p-media solo"><div class="screen">${solo.media ? mediaHtml(solo.media) : blankScreen(solo, p)}</div></figure>` : ""}
       ${p.media ? `<figure class="device p-media"><div class="screen"${p.media.aspect ? ` style="aspect-ratio: ${esc(p.media.aspect)}"` : ""}></div></figure>` : ""}
       <div class="p-body">
         <div class="p-desc">${p.description.map(t => `<p>${esc(t)}</p>`).join("")}
+          ${solo ? `<div class="ctrls">${ctrlRows(solo)}</div>` : ""}
           <p class="actions">${ext(p.repo, "repository", "btn btn-ink", "github")}${ext(SITE.builder, "open-xy")}${p.links.map(l => ext(l.href, l.label)).join("")}</p>
         </div>
       </div>`;
@@ -177,6 +186,10 @@
       const ms = $(".p-media .screen", sec);
       ms.innerHTML = mediaHtml(p.media);
       zoomable(ms, p.media);
+    }
+    if (solo) {
+      if (solo.media) zoomable($(".p-media.solo .screen", sec), solo.media);
+      return sec;
     }
 
     const groups = p.groups || [{ title: "" }];
@@ -221,6 +234,12 @@
   function applyFilter() {
     let shown = 0;
     document.querySelectorAll(".project").forEach(sec => {
+      if (sec.dataset.solo !== undefined) {
+        const on = filter === "all" || sec.dataset.status === filter;
+        sec.hidden = !on;
+        shown += on;
+        return;
+      }
       let inSec = 0;
       sec.querySelectorAll(".cards").forEach(grid => {
         let inGrid = 0;

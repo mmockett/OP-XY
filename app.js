@@ -120,7 +120,8 @@
     const el = document.createElement("article");
     el.className = "card";
     el.dataset.status = m.status;
-    const rows = m.pages.map((row, i) => `<span>${m.pages.length > 1 ? `page ${i + 1}` : "controls"}</span>` +
+    // A kit's controls are its first key's machine (bd); each key's machine has its own.
+    const rows = m.pages.map((row, i) => `<span>${m.kit ? (i ? "" : "bd") : m.pages.length > 1 ? `page ${i + 1}` : "controls"}</span>` +
       row.map(c => (c ? `<b style="font-weight:400">${esc(c)}</b>` : `<em>–</em>`)).join("")).join("");
     const meta = [
       m.cpu ? `<span>${icon("cpu")}${esc(m.cpu)} a voice</span>` : "",

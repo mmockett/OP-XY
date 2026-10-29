@@ -25,7 +25,7 @@ window.SITE = {
     live: { label: "live",        note: "In the open-xy.com builder." },
     soon: { label: "coming soon", note: "Runs on the OP–XY. Coming to the open-xy.com builder." },
     diy:  { label: "diy",         note: "Needs samples from your own ROM. Build from source." },
-    lab:  { label: "experimental", note: "Not yet played on an OP–XY. Build from source." }
+    lab:  { label: "experimental", note: "Runs on the OP–XY; still being refined. Build from source." }
   },
 
   projects: [
@@ -121,7 +121,7 @@ window.SITE = {
       tagline: "Nine experimental sounds, each grown from a piece of physics.",
       description: [
         "Sand, Cocoa, Ghost, Coin, Recur, Fermi, Mach, Butterfly and Drop. Each starts from something odd in the physical world (Chladni's sand figures, the hot chocolate effect, a phantom pitch heard only between the ears, Euler's disk, a scrambled picture that always comes home, the Fermi–Pasta–Ulam–Tsingou chain, a supersonic flyby, the Hofstadter butterfly and the Leidenfrost drop) and turns it into an instrument with eight controls on two pages.",
-        "Each screen is one object, drawn in outline, that every control visibly changes. Their levels match Hexagon's. None has been played on an OP–XY yet, so expect rough edges."
+        "Each screen is one object, drawn in outline, that every control visibly changes. Their levels match Hexagon's. They run on the OP–XY but are still being refined, so expect rough edges."
       ],
       specs: [
         [["synths", "7"], ["sample", "2"], ["controls", "8"], ["os", "1.2.1"]],

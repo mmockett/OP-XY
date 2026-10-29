@@ -35,7 +35,7 @@ Open `index.html` straight from disk to check it first.
 | `live` | Published in the Open-XY catalog on `main`, so it is in the open-xy.com builder |
 | `soon` | Coming soon: runs on the OP–XY, not yet in the builder |
 | `diy` | Needs samples from your own ROM; built from source only |
-| `lab` | Experimental: not yet played on the OP–XY; built from source only |
+| `lab` | Experimental: runs on the OP–XY but still being refined; built from source only |
 
 Each time the page loads, it reads etcetc000/open-xy's
 `catalog/machines.json` on `main` and shows a published machine as `live`.

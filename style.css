@@ -57,7 +57,7 @@ img, video, svg { display: block; max-width: 100%; }
 }
 
 /* top bar */
-.bar { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--body) 88%, transparent);
+.bar { position: sticky; top: 0; z-index: 10; background: rgba(228, 228, 225, .9);
   backdrop-filter: saturate(1.2) blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule); }
 .bar-in { display: flex; align-items: center; justify-content: space-between; height: 52px; gap: 16px; }
 .mark { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 13px; white-space: nowrap; }
@@ -122,8 +122,14 @@ img, video, svg { display: block; max-width: 100%; }
 .st-diy i { border: 1px dashed var(--ink-3); }
 .screen .st { position: absolute; top: auto; bottom: 10px; right: 10px; }
 
-.filter { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 8px; position: sticky; top: 52px; z-index: 5;
-  padding-top: 10px; background: color-mix(in srgb, var(--body) 92%, transparent); }
+.filter { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 10px; position: sticky; top: 52px; z-index: 5;
+  padding-top: 10px; background: var(--body); border-bottom: 1px solid var(--rule); }
+@media (max-width: 640px) {
+  /* One row that scrolls sideways, so it never covers more than a strip. */
+  .filter { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .filter::-webkit-scrollbar { display: none; }
+  .chip { flex: none; }
+}
 .chip { font: inherit; font-size: 13px; height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--rule);
   background: transparent; color: var(--ink-2); cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
 .chip b { font-weight: 400; color: var(--ink-3); }

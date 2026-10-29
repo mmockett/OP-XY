@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#e4e4e1">
+<title>OP–XY machines · Max Mockett</title>
+<meta name="description" content="Synths, drum kits and a granular sampler for the teenage engineering OP–XY, written from scratch on the Open-XY SDK by Max Mockett.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OP–XY machines · Max Mockett">
+<meta property="og:description" content="Hexagon, MNMD and Grains: synths, drum kits and a granular sampler for the OP–XY, each with its own screen.">
+<meta property="og:image" content="https://mmockett.github.io/OP-XY/assets/media/hexagon/hexagon.jpg">
+<meta property="og:url" content="https://mmockett.github.io/OP-XY/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<script src="data.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="mark" href="#top" aria-label="Top">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="14" height="14" rx="2.5"/><rect x="3.5" y="4" width="9" height="5" rx=".5"/></svg>
+      <span>max mockett</span><b>op–xy</b>
+    </a>
+    <nav class="nav" id="nav" aria-label="Sections"></nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero wrap">
+    <div class="hero-copy">
+      <p class="kicker">instruments for the op–xy</p>
+      <h1>Machines that show what they're doing.</h1>
+      <p class="lead">Synths, drum kits and a granular sampler for the teenage engineering OP–XY, written from scratch on the <a href="https://github.com/etcetc000/open-xy">Open-XY SDK</a>. Every one plays like part of the instrument, and draws its sound on the screen in fine outline.</p>
+      <p class="actions">
+        <a class="btn btn-ink" href="https://open-xy.com">open-xy builder <span aria-hidden="true">↗</span></a>
+        <a class="btn" href="https://github.com/mmockett">github <span aria-hidden="true">↗</span></a>
+      </p>
+    </div>
+    <figure class="device">
+      <div class="screen screen-hero" id="hero-media"></div>
+      <figcaption class="cap">hexagon · six screens playing together</figcaption>
+    </figure>
+  </section>
+
+  <section class="wrap stats" aria-label="At a glance">
+    <div id="stats"></div>
+  </section>
+
+  <section class="wrap legend" aria-labelledby="legend-h">
+    <h2 class="label" id="legend-h">status</h2>
+    <ul class="legend-list" id="legend"></ul>
+  </section>
+
+  <div class="wrap filter" id="filter" role="group" aria-label="Show machines by status"></div>
+
+  <div id="projects">
+    <noscript>
+      <div class="wrap">
+        <p>The projects: <a href="https://github.com/mmockett/OP-XY-Hexagon">Hexagon</a>, <a href="https://github.com/mmockett/OP-XY-MNMD">MNMD</a> and <a href="https://github.com/mmockett/OP-XY-Grains">Grains</a>.</p>
+      </div>
+    </noscript>
+  </div>
+
+  <section class="wrap sdk" id="sdk" aria-labelledby="sdk-h">
+    <div class="sec-head">
+      <span class="num">sdk</span>
+      <div>
+        <h2 id="sdk-h">Changes to Open-XY</h2>
+        <p class="sub">What these machines needed from the SDK, sent upstream to <a href="https://github.com/etcetc000/open-xy">etcetc000/open-xy</a>.</p>
+      </div>
+    </div>
+    <ol class="prs" id="prs"></ol>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <p>Made by <a href="https://github.com/mmockett">Max Mockett</a>. All machines are MIT licensed. <span id="synced"></span></p>
+    <p class="fine">Not affiliated with, or endorsed by, teenage engineering or Elektron. OP–XY is a trademark of teenage engineering; Machinedrum and Monomachine are trademarks of Elektron. No Elektron code, firmware or ROM data is published here. Screens are rendered from each machine's own display code through the SDK's browser preview, with Helvetica Neue standing in for the OP–XY's Univers.</p>
+  </div>
+</footer>
+
+<dialog class="lightbox" id="lightbox" aria-label="Enlarged screen">
+  <form method="dialog"><button class="lb-close" aria-label="Close">close ×</button></form>
+  <div class="screen lb-media" id="lb-media"></div>
+  <p class="cap" id="lb-cap"></p>
+</dialog>
+
+</body>
+</html>

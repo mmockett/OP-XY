@@ -194,6 +194,15 @@ img, video, svg { display: block; max-width: 100%; }
 .ctrls em { font-style: normal; color: var(--ink-3); }
 .keys { display: flex; flex-wrap: wrap; gap: 4px; }
 .keys span { font-size: 11px; min-width: 30px; text-align: center; padding: 3px 5px; border: 1px solid var(--rule); border-radius: 3px; color: var(--ink-2); }
+.sounds { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.sounds .label { font-size: 12px; color: var(--ink-3); width: 52px; }
+.snd { all: unset; cursor: pointer; position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; line-height: 1; padding: 6px 9px 6px 7px; border: 1px solid var(--rule); border-radius: 999px; color: var(--ink); }
+.snd .i { width: 11px; height: 11px; fill: currentColor; stroke: none; }
+.snd::after { content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: var(--done, 0%); background: var(--ink); }
+.snd:hover { border-color: var(--ink-3); }
+.snd[aria-pressed="true"] { border-color: var(--ink); }
+.snd:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--ink-2); }
 .meta a { color: var(--ink); }
 

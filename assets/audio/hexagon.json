@@ -1,0 +1,366 @@
+{
+  "wane": [
+    {
+      "preset": "Clean",
+      "slug": "clean",
+      "src": "assets/audio/hexagon/wane/clean.m4a",
+      "role": "pad (the init sound)",
+      "phrase": "slow four-chord progression in A minor (Am7–Fmaj7–Cmaj7–G)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Worn",
+      "slug": "worn",
+      "src": "assets/audio/hexagon/wane/worn.m4a",
+      "role": "a worn tape: each note sags",
+      "phrase": "slow melody in A minor",
+      "seconds": 8.0
+    },
+    {
+      "preset": "Attic",
+      "slug": "attic",
+      "src": "assets/audio/hexagon/wane/attic.m4a",
+      "role": "pad, an old tape",
+      "phrase": "slow four-chord progression in A minor (Fmaj7–G–Em7–Am)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Glass",
+      "slug": "glass",
+      "src": "assets/audio/hexagon/wane/glass.m4a",
+      "role": "keys",
+      "phrase": "broken chords in A minor, in quarters",
+      "seconds": 10.2
+    }
+  ],
+  "bloom": [
+    {
+      "preset": "Init",
+      "slug": "init",
+      "src": "assets/audio/hexagon/bloom/init.m4a",
+      "role": "a clean additive tone",
+      "phrase": "slow four-chord progression in A minor (Am(add9)–Fmaj7–C–G)",
+      "seconds": 10.7
+    },
+    {
+      "preset": "Bloom",
+      "slug": "bloom",
+      "src": "assets/audio/hexagon/bloom/bloom.m4a",
+      "role": "pad",
+      "phrase": "slow four-chord progression in A minor (Am7–Fmaj7–Cmaj7–G)",
+      "seconds": 11.0
+    },
+    {
+      "preset": "Tape Choir",
+      "slug": "tape-choir",
+      "src": "assets/audio/hexagon/bloom/tape-choir.m4a",
+      "role": "choir",
+      "phrase": "slow four-chord progression in A minor (Am–Dm–G–C)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Juno Dusk",
+      "slug": "juno-dusk",
+      "src": "assets/audio/hexagon/bloom/juno-dusk.m4a",
+      "role": "pulse strings",
+      "phrase": "slow four-chord progression in A minor (Fmaj7–G–Em7–Am)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Glass Bells",
+      "slug": "glass-bells",
+      "src": "assets/audio/hexagon/bloom/glass-bells.m4a",
+      "role": "bells",
+      "phrase": "broken chords in A minor, an octave up",
+      "seconds": 10.2
+    },
+    {
+      "preset": "Frost",
+      "slug": "frost",
+      "src": "assets/audio/hexagon/bloom/frost.m4a",
+      "role": "glitter",
+      "phrase": "long notes, staggered, on A(add9)",
+      "seconds": 9.8
+    },
+    {
+      "preset": "Fog",
+      "slug": "fog",
+      "src": "assets/audio/hexagon/bloom/fog.m4a",
+      "role": "texture",
+      "phrase": "long notes on A minor, building",
+      "seconds": 10.2
+    },
+    {
+      "preset": "Seasick",
+      "slug": "seasick",
+      "src": "assets/audio/hexagon/bloom/seasick.m4a",
+      "role": "a woozy pad",
+      "phrase": "slow four-chord progression in A minor (Am–Dm–G–C)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Still Life",
+      "slug": "still-life",
+      "src": "assets/audio/hexagon/bloom/still-life.m4a",
+      "role": "a frozen, sung spectrum",
+      "phrase": "one long chord, Am(add9)",
+      "seconds": 9.9
+    }
+  ],
+  "hollow": [
+    {
+      "preset": "Choir",
+      "slug": "choir",
+      "src": "assets/audio/hexagon/hollow/choir.m4a",
+      "role": "pad (the defaults)",
+      "phrase": "slow four-chord progression in A minor (Am7–Fmaj7–Cmaj7–G)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Dusk",
+      "slug": "dusk",
+      "src": "assets/audio/hexagon/hollow/dusk.m4a",
+      "role": "pad",
+      "phrase": "slow four-chord progression in A minor (Fmaj7–G–Em7–Am)",
+      "seconds": 11.0
+    },
+    {
+      "preset": "Bowed glass",
+      "slug": "bowed-glass",
+      "src": "assets/audio/hexagon/hollow/bowed-glass.m4a",
+      "role": "a bowed lead",
+      "phrase": "slow melody in A minor",
+      "seconds": 7.8
+    },
+    {
+      "preset": "Bottle",
+      "slug": "bottle",
+      "src": "assets/audio/hexagon/hollow/bottle.m4a",
+      "role": "a blown bottle",
+      "phrase": "singable melody in A minor",
+      "seconds": 7.5
+    },
+    {
+      "preset": "Strings",
+      "slug": "strings",
+      "src": "assets/audio/hexagon/hollow/strings.m4a",
+      "role": "a string section",
+      "phrase": "slow four-chord progression in A minor (Am–Dm–G–C)",
+      "seconds": 10.7
+    },
+    {
+      "preset": "Ensemble",
+      "slug": "ensemble",
+      "src": "assets/audio/hexagon/hollow/ensemble.m4a",
+      "role": "an ensemble pad",
+      "phrase": "slow four-chord progression in A minor (Am(add9)–Fmaj7–C–G)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Whisper",
+      "slug": "whisper",
+      "src": "assets/audio/hexagon/hollow/whisper.m4a",
+      "role": "breath alone, short and airy",
+      "phrase": "breathy broken chords in A minor, in quarters",
+      "seconds": 9.9
+    }
+  ],
+  "orbit": [
+    {
+      "preset": "Init",
+      "slug": "init",
+      "src": "assets/audio/hexagon/orbit/init.m4a",
+      "role": "the defaults: clean and still",
+      "phrase": "slow four-chord progression in A minor (Am(add9)–Fmaj7–C–G)",
+      "seconds": 10.7
+    },
+    {
+      "preset": "Clean",
+      "slug": "clean",
+      "src": "assets/audio/hexagon/orbit/clean.m4a",
+      "role": "pad, a slow orbit",
+      "phrase": "slow four-chord progression in A minor (Am7–Fmaj7–Cmaj7–G)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Dusty",
+      "slug": "dusty",
+      "src": "assets/audio/hexagon/orbit/dusty.m4a",
+      "role": "pad, off-centre",
+      "phrase": "slow four-chord progression in A minor (Fmaj7–G–Em7–Am)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Drawbars",
+      "slug": "drawbars",
+      "src": "assets/audio/hexagon/orbit/drawbars.m4a",
+      "role": "organ",
+      "phrase": "organ chords in A minor (Am–Dm–G–C)",
+      "seconds": 9.9
+    },
+    {
+      "preset": "Chimes",
+      "slug": "chimes",
+      "src": "assets/audio/hexagon/orbit/chimes.m4a",
+      "role": "bells",
+      "phrase": "broken chords in A minor, an octave up",
+      "seconds": 10.2
+    },
+    {
+      "preset": "Wave Seq",
+      "slug": "wave-seq",
+      "src": "assets/audio/hexagon/orbit/wave-seq.m4a",
+      "role": "a wave sequence",
+      "phrase": "two held chords, Am then F, stepping",
+      "seconds": 10.5
+    },
+    {
+      "preset": "Old DAC",
+      "slug": "old-dac",
+      "src": "assets/audio/hexagon/orbit/old-dac.m4a",
+      "role": "lead, lo-fi",
+      "phrase": "singable melody in A minor",
+      "seconds": 7.3
+    },
+    {
+      "preset": "Dusk Pad",
+      "slug": "dusk-pad",
+      "src": "assets/audio/hexagon/orbit/dusk-pad.m4a",
+      "role": "pad",
+      "phrase": "slow four-chord progression in A minor (Am–Dm–G–C)",
+      "seconds": 11.1
+    }
+  ],
+  "bend": [
+    {
+      "preset": "Clean",
+      "slug": "clean",
+      "src": "assets/audio/hexagon/bend/clean.m4a",
+      "role": "a plucked CZ saw (the init sound)",
+      "phrase": "broken chords in A minor (Am–F–C–G)",
+      "seconds": 9.8
+    },
+    {
+      "preset": "Haze",
+      "slug": "haze",
+      "src": "assets/audio/hexagon/bend/haze.m4a",
+      "role": "pad",
+      "phrase": "slow four-chord progression in A minor (Fmaj7–G–Em7–Am)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Brass 101",
+      "slug": "brass-101",
+      "src": "assets/audio/hexagon/bend/brass-101.m4a",
+      "role": "brass",
+      "phrase": "brass stabs in A minor (Am–F–G–Am)",
+      "seconds": 9.6
+    },
+    {
+      "preset": "Wah Bass",
+      "slug": "wah-bass",
+      "src": "assets/audio/hexagon/bend/wah-bass.m4a",
+      "role": "bass",
+      "phrase": "bassline in A minor from A2",
+      "seconds": 6.7
+    },
+    {
+      "preset": "Glass Ring",
+      "slug": "glass-ring",
+      "src": "assets/audio/hexagon/bend/glass-ring.m4a",
+      "role": "bells and glass",
+      "phrase": "bell melody in A minor",
+      "seconds": 6.5
+    },
+    {
+      "preset": "Sync Lead",
+      "slug": "sync-lead",
+      "src": "assets/audio/hexagon/bend/sync-lead.m4a",
+      "role": "lead",
+      "phrase": "singable melody in A minor",
+      "seconds": 7.3
+    },
+    {
+      "preset": "Breath",
+      "slug": "breath",
+      "src": "assets/audio/hexagon/bend/breath.m4a",
+      "role": "a breathy flute",
+      "phrase": "singable melody in A minor",
+      "seconds": 6.6
+    },
+    {
+      "preset": "Toy DAC",
+      "slug": "toy-dac",
+      "src": "assets/audio/hexagon/bend/toy-dac.m4a",
+      "role": "a toy keyboard",
+      "phrase": "broken chords in A minor, an octave up",
+      "seconds": 9.7
+    }
+  ],
+  "moth": [
+    {
+      "preset": "Clean",
+      "slug": "clean",
+      "src": "assets/audio/hexagon/moth/clean.m4a",
+      "role": "a soft sine pad (the init sound)",
+      "phrase": "slow four-chord progression in A minor (Am7–Fmaj7–Cmaj7–G)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Ping",
+      "slug": "ping",
+      "src": "assets/audio/hexagon/moth/ping.m4a",
+      "role": "a struck ping",
+      "phrase": "broken chords in A minor (Am–F–C–G)",
+      "seconds": 9.9
+    },
+    {
+      "preset": "Bongo",
+      "slug": "bongo",
+      "src": "assets/audio/hexagon/moth/bongo.m4a",
+      "role": "percussion",
+      "phrase": "groove on two pitches (A and E)",
+      "seconds": 8.0
+    },
+    {
+      "preset": "Marimba",
+      "slug": "marimba",
+      "src": "assets/audio/hexagon/moth/marimba.m4a",
+      "role": "mallets",
+      "phrase": "broken chords in A minor (Am–F–C–G)",
+      "seconds": 8.1
+    },
+    {
+      "preset": "Bell",
+      "slug": "bell",
+      "src": "assets/audio/hexagon/moth/bell.m4a",
+      "role": "a long-ringing bell",
+      "phrase": "bell melody in A minor",
+      "seconds": 6.3
+    },
+    {
+      "preset": "Lantern",
+      "slug": "lantern",
+      "src": "assets/audio/hexagon/moth/lantern.m4a",
+      "role": "pad",
+      "phrase": "slow four-chord progression in A minor (Am–Dm–G–C)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Dusk",
+      "slug": "dusk",
+      "src": "assets/audio/hexagon/moth/dusk.m4a",
+      "role": "a slow, drifting tone",
+      "phrase": "long notes on A minor, building",
+      "seconds": 10.2
+    },
+    {
+      "preset": "Wingbeat",
+      "slug": "wingbeat",
+      "src": "assets/audio/hexagon/moth/wingbeat.m4a",
+      "role": "an FM growl, a bass",
+      "phrase": "bassline in A minor from A2",
+      "seconds": 6.8
+    }
+  ]
+}

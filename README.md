@@ -12,6 +12,7 @@ A static page with no build step. GitHub Pages serves it from `main`.
 | `style.css` | The look: aluminium body, black screens, the header's grey steps |
 | `assets/media/<project>/` | Screens: MP4 + JPG poster |
 | `tools/render/` | Renders the screens from each machine's display code |
+| `assets/audio/<project>/` and `<project>.json` | Preset clips and their list; each card plays them |
 
 ## Adding a machine or project
 
@@ -91,3 +92,13 @@ one's paths from its page on lucide.dev. No emoji or arrow glyphs.
 ## Licence
 
 MIT. Not affiliated with teenage engineering or Elektron.
+
+## Preset clips
+
+Each Hexagon and Nonagon card has a row of preset buttons that play a short
+phrase suited to the preset (chords for pads, arpeggios for keys, a bassline for
+bass), all in A minor at 100 BPM and levelled to about −16 LUFS. They are
+rendered on a computer from each machine's own engine code, not recorded on an
+OP–XY, by the private OP-XY-Dev repository's `tools/audition`, which writes the
+`.m4a` files and `assets/audio/<project>.json`. Samples Ghost and Recur play are
+synthesised there too.

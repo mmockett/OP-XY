@@ -1,0 +1,596 @@
+{
+  "sand": [
+    {
+      "preset": "Chladni",
+      "slug": "chladni",
+      "src": "assets/audio/nonagon/sand/chladni.m4a",
+      "role": "the defaults: bowed plate",
+      "phrase": "slow melody in A minor",
+      "seconds": 8.0
+    },
+    {
+      "preset": "Glass Pad",
+      "slug": "glass-pad",
+      "src": "assets/audio/nonagon/sand/glass-pad.m4a",
+      "role": "pad",
+      "phrase": "slow four-chord progression in A minor (Am(add9)–Fmaj7–C–G)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Bowed Metal",
+      "slug": "bowed-metal",
+      "src": "assets/audio/nonagon/sand/bowed-metal.m4a",
+      "role": "lead, bass",
+      "phrase": "singable melody in A minor, an octave down",
+      "seconds": 7.4
+    },
+    {
+      "preset": "Bell Keys",
+      "slug": "bell-keys",
+      "src": "assets/audio/nonagon/sand/bell-keys.m4a",
+      "role": "keys",
+      "phrase": "broken chords in A minor (Am–F–C–G)",
+      "seconds": 10.2
+    },
+    {
+      "preset": "Sand Shaker",
+      "slug": "sand-shaker",
+      "src": "assets/audio/nonagon/sand/sand-shaker.m4a",
+      "role": "percussion",
+      "phrase": "groove on two pitches (A and E)",
+      "seconds": 8.2
+    },
+    {
+      "preset": "Drone",
+      "slug": "drone",
+      "src": "assets/audio/nonagon/sand/drone.m4a",
+      "role": "drone",
+      "phrase": "long notes on A minor, building",
+      "seconds": 10.2
+    },
+    {
+      "preset": "Hourglass",
+      "slug": "hourglass",
+      "src": "assets/audio/nonagon/sand/hourglass.m4a",
+      "role": "texture",
+      "phrase": "long notes, staggered, on A(add9)",
+      "seconds": 9.8
+    },
+    {
+      "preset": "Gravel",
+      "slug": "gravel",
+      "src": "assets/audio/nonagon/sand/gravel.m4a",
+      "role": "characterful",
+      "phrase": "three long notes, A–E–A, clearing",
+      "seconds": 9.0
+    }
+  ],
+  "cocoa": [
+    {
+      "preset": "Mug Keys",
+      "slug": "mug-keys",
+      "src": "assets/audio/nonagon/cocoa/mug-keys.m4a",
+      "role": "keys",
+      "phrase": "broken chords in A minor (Am–F–C–G)",
+      "seconds": 8.8
+    },
+    {
+      "preset": "Glass Bells",
+      "slug": "glass-bells",
+      "src": "assets/audio/nonagon/cocoa/glass-bells.m4a",
+      "role": "bells",
+      "phrase": "broken chords in A minor, an octave up",
+      "seconds": 8.9
+    },
+    {
+      "preset": "Tin Percussion",
+      "slug": "tin-percussion",
+      "src": "assets/audio/nonagon/cocoa/tin-percussion.m4a",
+      "role": "rhythm",
+      "phrase": "rhythm on A and E, held notes chattering",
+      "seconds": 9.0
+    },
+    {
+      "preset": "Bass Mug",
+      "slug": "bass-mug",
+      "src": "assets/audio/nonagon/cocoa/bass-mug.m4a",
+      "role": "bass",
+      "phrase": "bassline in A minor from A2",
+      "seconds": 6.5
+    },
+    {
+      "preset": "Hot Chocolate",
+      "slug": "hot-chocolate",
+      "src": "assets/audio/nonagon/cocoa/hot-chocolate.m4a",
+      "role": "the effect: a climbing drink",
+      "phrase": "two long notes, A then E, climbing",
+      "seconds": 7.4
+    },
+    {
+      "preset": "Fizz",
+      "slug": "fizz",
+      "src": "assets/audio/nonagon/cocoa/fizz.m4a",
+      "role": "texture",
+      "phrase": "long notes on A minor, fizzing",
+      "seconds": 8.5
+    },
+    {
+      "preset": "Spoonful",
+      "slug": "spoonful",
+      "src": "assets/audio/nonagon/cocoa/spoonful.m4a",
+      "role": "a phrase: the rising stir",
+      "phrase": "legato line in A minor, a pause, and again",
+      "seconds": 8.8
+    }
+  ],
+  "coin": [
+    {
+      "preset": "Euler",
+      "slug": "euler",
+      "src": "assets/audio/nonagon/coin/euler.m4a",
+      "role": "the init sound: a spinning toy",
+      "phrase": "spins landing on A minor broken chords",
+      "seconds": 7.7
+    },
+    {
+      "preset": "Tick",
+      "slug": "tick",
+      "src": "assets/audio/nonagon/coin/tick.m4a",
+      "role": "rhythm",
+      "phrase": "groove on two pitches (A and E)",
+      "seconds": 8.2
+    },
+    {
+      "preset": "Knock",
+      "slug": "knock",
+      "src": "assets/audio/nonagon/coin/knock.m4a",
+      "role": "a marimba-like knock",
+      "phrase": "broken chords in A minor (Am–F–C–G)",
+      "seconds": 8.6
+    },
+    {
+      "preset": "Bell",
+      "slug": "bell",
+      "src": "assets/audio/nonagon/coin/bell.m4a",
+      "role": "a glass bell",
+      "phrase": "bell melody in A minor",
+      "seconds": 7.4
+    },
+    {
+      "preset": "Chorus",
+      "slug": "chorus",
+      "src": "assets/audio/nonagon/coin/chorus.m4a",
+      "role": "a whirring chorus",
+      "phrase": "two chords thrown, Am then F",
+      "seconds": 7.8
+    },
+    {
+      "preset": "Thrum",
+      "slug": "thrum",
+      "src": "assets/audio/nonagon/coin/thrum.m4a",
+      "role": "bass",
+      "phrase": "bassline, A–F–G–A, a note every two beats",
+      "seconds": 7.8
+    },
+    {
+      "preset": "Drone",
+      "slug": "drone",
+      "src": "assets/audio/nonagon/coin/drone.m4a",
+      "role": "drone",
+      "phrase": "long notes on A minor, building",
+      "seconds": 9.5
+    },
+    {
+      "preset": "Settle",
+      "slug": "settle",
+      "src": "assets/audio/nonagon/coin/settle.m4a",
+      "role": "a long spin that settles",
+      "phrase": "two long spins, A and E, settling",
+      "seconds": 12.7
+    }
+  ],
+  "fermi": [
+    {
+      "preset": "Breath",
+      "slug": "breath",
+      "src": "assets/audio/nonagon/fermi/breath.m4a",
+      "role": "pad (the defaults)",
+      "phrase": "slow four-chord progression in A minor (Am7–Fmaj7–Cmaj7–G)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Organ",
+      "slug": "organ",
+      "src": "assets/audio/nonagon/fermi/organ.m4a",
+      "role": "organ",
+      "phrase": "organ chords in A minor (Am–Dm–G–C)",
+      "seconds": 10.0
+    },
+    {
+      "preset": "Tsingou",
+      "slug": "tsingou",
+      "src": "assets/audio/nonagon/fermi/tsingou.m4a",
+      "role": "long pad",
+      "phrase": "two long chords, Am(add9) to Fmaj7",
+      "seconds": 10.1
+    },
+    {
+      "preset": "Clarinet",
+      "slug": "clarinet",
+      "src": "assets/audio/nonagon/fermi/clarinet.m4a",
+      "role": "lead",
+      "phrase": "singable melody in A minor",
+      "seconds": 7.2
+    },
+    {
+      "preset": "Bell",
+      "slug": "bell",
+      "src": "assets/audio/nonagon/fermi/bell.m4a",
+      "role": "bell",
+      "phrase": "bell melody in A minor, high",
+      "seconds": 6.5
+    },
+    {
+      "preset": "Pluck",
+      "slug": "pluck",
+      "src": "assets/audio/nonagon/fermi/pluck.m4a",
+      "role": "bass",
+      "phrase": "bassline in A minor from A2",
+      "seconds": 6.6
+    },
+    {
+      "preset": "Thermal",
+      "slug": "thermal",
+      "src": "assets/audio/nonagon/fermi/thermal.m4a",
+      "role": "texture",
+      "phrase": "long notes, staggered, on A(add9)",
+      "seconds": 9.8
+    },
+    {
+      "preset": "Flutter",
+      "slug": "flutter",
+      "src": "assets/audio/nonagon/fermi/flutter.m4a",
+      "role": "keys",
+      "phrase": "broken chords in A minor (Am–F–C–G)",
+      "seconds": 10.0
+    }
+  ],
+  "mach": [
+    {
+      "preset": "Init",
+      "slug": "init",
+      "src": "assets/audio/nonagon/mach/init.m4a",
+      "role": "supersonic bell melody",
+      "phrase": "bell melody in A minor, a flyby a note",
+      "seconds": 8.9
+    },
+    {
+      "preset": "Flyby Pad",
+      "slug": "flyby-pad",
+      "src": "assets/audio/nonagon/mach/flyby-pad.m4a",
+      "role": "pad",
+      "phrase": "slow four-chord progression in A minor (Am7–Fmaj7–Cmaj7–G7)",
+      "seconds": 11.2
+    },
+    {
+      "preset": "Reverse Swell",
+      "slug": "reverse-swell",
+      "src": "assets/audio/nonagon/mach/reverse-swell.m4a",
+      "role": "a swell into a note",
+      "phrase": "four chords swelling in, Am–F–C–G",
+      "seconds": 10.8
+    },
+    {
+      "preset": "Boom Drum",
+      "slug": "boom-drum",
+      "src": "assets/audio/nonagon/mach/boom-drum.m4a",
+      "role": "boom percussion",
+      "phrase": "boom groove on A1 and E1",
+      "seconds": 9.8
+    },
+    {
+      "preset": "Siren Lead",
+      "slug": "siren-lead",
+      "src": "assets/audio/nonagon/mach/siren-lead.m4a",
+      "role": "lead",
+      "phrase": "singable melody in A minor",
+      "seconds": 7.9
+    },
+    {
+      "preset": "Drone Pass",
+      "slug": "drone-pass",
+      "src": "assets/audio/nonagon/mach/drone-pass.m4a",
+      "role": "drone",
+      "phrase": "two slow passes, A then G",
+      "seconds": 11.7
+    },
+    {
+      "preset": "Choir Jet",
+      "slug": "choir-jet",
+      "src": "assets/audio/nonagon/mach/choir-jet.m4a",
+      "role": "pad, chords",
+      "phrase": "four-chord progression in A minor (Am–F–C–G)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Doppler Bass",
+      "slug": "doppler-bass",
+      "src": "assets/audio/nonagon/mach/doppler-bass.m4a",
+      "role": "bass",
+      "phrase": "bassline in A minor from A1",
+      "seconds": 10.8
+    }
+  ],
+  "butterfly": [
+    {
+      "preset": "Specimen",
+      "slug": "specimen",
+      "src": "assets/audio/nonagon/butterfly/specimen.m4a",
+      "role": "the init sound: a bell",
+      "phrase": "bell melody in A minor",
+      "seconds": 6.3
+    },
+    {
+      "preset": "Glass Keys",
+      "slug": "glass-keys",
+      "src": "assets/audio/nonagon/butterfly/glass-keys.m4a",
+      "role": "keys",
+      "phrase": "broken chords in A minor (Am–F–C–G)",
+      "seconds": 8.8
+    },
+    {
+      "preset": "Gamelan",
+      "slug": "gamelan",
+      "src": "assets/audio/nonagon/butterfly/gamelan.m4a",
+      "role": "a gamelan bell",
+      "phrase": "pentatonic melody in A minor",
+      "seconds": 8.7
+    },
+    {
+      "preset": "Shimmer",
+      "slug": "shimmer",
+      "src": "assets/audio/nonagon/butterfly/shimmer.m4a",
+      "role": "pad",
+      "phrase": "slow four-chord progression in A minor (Fmaj7–G–Em7–Am)",
+      "seconds": 11.1
+    },
+    {
+      "preset": "Struck Bass",
+      "slug": "struck-bass",
+      "src": "assets/audio/nonagon/butterfly/struck-bass.m4a",
+      "role": "a struck bass",
+      "phrase": "bassline in A minor from A2",
+      "seconds": 6.8
+    },
+    {
+      "preset": "Fractal",
+      "slug": "fractal",
+      "src": "assets/audio/nonagon/butterfly/fractal.m4a",
+      "role": "texture",
+      "phrase": "long notes, staggered, on A(add9)",
+      "seconds": 9.8
+    },
+    {
+      "preset": "Chime",
+      "slug": "chime",
+      "src": "assets/audio/nonagon/butterfly/chime.m4a",
+      "role": "high chimes",
+      "phrase": "broken chords in A minor, high, in quarters",
+      "seconds": 9.7
+    },
+    {
+      "preset": "Bowed Glass",
+      "slug": "bowed-glass",
+      "src": "assets/audio/nonagon/butterfly/bowed-glass.m4a",
+      "role": "a bowed pad",
+      "phrase": "slow four-chord progression in A minor (Am(add9)–Fmaj7–C–G)",
+      "seconds": 11.1
+    }
+  ],
+  "drop": [
+    {
+      "preset": "Drop",
+      "slug": "drop",
+      "src": "assets/audio/nonagon/drop/drop.m4a",
+      "role": "the default: a rhythmic voice",
+      "phrase": "riff in A minor",
+      "seconds": 8.4
+    },
+    {
+      "preset": "Kettle",
+      "slug": "kettle",
+      "src": "assets/audio/nonagon/drop/kettle.m4a",
+      "role": "a singing-kettle pad",
+      "phrase": "slow four-chord progression in A minor (Am–Dm–G–C)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Star Lead",
+      "slug": "star-lead",
+      "src": "assets/audio/nonagon/drop/star-lead.m4a",
+      "role": "a beating lead",
+      "phrase": "singable melody in A minor",
+      "seconds": 7.4
+    },
+    {
+      "preset": "Spirit Bass",
+      "slug": "spirit-bass",
+      "src": "assets/audio/nonagon/drop/spirit-bass.m4a",
+      "role": "a bass",
+      "phrase": "bassline in A minor from A2",
+      "seconds": 6.8
+    },
+    {
+      "preset": "Ratchet",
+      "slug": "ratchet",
+      "src": "assets/audio/nonagon/drop/ratchet.m4a",
+      "role": "a ratchet rhythm",
+      "phrase": "two held notes, A then E, each a riff",
+      "seconds": 7.8
+    },
+    {
+      "preset": "Sizzle",
+      "slug": "sizzle",
+      "src": "assets/audio/nonagon/drop/sizzle.m4a",
+      "role": "sizzle percussion",
+      "phrase": "sixteenths on A and E, a hi-hat",
+      "seconds": 8.2
+    },
+    {
+      "preset": "Whisper",
+      "slug": "whisper",
+      "src": "assets/audio/nonagon/drop/whisper.m4a",
+      "role": "a nitrogen whisper",
+      "phrase": "slow four-chord progression in A minor (Fmaj7–G–Em7–Am)",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Last Drop",
+      "slug": "last-drop",
+      "src": "assets/audio/nonagon/drop/last-drop.m4a",
+      "role": "a dying-drop effect",
+      "phrase": "four gestures, a note each",
+      "seconds": 7.6
+    }
+  ],
+  "ghost": [
+    {
+      "preset": "Seance",
+      "slug": "seance",
+      "src": "assets/audio/nonagon/ghost/seance.m4a",
+      "role": "the init sound: a haunted pad",
+      "phrase": "slow four-chord progression in A minor (Am–F–C–G)",
+      "seconds": 10.7
+    },
+    {
+      "preset": "Whisper",
+      "slug": "whisper",
+      "src": "assets/audio/nonagon/ghost/whisper.m4a",
+      "role": "whispers at your ears",
+      "phrase": "slow line in A minor",
+      "seconds": 7.8
+    },
+    {
+      "preset": "Choir",
+      "slug": "choir",
+      "src": "assets/audio/nonagon/ghost/choir.m4a",
+      "role": "a choir from nowhere",
+      "phrase": "four-chord progression in A minor (Am–F–C–G), open voicings",
+      "seconds": 10.9
+    },
+    {
+      "preset": "Revenant",
+      "slug": "revenant",
+      "src": "assets/audio/nonagon/ghost/revenant.m4a",
+      "role": "a drone",
+      "phrase": "a held fifth on A2, breathing",
+      "seconds": 10.1
+    },
+    {
+      "preset": "Wraith",
+      "slug": "wraith",
+      "src": "assets/audio/nonagon/ghost/wraith.m4a",
+      "role": "a presence that circles",
+      "phrase": "three long notes, A–G–E, circling",
+      "seconds": 11.1
+    },
+    {
+      "preset": "Skull",
+      "slug": "skull",
+      "src": "assets/audio/nonagon/ghost/skull.m4a",
+      "role": "the note that isn't there",
+      "phrase": "melody in A minor, its fundamental between the ears",
+      "seconds": 9.2
+    },
+    {
+      "preset": "Glass",
+      "slug": "glass",
+      "src": "assets/audio/nonagon/ghost/glass.m4a",
+      "role": "ringing, bell-like",
+      "phrase": "arpeggio, Em7 then Dm7, ringing",
+      "seconds": 9.1
+    },
+    {
+      "preset": "Haunting",
+      "slug": "haunting",
+      "src": "assets/audio/nonagon/ghost/haunting.m4a",
+      "role": "a recording, as an apparition",
+      "phrase": "three chords from the sung line, Am–G–F",
+      "seconds": 10.7
+    },
+    {
+      "preset": "Haunting (no sample)",
+      "slug": "haunting-no-sample",
+      "src": "assets/audio/nonagon/ghost/haunting-no-sample.m4a",
+      "role": "with no sample: bed's own whisper",
+      "phrase": "three chords, Am–G–F, on breath alone",
+      "seconds": 10.7
+    }
+  ],
+  "recur": [
+    {
+      "preset": "Recur",
+      "slug": "recur",
+      "src": "assets/audio/nonagon/recur/recur.m4a",
+      "role": "a beat re-sequenced each bar",
+      "phrase": "four bars of a drum loop, re-dealt each bar",
+      "seconds": 10.3
+    },
+    {
+      "preset": "Stutter",
+      "slug": "stutter",
+      "src": "assets/audio/nonagon/recur/stutter.m4a",
+      "role": "rolls and repeats",
+      "phrase": "four bars of a drum loop, stuttering",
+      "seconds": 10.3
+    },
+    {
+      "preset": "Phrase",
+      "slug": "phrase",
+      "src": "assets/audio/nonagon/recur/phrase.m4a",
+      "role": "a melody's notes re-ordered",
+      "phrase": "four bars of an A minor melody, re-ordered",
+      "seconds": 10.3
+    },
+    {
+      "preset": "Riffle",
+      "slug": "riffle",
+      "src": "assets/audio/nonagon/recur/riffle.m4a",
+      "role": "the baker's shuffle",
+      "phrase": "four bars of a drum loop, shuffled like cards",
+      "seconds": 10.3
+    },
+    {
+      "preset": "Glitch",
+      "slug": "glitch",
+      "src": "assets/audio/nonagon/recur/glitch.m4a",
+      "role": "dense glitching",
+      "phrase": "four bars of a drum loop, glitched",
+      "seconds": 10.3
+    },
+    {
+      "preset": "Chorale",
+      "slug": "chorale",
+      "src": "assets/audio/nonagon/recur/chorale.m4a",
+      "role": "four beats under a minor chord",
+      "phrase": "four bars of an A minor melody, as a minor chord",
+      "seconds": 10.3
+    },
+    {
+      "preset": "Frozen",
+      "slug": "frozen",
+      "src": "assets/audio/nonagon/recur/frozen.m4a",
+      "role": "one fixed re-sequencing",
+      "phrase": "four bars of a drum loop, one fixed re-deal",
+      "seconds": 10.3
+    },
+    {
+      "preset": "Shred",
+      "slug": "shred",
+      "src": "assets/audio/nonagon/recur/shred.m4a",
+      "role": "shredded into hiss and back",
+      "phrase": "four bars of an A minor melody, shredded and back",
+      "seconds": 10.3
+    }
+  ]
+}

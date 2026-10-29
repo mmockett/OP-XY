@@ -17,6 +17,8 @@
     "arrow-up-right": '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>',
     github: '<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/>',
     code: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
+    play: '<polygon points="6 3 20 12 6 21 6 3"/>',
+    pause: '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
     cpu: '<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/>',
   };
   const icon = name => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
@@ -126,6 +128,7 @@
     const el = document.createElement("article");
     el.className = "card";
     el.dataset.status = m.status;
+    el.dataset.machine = m.id;
     const rows = ctrlRows(m);
     const meta = [
       m.cpu ? `<span>${icon("cpu")}${esc(m.cpu)} a voice</span>` : "",
@@ -140,6 +143,7 @@
       ${m.screen ? `<p class="scr">${esc(m.screen)}</p>` : ""}
       ${m.kit ? `<div class="keys" aria-label="Machines in the kit">${m.kit.map(k => `<span>${esc(k)}</span>`).join("")}</div>` : ""}
       <div class="ctrls">${rows}</div>
+      ${p.audio ? `<div class="sounds" aria-label="${esc(m.name)}'s presets" hidden></div>` : ""}
       ${meta ? `<div class="meta">${meta}</div>` : ""}`;
     if (m.media) zoomable($(".screen", el), m.media);
     if (gallery) el.querySelectorAll(".thumbs button").forEach((b, i) => b.addEventListener("click", () => {
@@ -271,10 +275,48 @@
       `<a class="opt" href="${SITE.github}">${icon("github")}github</a>`;
   }
 
+  // ---- preset clips ----------------------------------------------------------
+  // A project's clips (assets/audio/<project>.json: machine id -> [{preset, src, phrase}])
+  // become a row of buttons under each card. One clip plays at a time.
+  const player = new Audio();
+  player.preload = "none";
+  let playing = null;
+  function setPlaying(btn) {
+    if (playing) { playing.setAttribute("aria-pressed", "false"); playing.querySelector(".i").outerHTML = icon("play"); playing.style.removeProperty("--done"); }
+    playing = btn;
+    if (btn) { btn.setAttribute("aria-pressed", "true"); btn.querySelector(".i").outerHTML = icon("pause"); }
+  }
+  player.addEventListener("ended", () => setPlaying(null));
+  player.addEventListener("timeupdate", () => {
+    if (playing && player.duration) playing.style.setProperty("--done", `${(100 * player.currentTime / player.duration).toFixed(1)}%`);
+  });
+  function play(btn) {
+    if (playing === btn) { player.pause(); setPlaying(null); return; }
+    player.src = btn.dataset.src;
+    player.play().then(() => setPlaying(btn)).catch(() => setPlaying(null));
+  }
+  async function loadClips(p, sec) {
+    let clips;
+    try { clips = await json(p.audio); } catch { return; }
+    sec.querySelectorAll(".card").forEach(card => {
+      const list = clips[card.dataset.machine];
+      const box = $(".sounds", card);
+      if (!box || !list || !list.length) return;
+      box.innerHTML = `<span class="label">listen</span>` + list.map(c =>
+        `<button type="button" class="snd" aria-pressed="false" data-src="${esc(c.src)}" title="${esc(c.phrase || "")}" aria-label="Play ${esc(c.preset)}${c.phrase ? `: ${esc(c.phrase)}` : ""}">${icon("play")}${esc(c.preset)}</button>`).join("");
+      box.hidden = false;
+      box.querySelectorAll(".snd").forEach(b => b.addEventListener("click", () => play(b)));
+    });
+  }
+
   function render() {
     const host = $("#projects");
     host.textContent = "";
-    SITE.projects.forEach((p, i) => host.append(project(p, i)));
+    SITE.projects.forEach((p, i) => {
+      const sec = project(p, i);
+      host.append(sec);
+      if (p.audio) loadClips(p, sec);
+    });
     wireVideos(host);
     legend(); chips(); applyFilter();
   }

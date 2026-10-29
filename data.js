@@ -10,6 +10,10 @@
 //        with the machine's real control labels). Screens are rendered by
 //        tools/render (README.md), so they match the device. A project's
 //        video may give its own `aspect` ("w / h") when its grid isn't 4 x 2.
+//
+// A project's `audio` names its preset clips, assets/audio/<project>.json:
+// machine id -> [{preset, slug, src, role, phrase, seconds}]. Each card then
+// gets a row of buttons that play them.
 
 window.SITE = {
   owner: "Max Mockett",
@@ -31,6 +35,7 @@ window.SITE = {
   projects: [
     {
       id: "hexagon",
+      audio: "assets/audio/hexagon.json",
       name: "Hexagon Suite",
       kicker: "six synths",
       status: "soon",
@@ -112,6 +117,7 @@ window.SITE = {
 
     {
       id: "nonagon",
+      audio: "assets/audio/nonagon.json",
       name: "Nonagon Suite",
       kicker: "nine experiments",
       status: "lab",

@@ -247,7 +247,7 @@
       if (!empty) { empty = document.createElement("p"); empty.id = "empty"; empty.className = "wrap lead"; $("#projects").append(empty); }
       empty.style.padding = "48px var(--gut)";
       empty.textContent = filter === "live"
-        ? `Nothing is in the open-xy.com builder yet: ${count("review")} machines are in review for the catalog. This page moves them to live by itself once they're published.`
+        ? `Nothing is in the open-xy.com builder yet. ${count("review")} machines are in review.`
         : "No machines with this status right now.";
     } else if (empty) empty.remove();
   }
@@ -316,7 +316,7 @@
     if (cat.status === "fulfilled" && cat.value) render();
     else if (pr.status === "fulfilled" && pr.value) prs();
     $("#synced").textContent = cat.status === "fulfilled"
-      ? "Statuses are checked against the Open-XY catalog each time this page loads."
-      : "Statuses as last updated; the Open-XY catalog couldn't be reached just now.";
+      ? "Statuses update from the Open-XY catalog."
+      : "Statuses as last updated; the Open-XY catalog is unreachable.";
   });
 })();

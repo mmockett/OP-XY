@@ -123,6 +123,8 @@ img, video, svg { display: block; max-width: 100%; }
 .st-soon i { border: 1px solid var(--ink); }
 .st-diy { border: 1px dashed var(--ink-3); color: var(--ink-2); }
 .st-diy i { border: 1px dashed var(--ink-3); }
+.st-lab { border: 1px dotted var(--ink-3); color: var(--ink-2); }
+.st-lab i { border: 1px dotted var(--ink-3); }
 .screen .st { position: absolute; top: auto; bottom: 10px; right: 10px; }
 
 .filter { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 10px; position: sticky; top: 52px; z-index: 5;

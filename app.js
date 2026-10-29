@@ -3,8 +3,8 @@
 // (20 px), and page 2 in grey below (docs/ux.md, sdk/browser/display.mjs).
 (() => {
   const SITE = window.SITE;
-  const RANK = { diy: 0, soon: 1, live: 2 };
-  const ORDER = ["live", "soon", "diy"];
+  const RANK = { lab: 0, diy: 1, soon: 2, live: 3 };
+  const ORDER = ["live", "soon", "diy", "lab"];
   const STEPS = ["#000000", "#323232", "#4B4B4B", "#646464", "#7D7D7D", "#969696", "#AFAFAF", "#CDCDCD"];
   const CATALOG = "https://raw.githubusercontent.com/etcetc000/open-xy/main/catalog/machines.json";
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -111,7 +111,7 @@
 
   // ---- pieces --------------------------------------------------------------
   const pill = st => `<span class="st st-${st}"><i aria-hidden="true"></i>${esc(SITE.statuses[st].label)}</span>`;
-  const best = list => list.reduce((a, m) => (RANK[m.status] > RANK[a] ? m.status : a), "diy");
+  const best = list => list.reduce((a, m) => (RANK[m.status] > RANK[a] ? m.status : a), "lab");
   const all = () => SITE.projects.flatMap(p => p.machines);
   const count = st => all().filter(m => m.status === st).length;
   const ext = (href, label, cls = "btn", lead = "") => `<a class="${cls}" href="${esc(href)}">${lead ? icon(lead) : ""}${esc(label)}${icon("arrow-up-right")}</a>`;
@@ -167,7 +167,7 @@
         <div class="sec-tools">${pill(status)}<span class="tally">${esc(tally)}</span></div>
       </div>
       ${p.specs ? specStrip(p.specs) : ""}
-      ${p.media ? `<figure class="device p-media"><div class="screen"></div></figure>` : ""}
+      ${p.media ? `<figure class="device p-media"><div class="screen"${p.media.aspect ? ` style="aspect-ratio: ${esc(p.media.aspect)}"` : ""}></div></figure>` : ""}
       <div class="p-body">
         <div class="p-desc">${p.description.map(t => `<p>${esc(t)}</p>`).join("")}
           <p class="actions">${ext(p.repo, "repository", "btn btn-ink", "github")}${ext(SITE.builder, "open-xy")}${p.links.map(l => ext(l.href, l.label)).join("")}</p>

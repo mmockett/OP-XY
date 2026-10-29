@@ -7,7 +7,7 @@ copies the rendered screens into the site.
     python3 tools/render/build.py --publish  # copy them to assets/media, rebuild the grids
 
 The machine repositories and SDK checkouts sit beside this one (../opxy-pads,
-../OP-XY-MNMD, ../opxy-grains, ../open-xy-staging, ../open-xy, ../open-xy-pr3).
+../opxy-nonagon, ../OP-XY-MNMD, ../opxy-grains, ../open-xy-staging, ../open-xy, ../open-xy-pr3).
 The screen font is the OP-XY's, Univers Next Pro Light: set XY_FONT to its file.
 It is copied into tools/render/font for rendering only and never committed.
 """
@@ -29,6 +29,12 @@ FONT = pathlib.Path(os.environ.get("XY_FONT", pathlib.Path.home() / "Downloads/u
 # Which SDK checkout each machine builds against, as each repository's README says.
 SDKS = {"staging": REPOS / "open-xy-staging", "fork": REPOS / "open-xy", "pr3": REPOS / "open-xy-pr3"}
 HEXAGON = ["wane", "bloom", "hollow", "orbit", "bend", "moth"]
+NONAGON = ["sand", "cocoa", "ghost", "coin", "recur", "fermi", "mach", "butterfly", "drop"]
+# Nonagon's sample engines, and the files their screens are drawn from.
+NONAGON_SAMPLE = {
+    "ghost": ["display.cpp", "display.h", "captions.h", "figure.h", "tables.h", "ghost.h", "panel.svg.fragment"],
+    "recur": ["display.cpp", "display.h", "layout.h", "recur.h", "panel.svg.fragment"],
+}
 KITS = ["mdtrx", "mdefm", "mdpi", "mde12"]
 # The stand-in synth for Grains' screen: the catalog holds "grains" itself.
 WRAP_ID = "grainsview"
@@ -36,6 +42,7 @@ WRAP_ID = "grainsview"
 # The site's media: each project's folder, its machines, and its grid of screens.
 MEDIA = {
     "hexagon": {"ids": HEXAGON, "grid": ("hexagon", HEXAGON, 3)},
+    "nonagon": {"ids": NONAGON, "grid": ("nonagon", NONAGON, 3)},
     "grains": {"ids": ["grains"]},
     "mnmd": {"ids": None, "grid": ("overview", ["mdtrx", "mdefm", "mmsid", "mmvo6", "mmstat", "mmpulse", "mmwave", "mmdens"], 4)},
 }
@@ -99,6 +106,32 @@ def grains_wrap():
     return wrap
 
 
+def sample_wrap(mid):
+    """A Nonagon sample engine's screen in a stand-in synth, as for Grains: its own
+    display files, and the sample's overview written by render.html."""
+    wrap = HERE / "nonagon-wrap" / mid
+    shutil.rmtree(wrap, ignore_errors=True)
+    python = REPOS / "open-xy" / ".venv" / "bin" / "python"
+    with tempfile.TemporaryDirectory() as scratch:
+        run(python, SDKS["pr3"] / "sdk.py", "new", "--repository", "--kind", "synth", "--controls", "8",
+            "--id", mid, "--name", mid.capitalize(), "--out", pathlib.Path(scratch) / mid, stdout=subprocess.DEVNULL)
+        shutil.copytree(pathlib.Path(scratch) / mid, wrap)
+    source = REPOS / "opxy-nonagon" / mid
+    for name in NONAGON_SAMPLE[mid]:
+        shutil.copy(source / name, wrap / name)
+    real = json.loads((source / "definition.json").read_text())
+    synth = json.loads((wrap / "definition.json").read_text())
+    synth["parameters"] = real["parameters"]
+    for i, p in enumerate(synth["parameters"]):
+        if i >= 4:
+            p["control"] = i - 4
+    synth["press"] = real.get("press", "page")
+    synth["presets"] = real.get("presets") or {"Default": {p["id"]: p["default"] for p in real["parameters"]}}
+    synth["resources"]["display"] = real["resources"]["display"]
+    (wrap / "definition.json").write_text(json.dumps(synth, indent=1))
+    return wrap
+
+
 def kit_labels():
     labels = {}
     for kit in KITS:
@@ -128,6 +161,11 @@ def build():
         kind = json.loads((folder / "machine.json").read_text())["kind"]
         preview("fork", "--machine" if kind == "drum" else "--source", folder, HERE / "m" / folder.name)
     preview("pr3", "--source", grains_wrap(), HERE / "m" / "grains")
+    for mid in NONAGON:
+        if mid in NONAGON_SAMPLE:
+            preview("pr3", "--source", sample_wrap(mid), HERE / "m" / mid)
+        else:
+            preview("staging", "--machine", REPOS / "opxy-nonagon" / mid, HERE / "m" / mid)
 
 
 def grid(ids, columns, out):

@@ -8,7 +8,8 @@
 // media: {type: "video", src, poster} | {type: "image", src} |
 //        {type: "youtube", id} | omitted (the page draws a blank OP-XY screen
 //        with the machine's real control labels). Screens are rendered by
-//        tools/render (README.md), so they match the device.
+//        tools/render (README.md), so they match the device. A project's
+//        video may give its own `aspect` ("w / h") when its grid isn't 4 x 2.
 
 window.SITE = {
   owner: "Max Mockett",
@@ -23,7 +24,8 @@ window.SITE = {
   statuses: {
     live: { label: "live",        note: "In the open-xy.com builder." },
     soon: { label: "coming soon", note: "Runs on the OP–XY. Coming to the open-xy.com builder." },
-    diy:  { label: "diy",         note: "Needs samples from your own ROM. Build from source." }
+    diy:  { label: "diy",         note: "Needs samples from your own ROM. Build from source." },
+    lab:  { label: "experimental", note: "Passes the SDK's tests. Not yet played on an OP–XY. Build from source." }
   },
 
   projects: [
@@ -104,6 +106,109 @@ window.SITE = {
           cpu: "4.9%",
           media: { type: "video", src: "assets/media/hexagon/moth.mp4", poster: "assets/media/hexagon/moth.jpg", alt: "Moth's wings, edged by the folded waveform, lighting with each plucked note" },
           source: "https://github.com/mmockett/OP-XY-Hexagon/tree/main/moth"
+        }
+      ]
+    },
+
+    {
+      id: "nonagon",
+      name: "Nonagon Suite",
+      kicker: "nine experiments",
+      status: "lab",
+      version: "main",
+      repo: "https://github.com/mmockett/OP-XY-Nonagon",
+      links: [],
+      tagline: "Nine experimental sounds, each grown from a piece of physics.",
+      description: [
+        "Sand, Cocoa, Ghost, Coin, Recur, Fermi, Mach, Butterfly and Drop. Each starts from something odd in the physical world (Chladni's sand figures, the hot chocolate effect, a phantom pitch heard only between the ears, Euler's disk, a scrambled picture that always comes home, the Fermi–Pasta–Ulam–Tsingou chain, a supersonic flyby, the Hofstadter butterfly and the Leidenfrost drop) and turns it into an instrument with eight controls on two pages.",
+        "Each screen is one object, drawn in outline, that every control visibly changes. They pass the SDK's tests and their levels match Hexagon's, but none has been played on an OP–XY yet: expect rough edges."
+      ],
+      specs: [
+        [["synths", "7"], ["sample", "2"], ["controls", "8"], ["os", "1.2.1"]],
+        [["sdk", "1.4"], ["release", "main"], ["screens", "9"], ["licence", "MIT"]]
+      ],
+      media: { type: "video", aspect: "1448 / 668", src: "assets/media/nonagon/nonagon.mp4", poster: "assets/media/nonagon/nonagon.jpg", alt: "Nonagon Suite's nine screens playing together: Sand, Cocoa and Ghost on top; Coin, Recur and Fermi in the middle; Mach, Butterfly and Drop below" },
+      machines: [
+        {
+          id: "sand", name: "Sand", kind: "synth", status: "lab",
+          after: "Chladni's figures",
+          description: "A bowed plate strewn with sand. Grains rattle on its moving areas, then settle into the figure's nodal lines, leaving a glassy tone. Tilt runs the sand downhill; shake keeps it jumping.",
+          screen: "Screen: the plate on its column, tipping with tilt, the sand drawing the figure.",
+          pages: [["figure", "bow", "sand", "grain"], ["plate", "settle", "tilt", "shake"]],
+          media: { type: "video", src: "assets/media/nonagon/sand.mp4", poster: "assets/media/nonagon/sand.jpg", alt: "Sand's plate tipping on its column as three notes ring, the sand running downhill" },
+          source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/sand"
+        },
+        {
+          id: "cocoa", name: "Cocoa", kind: "synth", status: "lab",
+          after: "the hot chocolate effect",
+          description: "A spoon tapping a mug of cocoa. Stirred-in powder fills the drink with bubbles that slow sound down, so each tap starts low and climbs to pitch as they clear. Cup, fill and spoon set the ring.",
+          screen: "Screen: the mug, spoon in the drink; froth on the drink clears as the note comes into tune.",
+          pages: [["powder", "taps", "fizz", "cup"], ["fill", "spoon", "pops", "stir"]],
+          media: { type: "video", src: "assets/media/nonagon/cocoa.mp4", poster: "assets/media/nonagon/cocoa.jpg", alt: "Cocoa's mug, the spoon tapping as the drink darkens with powder" },
+          source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/cocoa"
+        },
+        {
+          id: "ghost", name: "Ghost", kind: "sample engine", status: "lab",
+          after: "the Huggins pitch",
+          description: "Binaural phantom pitches, for headphones: notes made of breath and hum whose pitch lives between the ears. Orbit walks the voice round your head; a loaded sample becomes its bed.",
+          screen: "Screen: a Pepper's ghost stage. Split parts the apparition into twins; ring gives it halos.",
+          pages: [["ring", "voice", "split", "trade"], ["beat", "orbit", "near", "bed"]],
+          media: { type: "video", src: "assets/media/nonagon/ghost.mp4", poster: "assets/media/nonagon/ghost.jpg", alt: "Ghost's stage, the apparition parting into twins as split rises" },
+          source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/ghost"
+        },
+        {
+          id: "coin", name: "Coin", kind: "synth", status: "lab",
+          after: "Euler's disk",
+          description: "A disk spun on a mirror. As it falls, its wobble speeds up, so each note's ring rises and quickens until it settles. Size, disk and base set the metal and the surface; many adds companion disks.",
+          screen: "Screen: the disk spinning on its base, leaning as it slows, rings spreading across the glass.",
+          pages: [["spin", "size", "disk", "base"], ["wobble", "air", "ring", "many"]],
+          media: { type: "video", src: "assets/media/nonagon/coin.mp4", poster: "assets/media/nonagon/coin.jpg", alt: "Coin's disk spinning on its mirror base as companion disks join" },
+          source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/coin"
+        },
+        {
+          id: "recur", name: "Recur", kind: "sample engine", status: "lab",
+          after: "Arnold's cat map",
+          description: "A sample cut into tiles and shuffled by a chaotic map that always comes home: step by step the loop scrambles, then returns exactly to the original. Map, grid and slice set the shuffle.",
+          screen: "Screen: a sliding-tile puzzle tin; each map shuffles its own picture.",
+          pages: [["pos", "grid", "slice", "map"], ["step", "rate", "depth", "chrd"]],
+          media: { type: "video", src: "assets/media/nonagon/recur.mp4", poster: "assets/media/nonagon/recur.jpg", alt: "Recur's puzzle tin, the picture's tiles scrambling and returning" },
+          source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/recur"
+        },
+        {
+          id: "fermi", name: "Fermi", kind: "synth", status: "lab",
+          after: "the FPUT problem",
+          description: "A chain of masses on nonlinear springs. Energy in its first mode spreads into higher ones, then flows almost wholly back, so the tone slowly breathes. More energy and stiffer springs push it into chaos.",
+          screen: "Screen: the chain on its stand, drawn back by energy, with a damping lever and a timing pendulum.",
+          pages: [["energy", "masses", "springs", "time"], ["disperse", "mode", "damping", "seed"]],
+          media: { type: "video", src: "assets/media/nonagon/fermi.mp4", poster: "assets/media/nonagon/fermi.jpg", alt: "Fermi's chain of masses swelling as energy is turned up" },
+          source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/fermi"
+        },
+        {
+          id: "mach", name: "Mach", kind: "synth", status: "lab",
+          after: "a supersonic flyby",
+          description: "Each note flies a sound past you at up to Mach 3: the Doppler sweep, the sonic boom as the Mach cone crosses, and an echo off the ground, all worked out from the geometry of the pass.",
+          screen: "Screen: the pass seen from above, wavefronts trailing the source and the cone sweeping the listener.",
+          pages: [["mach", "pass", "source", "dur"], ["boom", "air", "tune", "echo"]],
+          media: { type: "video", src: "assets/media/nonagon/mach.mp4", poster: "assets/media/nonagon/mach.jpg", alt: "Mach's flybys, the wavefronts folding into a cone as mach rises" },
+          source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/mach"
+        },
+        {
+          id: "butterfly", name: "Butterfly", kind: "synth", status: "lab",
+          after: "the Hofstadter butterfly",
+          description: "The fractal spectrum of an electron in a crystal under a magnetic field, played as a ringing chain. Flux reshapes the bands and gaps; coupling traps the ringing in place.",
+          screen: "Screen: a butterfly as Moth's companion: the spectrum shapes its wing margins, the chain its markings.",
+          pages: [["flux", "coupling", "spread", "strike"], ["glow", "site", "tilt", "wingbeat"]],
+          media: { type: "video", src: "assets/media/nonagon/butterfly.mp4", poster: "assets/media/nonagon/butterfly.jpg", alt: "Butterfly's wings reshaping as flux is turned" },
+          source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/butterfly"
+        },
+        {
+          id: "drop", name: "Drop", kind: "synth", status: "lab",
+          after: "the Leidenfrost effect",
+          description: "A drop skating on a hot pan on its own vapour, quivering into a star whose lobes set the beat. Heat and liquid decide how it floats, sizzles and boils away.",
+          screen: "Screen: a skillet at an angle, star-shaped drops floating with their steam.",
+          pages: [["heat", "size", "liquid", "beat"], ["groove", "vapour", "life", "crackle"]],
+          media: { type: "video", src: "assets/media/nonagon/drop.mp4", poster: "assets/media/nonagon/drop.jpg", alt: "Drop's skillet, star-shaped drops quivering as the heat rises" },
+          source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/drop"
         }
       ]
     },

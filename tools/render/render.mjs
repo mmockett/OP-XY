@@ -37,6 +37,16 @@ const S = {
   orbit:  { sdk: 'staging', preset: 'Dusty', events: [...held([0.3, 0.8, 1.3], CHORD, 5.7), sweep(3, 1, 2.3, 3.5), sweep(5, 1, 4.0, 4.2)] },
   bend:   { sdk: 'staging', preset: 'Haze', events: [...held([0.3, 0.8, 1.3], CHORD, 5.7), sweep(1, 0.9, 2.6, 4.6)] },
   moth:   { sdk: 'staging', preset: 'Ping', events: [...plucks(0.3, 5.8, 0.45, [60, 63, 67, 70, 72, 67]), sweep(0, 0.85, 2.8, 4.8)] },
+  // Nonagon Suite: a preset playing, then the control that shows it best turned
+  sand:      { sdk: 'staging', preset: 'Chladni', events: [...held([0.3, 0.8, 1.3], CHORD, 5.7), sweep(6, 0.9, 2.6, 4.4)] },
+  cocoa:     { sdk: 'staging', preset: 'Hot Chocolate', events: [...plucks(0.3, 5.8, 1.1, [60, 64, 67, 72], 0.9), sweep(0, 0.9, 2.6, 4.6)] },
+  ghost:     { sdk: 'pr3', sample: true, preset: 'Seance', events: [...held([0.3, 0.8, 1.3], CHORD, 5.7), sweep(2, 1, 2.6, 4.4)] },
+  coin:      { sdk: 'staging', preset: 'Euler', events: [...held([0.3, 1.0], [48, 55], 5.7), sweep(7, 1, 3.0, 3.3)] },
+  recur:     { sdk: 'pr3', sample: true, preset: 'Recur', events: [sweep(5, 4.5 / 7, 0, 0.05), ...held([0.3], [60], 3.6), sweep(3, 1, 4.0, 5.9)] },
+  fermi:     { sdk: 'staging', preset: 'Breath', events: [...held([0.3, 0.8, 1.3], CHORD, 5.7), sweep(0, 0.9, 2.4, 4.4)] },
+  mach:      { sdk: 'staging', preset: 'Flyby Pad', events: [...plucks(0.3, 5.8, 1.4, [48, 55, 60, 52], 1.0), sweep(0, 0.9, 3.0, 4.2)] },
+  butterfly: { sdk: 'staging', preset: 'Specimen', events: [...held([0.3, 0.8, 1.3], CHORD, 5.7), sweep(0, 0.9, 2.6, 4.6)] },
+  drop:      { sdk: 'staging', preset: 'Drop', events: [...held([0.3, 1.1, 1.9], [60, 64, 67], 5.7), sweep(0, 1, 2.8, 4.6)] },
   // Grains: a note held, pos scanned, then a minor chord
   grains: { sdk: 'pr3', sample: true, events: [...held([0.4], [60], 5.8), sweep(0, 0.55, 1.2, 3.4), sweep(5, 5.5 / 7, 3.8, 3.85)] },
   // Grains with no sample assigned, for its README

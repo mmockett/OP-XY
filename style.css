@@ -3,11 +3,12 @@
    type sizes are the SDK's (sdk/browser/display.mjs, docs/ux.md). */
 
 @font-face {
-  /* The OP–XY draws its screen in Univers. Used when it is installed, or
-     when a licensed webfont is added at assets/fonts/xy.woff2. */
+  /* The OP–XY draws its screen in Univers, used here when it is installed.
+     To serve a licensed webfont, add it as assets/fonts/xy.woff2 and append
+     url("assets/fonts/xy.woff2") format("woff2") to src. */
   font-family: "XY";
   src: local("Univers LT Std"), local("UniversLTStd-Roman"), local("Univers"),
-       local("Univers Next"), url("assets/fonts/xy.woff2") format("woff2");
+       local("Univers Next");
   font-display: swap;
 }
 

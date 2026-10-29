@@ -57,8 +57,9 @@ Screens are 480 × 220; keep that ratio (or 960 × 440) so the cards line up.
 ## Fonts
 
 The OP–XY draws its screen in Univers. The page uses it when it's installed
-on the reader's machine, or from `assets/fonts/xy.woff2` if a licensed
-webfont is added there, and falls back to Helvetica Neue. The recorded
+on the reader's machine and falls back to Helvetica Neue. To serve a
+licensed Univers webfont to everyone, add it as `assets/fonts/xy.woff2` and
+add its `url()` to the `@font-face` at the top of `style.css`. The recorded
 screens were rendered with Helvetica Neue standing in for Univers.
 
 ## Licence

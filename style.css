@@ -101,7 +101,9 @@ img, video, svg { display: block; max-width: 100%; }
 .xy { width: 100%; height: auto; font-family: var(--xy); }
 .xy text { font-family: var(--xy); }
 
-.spec { margin: 36px 6px 0; }
+/* About 1.25x the device's own size, lined up with the project's text. */
+.spec { margin: 32px 6px 0; max-width: 600px; }
+@media (min-width: 900px) { .spec { margin-left: 150px; } }
 .hdr-wide { display: none; }
 .hdr-narrow { display: grid; gap: 16px; }
 @media (min-width: 640px) { .hdr-wide { display: block; } .hdr-narrow { display: none; } }

@@ -39,6 +39,8 @@ const S = {
   moth:   { sdk: 'staging', preset: 'Ping', events: [...plucks(0.3, 5.8, 0.45, [60, 63, 67, 70, 72, 67]), sweep(0, 0.85, 2.8, 4.8)] },
   // Grains: a note held, pos scanned, then a minor chord
   grains: { sdk: 'pr3', sample: true, events: [...held([0.4], [60], 5.8), sweep(0, 0.55, 1.2, 3.4), sweep(5, 5.5 / 7, 3.8, 3.85)] },
+  // Grains with no sample assigned, for its README
+  'grains-empty': { machine: 'grains', sdk: 'pr3', events: [] },
   // MNMD's kits: four of each kit's machines, struck in turn
   mdtrx: { sdk: 'fork', events: kit([0, 1, 3, 5]) },    // BD SD CP CB
   mdefm: { sdk: 'fork', events: kit([3, 4, 6, 8]) },    // BD SD CP CB
@@ -64,7 +66,7 @@ const KIT_LABELS = JSON.parse(readFileSync(join(ROOT, 'kit-labels.json')));
 
 function timeline(id) {
   const s = S[id];
-  const def = JSON.parse(readFileSync(join(ROOT, 'm', id, 'manifest.json'))).definition;
+  const def = JSON.parse(readFileSync(join(ROOT, 'm', s.machine || id, 'manifest.json'))).definition;
   const ps = def.parameters;
   const preset = s.preset ? def.presets[s.preset] : null;
   if (s.preset && !preset) throw new Error(`${id}: no preset ${s.preset}`);
@@ -86,7 +88,7 @@ function timeline(id) {
       steps[at(t)].push(rest);
     }
   }
-  return { values, steps, sdk: s.sdk, sample: s.sample ? SAMPLE : null, labels: KIT_LABELS[id] || null };
+  return { machine: s.machine || id, values, steps, sdk: s.sdk, sample: s.sample ? SAMPLE : null, labels: KIT_LABELS[id] || null };
 }
 
 // ---- server + browser ----------------------------------------------------------
@@ -125,14 +127,14 @@ const evaluate = async expression => {
 };
 await cdp('Emulation.setDeviceMetricsOverride', { width: 480, height: 220, deviceScaleFactor: 2, mobile: false });
 
-const ids = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(S);
+const ids = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(S).filter(id => !S[id].machine);
 mkdirSync(OUT, { recursive: true });
 try {
   for (const id of ids) {
     const tl = timeline(id);
     await cdp('Page.navigate', { url: `${base}/render.html?${id}` });
     for (let i = 0; i < 50 && !(await evaluate('window.ready === true').catch(() => false)); i++) await new Promise(r => setTimeout(r, 100));
-    const info = await evaluate(`setup(${JSON.stringify({ id, sdk: tl.sdk, values: tl.values, sample: tl.sample, labels: tl.labels })})`);
+    const info = await evaluate(`setup(${JSON.stringify({ id: tl.machine, sdk: tl.sdk, values: tl.values, sample: tl.sample, labels: tl.labels })})`);
     const dir = join(OUT, id);
     rmSync(dir, { recursive: true, force: true });
     mkdirSync(dir, { recursive: true });

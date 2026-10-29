@@ -57,6 +57,13 @@ const S = {
   mdpi:  { sdk: 'fork', events: kit([3, 4, 5, 10]) },   // BD SD MT CC
   mde12: { sdk: 'fork', events: kit([0, 1, 4, 6]) },    // BD SD CP CB
   mmbbox: { sdk: 'fork', events: plucks(0.3, 5.9, 0.4, [48, 50, 52, 55]) },
+  // ModFX: Omnifilter's iris closed, sharpened, its rings turned, then opened;
+  // Lint's bays turned up, then the shift row's order, loop and wobble changed.
+  omnifilter: { sdk: 'aux', preset: 'open', events: [sweep(0, 0.12, 0.3, 1.9), sweep(1, 0.9, 2.1, 3.2),
+    sweep(2, 0.75, 3.4, 4.2), sweep(3, 0.85, 4.2, 5.0), sweep(0, 0.85, 5.2, 6.2)] },
+  lint: { sdk: 'aux', preset: 'Dusty', events: [sweep(0, 0.85, 0.3, 1.4), sweep(1, 0.9, 1.3, 2.4), sweep(2, 0.9, 2.2, 3.0),
+    { t: 3.3, shift: true }, { t: 3.7, choice: [0, 5] }, { t: 4.3, choice: [1, 1] }, { t: 4.9, choice: [2, 1] },
+    { t: 5.7, shift: false }] },
 };
 // The Monomachine synths: a chord, then the first control turned
 for (const id of ['mmsid', 'mmvo6', 'mmstat', 'mmpulse', 'mmens', 'mmpar', 'mmdyn', 'mmsaw', 'mmdens', 'mmwave', 'mmddrw']) {
@@ -98,7 +105,10 @@ function timeline(id) {
       steps[at(t)].push(rest);
     }
   }
-  return { machine: s.machine || id, values, steps, sdk: s.sdk, sample: s.sample ? SAMPLE : null, labels: KIT_LABELS[id] || null };
+  // An effect's shift row (build.py writes it), for the header while Shift is held.
+  const shift = join(ROOT, 'm', `${s.machine || id}-shift.json`);
+  return { machine: s.machine || id, values, steps, sdk: s.sdk, sample: s.sample ? SAMPLE : null, labels: KIT_LABELS[id] || null,
+           shift: existsSync(shift) ? JSON.parse(readFileSync(shift)) : null };
 }
 
 // ---- server + browser ----------------------------------------------------------
@@ -144,7 +154,7 @@ try {
     const tl = timeline(id);
     await cdp('Page.navigate', { url: `${base}/render.html?${id}` });
     for (let i = 0; i < 50 && !(await evaluate('window.ready === true').catch(() => false)); i++) await new Promise(r => setTimeout(r, 100));
-    const info = await evaluate(`setup(${JSON.stringify({ id: tl.machine, sdk: tl.sdk, values: tl.values, sample: tl.sample, labels: tl.labels })})`);
+    const info = await evaluate(`setup(${JSON.stringify({ id: tl.machine, sdk: tl.sdk, values: tl.values, sample: tl.sample, labels: tl.labels, shift: tl.shift })})`);
     const dir = join(OUT, id);
     rmSync(dir, { recursive: true, force: true });
     mkdirSync(dir, { recursive: true });

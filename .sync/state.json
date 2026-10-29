@@ -13,6 +13,10 @@
     "mmockett/OP-XY-Grains": {
       "head": "ee288fb017c78f948760ae07ee7a1e09ae4c02bb",
       "tags": ""
+    },
+    "mmockett/OP-XY-ModFX": {
+      "head": "47737ee7f144b20a1004e85738ea0d6bc4ae9109",
+      "tags": ""
     }
   },
   "catalog_blob": {

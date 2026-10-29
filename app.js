@@ -121,7 +121,9 @@
   // A kit's controls are its first key's machine (bd); each key's machine has its own.
   function ctrlRows(m) {
     return m.pages.map((row, i) => `<span>${m.kit ? (i ? "" : "bd") : m.pages.length > 1 ? `page ${i + 1}` : "controls"}</span>` +
-      row.map(c => (c ? `<b style="font-weight:400">${esc(c)}</b>` : `<em>–</em>`)).join("")).join("");
+      row.map(c => (c ? `<b style="font-weight:400">${esc(c)}</b>` : `<em>–</em>`)).join("")).join("") +
+      // An effect's shift row: the controls held Shift gives the encoders.
+      (m.shift ? `<span>shift</span>` + m.shift.map(c => `<b style="font-weight:400">${esc(c)}</b>`).join("") : "");
   }
 
   function card(m, p) {
@@ -131,7 +133,7 @@
     el.dataset.machine = m.id;
     const rows = ctrlRows(m);
     const meta = [
-      m.cpu ? `<span>${icon("cpu")}${esc(m.cpu)} a voice</span>` : "",
+      m.cpu ? `<span>${icon("cpu")}${esc(m.cpu)} ${esc(m.cpuNote || "a voice")}</span>` : "",
       m.source ? `<a href="${esc(m.source)}">${icon("code")}source</a>` : ""
     ].join("");
     const gallery = m.gallery ? [m.media, ...m.gallery] : null;

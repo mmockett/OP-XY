@@ -13,7 +13,7 @@
 const Q31 = 0x7fffffff;
 let t;   // the machine being rendered
 
-// config: {id, sdk, values: [0..1 x8], model, sample}
+// config: {id, sdk, values: [0..1 x8], model, sample, labels, shift}
 window.setup = async config => {
   const { PreviewDisplay, SvgDisplay, headerSvg, NoteActivity } = await import(`./sdk/${config.sdk}/display.mjs`);
   const { controlPositions, editedShown, shownControls } = await import(`./sdk/${config.sdk}/controls.mjs`);
@@ -34,6 +34,8 @@ window.setup = async config => {
     values: config.values.slice(),
     shown: [0, 1, 2, 3],
     model: config.model || 0,
+    // An effect's shift row: whether Shift is held, and its four choices.
+    shiftRow: config.shift ? { shift: false, choices: [0, 0, 0, 0] } : null,
   };
   if (config.sample) writeSample(t.display.api, config.sample);
   return { name: definition.name, params: definition.parameters.map(p => p.label), press: definition.press || null };
@@ -56,6 +58,8 @@ window.step = (events, elapsed) => {
     if (e.on !== undefined) t.notes.noteOn(e.on);
     if (e.off !== undefined) t.notes.noteOff(e.off);
     if (e.model !== undefined) t.model = e.model;
+    if (e.shift !== undefined) t.shiftRow.shift = e.shift;
+    if (e.choice !== undefined) t.shiftRow.choices[e.choice[0]] = e.choice[1];
     if (e.set !== undefined) {
       t.values[e.set] = e.value;
       const press = t.definition.press === 'page';
@@ -65,13 +69,20 @@ window.step = (events, elapsed) => {
   const words = t.values.map(word);
   while (words.length < 8) words.push(0);
   const frame = t.display.tick(t.shownControls(words, t.shown), Math.round(elapsed * 1.024),
-                               t.notes.note_on_serial >>> 0, 0, false, t.notes, t.model);
+                               t.notes.note_on_serial >>> 0, 0, false, t.notes,
+                               t.config.sdk === 'aux' ? t.shiftRow : t.model);
   t.scene.apply(frame);
   const p = t.definition.parameters;
   const kitLabels = t.config.labels && t.config.labels[t.model];
   const titles = t.shown.map(i => kitLabels ? (kitLabels[i] || '').toLowerCase()
                                            : (p[i] && !p[i].absent ? p[i].label.toLowerCase() : ''));
-  const values = t.shown.map((i, k) => t.scene.header[k] || (p[i] && !p[i].absent ? String(Math.round(t.values[i] * 127)) : ''));
+  // Without the display's own value, a percent shows 0-100, as on the device, and anything else 0-127.
+  const plain = i => String(Math.round(t.values[i] * (p[i].display === 'percent' ? 100 : 127)));
+  let values = t.shown.map((i, k) => t.scene.header[k] || (p[i] && !p[i].absent ? plain(i) : ''));
+  if (t.shiftRow && t.shiftRow.shift) {
+    titles.splice(0, 4, ...t.config.shift.map(r => r.label.toLowerCase()));
+    values = t.config.shift.map((r, k) => r.choices[t.shiftRow.choices[k]] || '');
+  }
   document.getElementById('screen').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220">
     <rect width="480" height="220" fill="#000"/>${t.headerSvg(titles, values)}${t.scene.svg()}</svg>`;
   return true;

@@ -69,7 +69,11 @@ img, video, svg { display: block; max-width: 100%; }
 .nav::-webkit-scrollbar { display: none; }
 .nav a { font-size: 13px; text-decoration: none; padding: 6px 10px; border-radius: 999px; white-space: nowrap; color: var(--ink-2); }
 .nav a:hover { background: var(--body-2); color: var(--ink); }
-@media (max-width: 560px) { .nav a.opt { display: none; } }
+.mark { flex: none; }
+@media (max-width: 560px) {
+  .nav a.opt, .mark span { display: none; }
+  .nav a { padding: 6px 8px; }
+}
 
 /* hero */
 .hero { display: grid; gap: 40px; padding-top: 56px; padding-bottom: 40px; }

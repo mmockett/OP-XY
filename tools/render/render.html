@@ -1,0 +1,80 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+  /* The OP-XY's screen font, for every text on the screen: the artwork's
+     slots and the stock header alike. Local rendering only. */
+  @font-face { font-family: "XYScreen"; src: url("font/UniversNextPro-Light.ttf"); }
+  html, body { margin: 0; background: #000; }
+  #screen, #screen svg { display: block; width: 480px; height: 220px; }
+  #screen text { font-family: "XYScreen" !important; font-weight: normal !important; font-style: normal !important; }
+</style>
+<div id="screen"></div>
+<script type="module">
+const Q31 = 0x7fffffff;
+let t;   // the machine being rendered
+
+// config: {id, sdk, values: [0..1 x8], model, sample}
+window.setup = async config => {
+  const { PreviewDisplay, SvgDisplay, headerSvg, NoteActivity } = await import(`./sdk/${config.sdk}/display.mjs`);
+  const { controlPositions, editedShown, shownControls } = await import(`./sdk/${config.sdk}/controls.mjs`);
+  const base = `m/${config.id}/`;
+  const [manifest, bytes, art] = await Promise.all([
+    fetch(base + 'manifest.json').then(r => r.json()),
+    fetch(base + 'engine.wasm').then(r => r.arrayBuffer()),
+    fetch(base + 'panel.svg').then(r => r.text()),
+  ]);
+  await document.fonts.load('20px XYScreen');
+  const module = await WebAssembly.compile(bytes);
+  const definition = manifest.definition;
+  t = {
+    config, definition, headerSvg, shownControls, controlPositions, editedShown,
+    display: new PreviewDisplay(module),
+    scene: new SvgDisplay(art, manifest.graphics),
+    notes: NoteActivity ? new NoteActivity() : null,
+    values: config.values.slice(),
+    shown: [0, 1, 2, 3],
+    model: config.model || 0,
+  };
+  if (config.sample) writeSample(t.display.api, config.sample);
+  return { name: definition.name, params: definition.parameters.map(p => p.label), press: definition.press || null };
+};
+
+// The sample Grains' screen reads: a synthetic overview, as the device would hand it.
+function writeSample(api, s) {
+  if (!api.opxy_display_sample) return;
+  const at = api.opxy_display_sample();
+  const u32 = new Uint32Array(api.memory.buffer, at, 6);
+  u32.set([1, 1, s.frames, s.rate, 0, s.frames]);
+  new Uint8Array(api.memory.buffer, at + 24, 64).set(s.peaks);
+}
+
+const word = v => Math.round(Math.max(0, Math.min(1, v)) * Q31);
+
+// One step of the timeline: events to apply, then a frame `elapsed` ms long.
+window.step = (events, elapsed) => {
+  for (const e of events) {
+    if (e.on !== undefined) t.notes.noteOn(e.on);
+    if (e.off !== undefined) t.notes.noteOff(e.off);
+    if (e.model !== undefined) t.model = e.model;
+    if (e.set !== undefined) {
+      t.values[e.set] = e.value;
+      const press = t.definition.press === 'page';
+      t.shown = t.editedShown(t.shown, t.controlPositions(t.definition.parameters), e.set, press);
+    }
+  }
+  const words = t.values.map(word);
+  while (words.length < 8) words.push(0);
+  const frame = t.display.tick(t.shownControls(words, t.shown), Math.round(elapsed * 1.024),
+                               t.notes.note_on_serial >>> 0, 0, false, t.notes, t.model);
+  t.scene.apply(frame);
+  const p = t.definition.parameters;
+  const kitLabels = t.config.labels && t.config.labels[t.model];
+  const titles = t.shown.map(i => kitLabels ? (kitLabels[i] || '').toLowerCase()
+                                           : (p[i] && !p[i].absent ? p[i].label.toLowerCase() : ''));
+  const values = t.shown.map((i, k) => t.scene.header[k] || (p[i] && !p[i].absent ? String(Math.round(t.values[i] * 127)) : ''));
+  document.getElementById('screen').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220">
+    <rect width="480" height="220" fill="#000"/>${t.headerSvg(titles, values)}${t.scene.svg()}</svg>`;
+  return true;
+};
+window.ready = true;
+</script>

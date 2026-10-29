@@ -3,10 +3,10 @@
 // (20 px), and page 2 in grey below (docs/ux.md, sdk/browser/display.mjs).
 (() => {
   const SITE = window.SITE;
-  const RANK = { diy: 0, soon: 1, review: 2, live: 3 };
-  const ORDER = ["live", "review", "soon", "diy"];
+  const RANK = { diy: 0, soon: 1, live: 2 };
+  const ORDER = ["live", "soon", "diy"];
   const STEPS = ["#000000", "#323232", "#4B4B4B", "#646464", "#7D7D7D", "#969696", "#AFAFAF", "#CDCDCD"];
-  const CATALOG = branch => `https://raw.githubusercontent.com/etcetc000/open-xy/${branch}/catalog/machines.json`;
+  const CATALOG = "https://raw.githubusercontent.com/etcetc000/open-xy/main/catalog/machines.json";
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const $ = (s, el = document) => el.querySelector(s);
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
@@ -18,13 +18,8 @@
     github: '<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/>',
     code: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
     cpu: '<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/>',
-    hourglass: '<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>',
-    "git-merge": '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/>',
-    "git-pull-request": '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M6 9v12"/>',
-    "git-pull-request-closed": '<circle cx="6" cy="6" r="3"/><path d="M6 9v12"/><path d="m21 3-6 6"/><path d="m21 9-6-6"/><path d="M18 11.5V15"/><circle cx="18" cy="18" r="3"/>'
   };
   const icon = name => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
-  const PR_ICON = { merged: "git-merge", open: "git-pull-request", closed: "git-pull-request-closed" };
 
   // ---- the OP–XY screen header ------------------------------------------
   function header(pages, values = [[], []], from = 0, to = 4, pad = 0) {
@@ -129,7 +124,6 @@
       row.map(c => (c ? `<b style="font-weight:400">${esc(c)}</b>` : `<em>–</em>`)).join("")).join("");
     const meta = [
       m.cpu ? `<span>${icon("cpu")}${esc(m.cpu)} a voice</span>` : "",
-      m.waiting && m.status === "soon" ? `<span>${icon("hourglass")}waiting on&nbsp;<a href="${esc(m.waiting.href)}">${esc(m.waiting.label)}</a></span>` : "",
       m.source ? `<a href="${esc(m.source)}">${icon("code")}source</a>` : ""
     ].join("");
     const gallery = m.gallery ? [m.media, ...m.gallery] : null;
@@ -247,21 +241,14 @@
       if (!empty) { empty = document.createElement("p"); empty.id = "empty"; empty.className = "wrap lead"; $("#projects").append(empty); }
       empty.style.padding = "48px var(--gut)";
       empty.textContent = filter === "live"
-        ? `Nothing is in the open-xy.com builder yet. ${count("review")} machines are in review.`
+        ? "Nothing is in the open-xy.com builder yet."
         : "No machines with this status right now.";
     } else if (empty) empty.remove();
   }
 
-  function prs() {
-    $("#prs").innerHTML = SITE.sdk.map(s => {
-      const p = SITE.projects.find(x => x.id === s.for);
-      return `<li><span class="n">#${s.pr}</span><span><a href="${SITE.sdkRepo}/pull/${s.pr}">${esc(s.title)}</a><span class="for">${esc(p ? p.name.toLowerCase() : "every machine")}</span></span><span class="pr-st ${s.state}">${icon(PR_ICON[s.state])}${esc(s.state)}</span></li>`;
-    }).join("");
-  }
-
   function nav() {
     $("#nav").innerHTML = SITE.projects.map(p => `<a href="#${p.id}">${esc(p.name.toLowerCase())}</a>`).join("") +
-      `<a class="opt" href="#sdk">sdk</a><a class="opt" href="${SITE.github}">${icon("github")}github</a>`;
+      `<a class="opt" href="${SITE.github}">${icon("github")}github</a>`;
   }
 
   function render() {
@@ -269,7 +256,7 @@
     host.textContent = "";
     SITE.projects.forEach((p, i) => host.append(project(p, i)));
     wireVideos(host);
-    legend(); chips(); prs(); applyFilter();
+    legend(); chips(); applyFilter();
   }
 
   // ---- live status ---------------------------------------------------------
@@ -279,27 +266,13 @@
     return r.json();
   }
 
+  // A machine published in the catalog's main branch is in the builder: live.
   async function syncCatalog() {
-    const [main, staging] = await Promise.all([json(CATALOG("main")), json(CATALOG("staging"))]);
-    const index = list => Object.fromEntries(list.machines.map(m => [m.id, m.status]));
-    const onMain = index(main), onStaging = index(staging);
+    const published = new Set((await json(CATALOG)).machines.filter(m => m.status === "published").map(m => m.id));
     let changed = false;
     for (const m of all()) {
-      if (!m.catalog) continue;
-      const a = onMain[m.catalog], b = onStaging[m.catalog];
-      const found = a === "published" ? "live" : [a, b].some(s => s === "draft" || s === "published") ? "review" : null;
-      if (found && RANK[found] > RANK[m.status]) { m.status = found; changed = true; }
+      if (m.catalog && published.has(m.catalog) && m.status !== "live") { m.status = "live"; changed = true; }
     }
-    return changed;
-  }
-
-  async function syncPrs() {
-    let changed = false;
-    await Promise.all(SITE.sdk.map(async s => {
-      const pr = await json(`https://api.github.com/repos/etcetc000/open-xy/pulls/${s.pr}`);
-      const state = pr.merged_at ? "merged" : pr.state === "closed" ? "closed" : "open";
-      if (state !== s.state) { s.state = state; changed = true; }
-    }));
     return changed;
   }
 
@@ -312,9 +285,8 @@
   $("#lightbox").addEventListener("click", e => { if (e.target.id === "lightbox") e.target.close(); });
   $("#lightbox").addEventListener("close", () => { $("#lb-media").textContent = ""; });
 
-  Promise.allSettled([syncCatalog(), syncPrs()]).then(([cat, pr]) => {
+  Promise.allSettled([syncCatalog()]).then(([cat]) => {
     if (cat.status === "fulfilled" && cat.value) render();
-    else if (pr.status === "fulfilled" && pr.value) prs();
     $("#synced").textContent = cat.status === "fulfilled"
       ? "Statuses update from the Open-XY catalog."
       : "Statuses as last updated; the Open-XY catalog is unreachable.";

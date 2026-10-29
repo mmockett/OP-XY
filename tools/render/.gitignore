@@ -1,0 +1,8 @@
+# Built by build.py and render.mjs; the font is never committed.
+m/
+sdk/
+font/
+out/
+grains-wrap/
+chrome-profile/
+kit-labels.json

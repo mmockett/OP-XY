@@ -10,67 +10,74 @@ A static page with no build step. GitHub Pages serves it from `main`.
 | `data.js` | Every project, machine, status, link and description |
 | `app.js` | Draws the page from `data.js`, and checks statuses live |
 | `style.css` | The look: aluminium body, black screens, the header's grey steps |
-| `assets/media/<project>/` | Screens: MP4 + JPG poster, or PNG |
+| `assets/media/<project>/` | Screens: MP4 + JPG poster |
+| `tools/render/` | Renders the screens from each machine's display code |
 
 ## Adding a machine or project
 
-1. Put its media in `assets/media/<project>/`.
+1. Render its screen (below) into `assets/media/<project>/`.
 2. Add an entry to `data.js`, copying one beside it. A machine needs `id`,
    `name`, `kind`, `status`, `description` and `pages` (its control labels,
    four per page, `""` for an empty slot). `catalog` is its ID in the
    Open-XY catalog. `specs` is the project's header strip: two rows of four
-   `[title, value]` pairs, values kept to about five characters. Without `media` the page draws a blank OP–XY screen with
-   its real control labels.
+   `[title, value]` pairs, values kept to about five characters. Without
+   `media` the page draws a blank OP–XY screen with its real control labels.
 3. Commit and push. Pages republishes in about a minute.
 
 Open `index.html` straight from disk to check it first.
-
-## Daily sync
-
-A Claude Code cloud routine runs every day at 00:00 UTC (9am Tokyo). It
-compares mmockett's `OP-XY*` repositories, the Open-XY catalog and the SDK
-pull requests with `.sync/state.json`, the state this page last reflected.
-When something changed, it updates `data.js` and `assets/media/`, then
-`.sync/state.json`, and pushes to `main`. When nothing changed, it commits
-nothing. Manage it at [claude.ai/code/routines](https://claude.ai/code/routines).
 
 ## Statuses
 
 | Status | Means |
 | --- | --- |
 | `live` | Published in the Open-XY catalog on `main`, so it is in the open-xy.com builder |
-| `review` | A draft in the catalog, or a pull request submitting it |
-| `soon` | Plays on an OP–XY, waiting on SDK changes |
-| `diy` | Needs samples from the owner's own ROM; built from source only |
+| `soon` | Coming soon: runs on the OP–XY, not yet in the builder |
+| `diy` | Needs samples from your own ROM; built from source only |
 
-Each time the page loads, it reads `catalog/machines.json` from
-etcetc000/open-xy's `main` and `staging`, and moves a machine up to `review`
-(a draft) or `live` (published on `main`) by itself. It never moves one down,
-so set a status by hand in `data.js` if a machine is retired. The SDK pull
-requests' states are read from GitHub the same way.
+Each time the page loads, it reads etcetc000/open-xy's
+`catalog/machines.json` on `main` and shows a published machine as `live`.
 
-## Media
+## Screens
 
-Screen recordings come from each machine's own display code, through the
-SDK's browser preview. GIFs are heavy, so convert them to MP4 with a poster:
+Every screen is rendered from the machine's own display code, the same C++
+that runs on the OP–XY, at its 480 × 220 (captured at 2×), in its screen font,
+Univers Next Pro Light. `tools/render` does it, on a Mac with the machine
+repositories and SDK checkouts beside this one, Node, Chrome and ffmpeg:
 
 ```bash
-ffmpeg -i wane.gif -movflags +faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -crf 22 -preset slow -an wane.mp4
+XY_FONT="$HOME/Downloads/univers-next-pro/Univers Next Pro Light.ttf" python3 tools/render/build.py
 ```
 
 ```bash
-ffmpeg -ss 4 -i wane.mp4 -frames:v 1 -q:v 3 wane.jpg
+node tools/render/render.mjs
 ```
 
-Screens are 480 × 220; keep that ratio (or 960 × 440) so the cards line up.
+```bash
+python3 tools/render/build.py --publish
+```
+
+The first builds each machine's browser preview, the second plays notes and
+turns controls through each one (the scenes are in `render.mjs`; name
+machines to render only those), and the third copies the MP4s and posters
+into `assets/media` and rebuilds the hero and MNMD grids. The font is used
+for rendering only: it is never committed or served.
+
+## Daily sync
+
+A Claude Code cloud routine runs every day at 00:00 UTC (9am Tokyo). It
+compares mmockett's `OP-XY*` repositories and the Open-XY catalog with
+`.sync/state.json`, the state this page last reflected. When something
+changed, it updates `data.js` and `.sync/state.json` and pushes to `main`.
+It can't render screens, so a new machine goes up with a blank screen until
+it is rendered here. When nothing changed, it commits nothing. Manage it at
+[claude.ai/code/routines](https://claude.ai/code/routines).
 
 ## Fonts
 
-The OP–XY draws its screen in Univers. The page uses it when it's installed
-on the reader's machine and falls back to Helvetica Neue. To serve a
-licensed Univers webfont to everyone, add it as `assets/fonts/xy.woff2` and
-add its `url()` to the `@font-face` at the top of `style.css`. The recorded
-screens were rendered with Helvetica Neue standing in for Univers.
+The page itself uses Univers when it's installed on the reader's machine
+and falls back to Helvetica Neue. To serve a licensed Univers webfont to
+everyone, add it as `assets/fonts/xy.woff2` and add its `url()` to the
+`@font-face` at the top of `style.css`.
 
 ## Icons
 

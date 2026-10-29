@@ -18,17 +18,5 @@
   "catalog_blob": {
     "main": "c10b1860db7cf941620e0abcfa73154ded44377d",
     "staging": "3c23b44ae7f1b1bfd8a114d015e60cfdab90d406"
-  },
-  "prs": {
-    "168": "open",
-    "194": "merged",
-    "195": "merged",
-    "217": "open",
-    "218": "open",
-    "180": "merged",
-    "181": "open",
-    "182": "open",
-    "143": "open",
-    "190": "open"
   }
 }

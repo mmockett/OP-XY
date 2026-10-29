@@ -25,6 +25,15 @@ A static page with no build step. GitHub Pages serves it from `main`.
 
 Open `index.html` straight from disk to check it first.
 
+## Daily sync
+
+A Claude Code cloud routine runs every day at 00:00 UTC (9am Tokyo). It
+compares mmockett's `OP-XY*` repositories, the Open-XY catalog and the SDK
+pull requests with `.sync/state.json`, the state this page last reflected.
+When something changed, it updates `data.js` and `assets/media/`, then
+`.sync/state.json`, and pushes to `main`. When nothing changed, it commits
+nothing. Manage it at [claude.ai/code/routines](https://claude.ai/code/routines).
+
 ## Statuses
 
 | Status | Means |

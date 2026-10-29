@@ -169,14 +169,14 @@
           <h2 id="${p.id}-h">${esc(p.name)} <small>${esc(p.version)}</small></h2>
           <p class="sub">${esc(p.tagline)}</p>
         </div>
-        <div class="sec-tools">${pill(status)}</div>
+        <div class="sec-tools">${pill(status)}<span class="tally">${esc(tally)}</span></div>
       </div>
+      ${p.specs ? specStrip(p.specs) : ""}
       ${p.media ? `<figure class="device p-media"><div class="screen"></div></figure>` : ""}
       <div class="p-body">
         <div class="p-desc">${p.description.map(t => `<p>${esc(t)}</p>`).join("")}
           <p class="actions">${ext(p.repo, "repository", "btn btn-ink", "github")}${ext(SITE.builder, "open-xy")}${p.links.map(l => ext(l.href, l.label)).join("")}</p>
         </div>
-        <dl class="facts">${p.facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}<dt>status</dt><dd>${esc(tally)}</dd></dl>
       </div>`;
     if (p.media) {
       const ms = $(".p-media .screen", sec);
@@ -202,14 +202,14 @@
     return sec;
   }
 
-  function stats() {
-    const n = all().length;
-    const pages = [["projects", "machines", "live", "in review"], ["soon", "diy", "sdk prs", "merged"]];
-    const merged = SITE.sdk.filter(s => s.state === "merged").length;
-    const values = [[SITE.projects.length, n, count("live"), count("review")], [count("soon"), count("diy"), SITE.sdk.length, merged]];
-    $("#stats").innerHTML =
-      `<div class="screen stats-wide">${header(pages, values, 0, 4, 4)}</div>` +
-      `<div class="stats-narrow"><div class="screen">${header(pages, values, 0, 2, 4)}</div><div class="screen">${header(pages, values, 2, 4, 4)}</div></div>`;
+  // A project's specs as an OP–XY header: page 1 on the bar, page 2 in grey.
+  // Phones get it as two halves, so the type stays readable.
+  function specStrip(specs) {
+    const pages = specs.map(row => row.map(([t]) => t));
+    const values = specs.map(row => row.map(([, v]) => v));
+    return `<div class="spec" role="group" aria-label="Specs">` +
+      `<div class="screen hdr-wide">${header(pages, values, 0, 4, 4)}</div>` +
+      `<div class="hdr-narrow"><div class="screen">${header(pages, values, 0, 2, 4)}</div><div class="screen">${header(pages, values, 2, 4, 4)}</div></div></div>`;
   }
 
   function legend() {
@@ -269,7 +269,7 @@
     host.textContent = "";
     SITE.projects.forEach((p, i) => host.append(project(p, i)));
     wireVideos(host);
-    stats(); legend(); chips(); prs(); applyFilter();
+    legend(); chips(); prs(); applyFilter();
   }
 
   // ---- live status ---------------------------------------------------------
@@ -314,7 +314,7 @@
 
   Promise.allSettled([syncCatalog(), syncPrs()]).then(([cat, pr]) => {
     if (cat.status === "fulfilled" && cat.value) render();
-    else if (pr.status === "fulfilled" && pr.value) { stats(); prs(); }
+    else if (pr.status === "fulfilled" && pr.value) prs();
     $("#synced").textContent = cat.status === "fulfilled"
       ? "Statuses are checked against the Open-XY catalog each time this page loads."
       : "Statuses as last updated; the Open-XY catalog couldn't be reached just now.";

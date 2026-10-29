@@ -18,7 +18,8 @@ A static page with no build step. GitHub Pages serves it from `main`.
 2. Add an entry to `data.js`, copying one beside it. A machine needs `id`,
    `name`, `kind`, `status`, `description` and `pages` (its control labels,
    four per page, `""` for an empty slot). `catalog` is its ID in the
-   Open-XY catalog. Without `media` the page draws a blank OP–XY screen with
+   Open-XY catalog. `specs` is the project's header strip: two rows of four
+   `[title, value]` pairs, values kept to about five characters. Without `media` the page draws a blank OP–XY screen with
    its real control labels.
 3. Commit and push. Pages republishes in about a minute.
 

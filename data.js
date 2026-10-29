@@ -42,13 +42,9 @@ window.SITE = {
         "Wane, Bloom, Hollow, Orbit, Bend and Moth each start from an analog or acoustic way of making sound: a worn cassette, drifting partials, resonating bodies, a vector joystick, phase distortion, a west-coast lowpass gate. Each is rebuilt for the OP–XY with eight controls on two pages, and the OP–XY's own envelopes, filter, LFOs and effects sit on top.",
         "They are made to be used together. Levels are matched, so an eight-note chord on any preset peaks between 0.4 and 0.8 of full scale, and the layouts are shared, so they layer and swap cleanly in one project. Each has its own screen drawn in fine outline, and the screen moves with the sound you hear."
       ],
-      facts: [
-        ["machines", "6 synths"],
-        ["controls", "8 on two pages"],
-        ["cpu", "2.4–6.2% a voice, on device"],
-        ["os", "1.2.1"],
-        ["sdk", "1.4, two-page header"],
-        ["licence", "MIT"]
+      specs: [
+        [["synths", "6"], ["controls", "8"], ["cpu", "2–6%"], ["os", "1.2.1"]],
+        [["sdk", "1.4"], ["release", "v1.0.0"], ["screens", "6"], ["licence", "MIT"]]
       ],
       machines: [
         {
@@ -129,13 +125,9 @@ window.SITE = {
         "Elektron's two cult machines from the early 2000s, rebuilt as eighteen OP–XY engines. There is no Elektron code, firmware or ROM data in it. Every voice was fitted by ear and by measurement against the original ROMs running in an emulator, then written in fixed point for the OP–XY's Blackfin, which has no floating point.",
         "The Machinedrum arrives as four drum kits that play like the OP–XY's Drumline: each of the 24 keys holds its own machine, from TRX's analog-modelled kick to EFM's FM cowbell, and the project saves every key. The Monomachine arrives as fourteen chromatic synths, each with its SYN page's two rows as two pages of four encoders. Each one draws its namesake on the screen: a kick drum and its pitch sweep, a SID's stepped saw, an FM operator diagram, a vowel chart."
       ],
-      facts: [
-        ["engines", "4 drum kits, 14 synths"],
-        ["kit keys", "24 machines a kit"],
-        ["dsp", "fixed point, fitted to the ROMs"],
-        ["os", "1.2.0 fork, 1.2.1 catalog"],
-        ["in review", "7 synths"],
-        ["licence", "MIT"]
+      specs: [
+        [["kits", "4"], ["synths", "14"], ["keys", "24"], ["os", "1.2.1"]],
+        [["dsp", "fixed"], ["release", "v1.1.3"], ["screens", "18"], ["licence", "MIT"]]
       ],
       media: { type: "image", src: "assets/media/mnmd/overview.png", alt: "Screens of MD TRX's kick and cowbell, and the Monomachine's DPRO-DENS, SWAVE-PULSE, SID-6581, VO-6, DPRO-WAVE and FM STAT" },
       groups: [
@@ -267,13 +259,9 @@ window.SITE = {
         "Load a sample and play it across the keyboard. Grains read around a position that can scan through it either way or freeze, stack into octaves, fifths and chords, and spread across the stereo field. Cloud mode scatters them, sync puts them on the tempo's divisions, osc overlaps them evenly into a tone.",
         "The screen draws every grain where it reads in the sample and at what pitch, on lanes for the root and the octaves above, with the sample's overview and the play position underneath. Every note on every track shares 64 grains, handed out in proportion so a big chord never runs the OP–XY out."
       ],
-      facts: [
-        ["machines", "1 sample engine"],
-        ["grains", "64, shared"],
-        ["modes", "cloud, sync, osc, reversed"],
-        ["grain size", "10 ms to 2 s"],
-        ["os", "1.2.1"],
-        ["licence", "MIT"]
+      specs: [
+        [["engines", "1"], ["grains", "64"], ["modes", "3"], ["os", "1.2.1"]],
+        [["shortest", "10ms"], ["longest", "2s"], ["overlap", "1–20"], ["licence", "MIT"]]
       ],
       media: { type: "image", src: "assets/media/grains/chord.png", alt: "Grains' screen with a note held: grains stacked on a minor chord over two octaves above the sample's overview" },
       machines: [

@@ -58,7 +58,7 @@ MEDIA = {
     "hexagon": {"ids": HEXAGON, "grids": [("hexagon", HEXAGON, 3)]},
     "nonagon": {"ids": NONAGON, "grids": [("nonagon", NONAGON, 3)]},
     "grains": {"ids": ["grains"]},
-    "modfx": {"ids": ["omnifilter", "lint"]},
+    "modfx": {"ids": ["chroma", "lint", "omnifilter"]},
     "mnmd": {"ids": None, "grids": [("mdkit", MDKIT_GRID, 3),
                                      ("overview", ["mdkit-bd", "mde12", "mmsid", "mmvo6", "mmstat", "mmpulse", "mmwave", "mmdens"], 4)]},
 }
@@ -233,7 +233,8 @@ def build():
     for mid in MDKIT:
         preview("drum", "--machine", machines / mid, HERE / "m" / mid)
     preview("aux", "--machine", MODFX / "omnifilter", HERE / "m" / "omnifilter")
-    preview("effects", "--source", effect_wrap("lint"), HERE / "m" / "lint")
+    for mid in ("chroma", "lint"):
+        preview("effects", "--source", effect_wrap(mid), HERE / "m" / mid)
 
 
 def grid(ids, columns, out):

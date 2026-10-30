@@ -266,28 +266,30 @@ window.SITE = {
       name: "ModFX",
       kicker: "mod + effect",
       status: "soon",
-      version: "v1.2.0",
+      version: "v1.4.0",
       repo: "https://github.com/mmockett/OP-XY-ModFX",
       links: [],
-      tagline: "A filter for every track, and a 1970s effects box for the sends.",
+      tagline: "A filter for every track, and a 1970s effects box and an ethereal stereo console for the sends.",
       description: [
-        "Two machines that work across the whole OP–XY instead of on one track. Omnifilter sits on an aux track, takes no instrument slot and steers all eight instrument tracks at once. Lint is a send effect, with its own page on FX I or II.",
-        "Omnifilter's screen is a rangefinder's lens; Lint's is the effects box seen from above."
+        "Three machines that work across the whole OP–XY instead of on one track. Chroma and Lint are send effects, each with its own page on FX I or II. Omnifilter sits on an aux track, takes no instrument slot and steers all eight instrument tracks at once.",
+        "Chroma's screen is a Victorian optical bench; Lint's is the effects box seen from above; Omnifilter's is a rangefinder's lens."
       ],
       specs: [
-        [["aux", "1"], ["send", "1"], ["presets", "12"], ["os", "1.2.1"]],
-        [["sdk", "1.8"], ["release", "v1.2.0"], ["screens", "2"], ["licence", "MIT"]]
+        [["aux", "1"], ["send", "2"], ["presets", "19"], ["os", "1.2.1"]],
+        [["sdk", "1.8"], ["release", "v1.4.0"], ["screens", "3"], ["licence", "MIT"]]
       ],
       machines: [
         {
-          id: "omnifilter", name: "Omnifilter", kind: "aux module", catalog: "omnifilter", status: "soon",
-          description: "One filter and envelope for the whole OP–XY. Cutoff, reso, attack and release are set on all eight instrument tracks, as if each track's own encoder had turned. Lock them on steps and the whole mix opens and closes with the pattern.",
-          screen: "Screen: a rangefinder camera's lens. Cutoff opens the eight-bladed iris, reso sharpens it into a star, attack and release turn its rings.",
-          pages: [["cutoff", "reso", "attack", "release"]],
-          presets: ["open", "warm", "dark", "acid", "pluck", "swell"],
-          cpu: "0.8%", cpuNote: "of the audio",
-          media: { type: "video", src: "assets/media/modfx/omnifilter.mp4", poster: "assets/media/modfx/omnifilter.jpg", alt: "Omnifilter's lens: the iris closing, sharpening into a star, its rings turning, then opening" },
-          source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/omnifilter"
+          id: "chroma", name: "Chroma", kind: "send effect", catalog: "chroma", status: "lab",
+          after: "Hologram's Chroma Console",
+          description: "Four modules in a row, character, movement, diffuse and texture, each running one of its effects or none. Most voices reach a send in the centre, so each module that can parts left and right, and a mono source leaves wide. It's built from the pedal's manual, as no pedal has been measured.",
+          screen: "Screen: a Victorian optical bench. The magic lantern's flame burns as Character's effect does, the prism rocks and doubles with Movement, and its light fans out with Diffuse. Time slides the ground-glass screen along the rail.",
+          pages: [["charactr", "movement", "diffuse", "texture"], ["tilt", "rate", "time", "drift"]],
+          shift: ["charactr", "movement", "diffuse", "texture"],
+          presets: ["Halo", "Aurora", "Mirage", "Tide", "Postcard", "Mosaic", "Static"],
+          cpu: "7.2–10.8%", cpuNote: "of the audio",
+          media: { type: "video", src: "assets/media/modfx/chroma.mp4", poster: "assets/media/modfx/chroma.jpg", alt: "Chroma's optical bench: the light fanning wider as its modules turn up, then Shift held to change its effects to howl, swirl, slice and radio" },
+          source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/chroma"
         },
         {
           id: "lint", name: "Lint", kind: "send effect", catalog: "lint", status: "soon",
@@ -300,6 +302,16 @@ window.SITE = {
           cpu: "7.8%", cpuNote: "of the audio",
           media: { type: "video", src: "assets/media/modfx/lint.mp4", poster: "assets/media/modfx/lint.jpg", alt: "Lint's effects box: dust, phase and echo turned up, then Shift held to reorder the bays and patch tape 2 into the echo's loop" },
           source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/lint"
+        },
+        {
+          id: "omnifilter", name: "Omnifilter", kind: "aux module", catalog: "omnifilter", status: "soon",
+          description: "One filter and envelope for the whole OP–XY. Cutoff, reso, attack and release are set on all eight instrument tracks, as if each track's own encoder had turned. Lock them on steps and the whole mix opens and closes with the pattern.",
+          screen: "Screen: a rangefinder camera's lens. Cutoff opens the eight-bladed iris, reso sharpens it into a star, attack and release turn its rings.",
+          pages: [["cutoff", "reso", "attack", "release"]],
+          presets: ["open", "warm", "dark", "acid", "pluck", "swell"],
+          cpu: "0.8%", cpuNote: "of the audio",
+          media: { type: "video", src: "assets/media/modfx/omnifilter.mp4", poster: "assets/media/modfx/omnifilter.jpg", alt: "Omnifilter's lens: the iris closing, sharpening into a star, its rings turning, then opening" },
+          source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/omnifilter"
         }
       ]
     },

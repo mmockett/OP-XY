@@ -66,8 +66,13 @@ const S = {
     key(4.8, 8, [64, 110, 0, 0, 0, 0, 64, 64]), ...plucks(4.9, 6.3, 0.45, [45], 0.08), sweep(3, 0.9, 5.0, 6.0),     // OH: STOP
   ] },
   mmbbox: { sdk: 'fork', events: plucks(0.3, 5.9, 0.4, [48, 50, 52, 55]) },
-  // ModFX: Omnifilter's iris closed, sharpened, its rings turned, then opened;
-  // Lint's bays turned up, then the shift row's order, loop and wobble changed.
+  // ModFX: Chroma's bench on Halo, its three modules turned up, then Shift held
+  // to change each module's effect; Omnifilter's iris closed, sharpened, its
+  // rings turned, then opened; Lint's bays turned up, then the shift row's order,
+  // loop and wobble changed.
+  chroma: { sdk: 'effects', preset: 'Halo', events: [sweep(2, 0.9, 0.3, 1.2), sweep(1, 0.75, 1.2, 2.1), sweep(0, 0.7, 2.1, 2.9),
+    { t: 3.2, shift: true }, { t: 3.5, choice: [0, 3] }, { t: 4.0, choice: [1, 2] }, { t: 4.5, choice: [2, 3] }, { t: 5.0, choice: [3, 6] },
+    { t: 5.6, shift: false }] },
   omnifilter: { sdk: 'aux', preset: 'open', events: [sweep(0, 0.12, 0.3, 1.9), sweep(1, 0.9, 2.1, 3.2),
     sweep(2, 0.75, 3.4, 4.2), sweep(3, 0.85, 4.2, 5.0), sweep(0, 0.85, 5.2, 6.2)] },
   lint: { sdk: 'effects', preset: 'Dusty', events: [sweep(0, 0.85, 0.3, 1.4), sweep(1, 0.9, 1.3, 2.4), sweep(2, 0.9, 2.2, 3.0),

@@ -259,7 +259,7 @@ window.SITE = {
       name: "ModFX",
       kicker: "mod + effect",
       status: "soon",
-      version: "main",
+      version: "v1.2.0",
       repo: "https://github.com/mmockett/OP-XY-ModFX",
       links: [],
       tagline: "A filter for every track, and a 1970s effects box for the sends.",
@@ -269,7 +269,7 @@ window.SITE = {
       ],
       specs: [
         [["aux", "1"], ["send", "1"], ["presets", "12"], ["os", "1.2.1"]],
-        [["sdk", "1.5"], ["release", "main"], ["screens", "2"], ["licence", "MIT"]]
+        [["sdk", "1.8"], ["release", "v1.2.0"], ["screens", "2"], ["licence", "MIT"]]
       ],
       machines: [
         {
@@ -287,8 +287,8 @@ window.SITE = {
           after: "Finegear's Dust Collector",
           description: "Two tape saturations, an optical phaser, a gritty echo and a three-spring tank, in any of six orders. One can be patched into the echo's feedback loop, and two LFOs move them. At full send a track runs wholly through the box.",
           screen: "Screen: the box from above, its four bays in order on one patch cable. Each control moves its own bay.",
-          pages: [["dust", "spring", "echo", "phase"], ["time", "tone", "rate", "tape 2"]],
-          shift: ["order", "loop", "wobble", "shape"],
+          pages: [["dust", "phase", "echo", "spring"], ["tape 2", "rate", "time", "tone"]],
+          shift: ["order", "shape", "loop", "wobble"],
           presets: ["Dusty", "Tank", "Slapback", "Swoosh", "Runaway", "Crushed"],
           cpu: "7.4%", cpuNote: "of the audio",
           media: { type: "video", src: "assets/media/modfx/lint.mp4", poster: "assets/media/modfx/lint.jpg", alt: "Lint's effects box: dust, spring and echo turned up, then Shift held to reorder the bays and patch tape 2 into the echo's loop" },
@@ -302,7 +302,7 @@ window.SITE = {
       name: "MNMD",
       kicker: "machinedrum + monomachine",
       status: "soon",
-      version: "v1.1.3",
+      version: "v1.1.4",
       repo: "https://github.com/mmockett/OP-XY-MNMD",
       links: [],
       tagline: "Elektron's Machinedrum and Monomachine, rebuilt for the OP–XY.",
@@ -312,7 +312,7 @@ window.SITE = {
       ],
       specs: [
         [["kits", "4"], ["synths", "14"], ["keys", "24"], ["os", "1.2.1"]],
-        [["dsp", "fixed"], ["release", "v1.1.3"], ["screens", "18"], ["licence", "MIT"]]
+        [["dsp", "fixed"], ["release", "v1.1.4"], ["screens", "18"], ["licence", "MIT"]]
       ],
       media: { type: "video", src: "assets/media/mnmd/overview.mp4", poster: "assets/media/mnmd/overview.jpg", alt: "Eight MNMD screens: MD TRX, MD EFM, SID-6581, VO-6, FM STAT, SWAVE-PULSE, DPRO-WAVE and DPRO-DENS" },
       groups: [

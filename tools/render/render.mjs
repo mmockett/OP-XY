@@ -82,7 +82,7 @@ const S = {
   // Lint's bays turned up, then the shift row's order, loop and wobble changed.
   omnifilter: { sdk: 'aux', preset: 'open', events: [sweep(0, 0.12, 0.3, 1.9), sweep(1, 0.9, 2.1, 3.2),
     sweep(2, 0.75, 3.4, 4.2), sweep(3, 0.85, 4.2, 5.0), sweep(0, 0.85, 5.2, 6.2)] },
-  lint: { sdk: 'aux', preset: 'Dusty', events: [sweep(0, 0.85, 0.3, 1.4), sweep(1, 0.9, 1.3, 2.4), sweep(2, 0.9, 2.2, 3.0),
+  lint: { sdk: 'effects', preset: 'Dusty', events: [sweep(0, 0.85, 0.3, 1.4), sweep(1, 0.9, 1.3, 2.4), sweep(2, 0.9, 2.2, 3.0),
     { t: 3.3, shift: true }, { t: 3.7, choice: [0, 5] }, { t: 4.3, choice: [1, 1] }, { t: 4.9, choice: [2, 1] },
     { t: 5.7, shift: false }] },
 };

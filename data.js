@@ -297,7 +297,7 @@ window.SITE = {
           shift: ["order", "shape", "loop", "wobble"],
           presets: ["Dusty", "Tank", "Slapback", "Swoosh", "Runaway", "Crushed"],
           cpu: "7.8%", cpuNote: "of the audio",
-          media: { type: "video", src: "assets/media/modfx/lint.mp4", poster: "assets/media/modfx/lint.jpg", alt: "Lint's effects box: dust, spring and echo turned up, then Shift held to reorder the bays and patch tape 2 into the echo's loop" },
+          media: { type: "video", src: "assets/media/modfx/lint.mp4", poster: "assets/media/modfx/lint.jpg", alt: "Lint's effects box: dust, phase and echo turned up, then Shift held to reorder the bays and patch tape 2 into the echo's loop" },
           source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/lint"
         }
       ]

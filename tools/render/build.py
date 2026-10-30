@@ -8,7 +8,8 @@ copies the rendered screens into the site.
 
 The machine repositories and SDK checkouts sit beside this one (../opxy-pads,
 ../opxy-nonagon, ../OP-XY-MNMD, ../opxy-grains, ../OP-XY-Macro (OP-XY-ModFX), ../open-xy-staging,
-../open-xy, ../open-xy-pr3, ../open-xy-aux on sdk/effect-screens, ../open-xy-drum-device).
+../open-xy, ../open-xy-pr3, ../open-xy-aux on sdk/aux-modules, ../open-xy-effects on
+sdk/effect-screens, ../open-xy-drum-device).
 MD KIT and MD E12 come from OP-XY-MNMD's mdkit branch, read with git archive
 (the checkout itself is left alone), on the drum kind's SDK (open-xy #143).
 The screen font is the OP-XY's, Univers Next Pro Light: set XY_FONT to its file.
@@ -31,7 +32,7 @@ FONT = pathlib.Path(os.environ.get("XY_FONT", pathlib.Path.home() / "Downloads/u
 
 # Which SDK checkout each machine builds against, as each repository's README says.
 SDKS = {"staging": REPOS / "open-xy-staging", "fork": REPOS / "open-xy", "pr3": REPOS / "open-xy-pr3",
-        "aux": REPOS / "open-xy-aux", "drum": REPOS / "open-xy-drum-device"}
+        "aux": REPOS / "open-xy-aux", "effects": REPOS / "open-xy-effects", "drum": REPOS / "open-xy-drum-device"}
 # The branch MD KIT is on, and the machines built from it.
 MDKIT_BRANCH = "mdkit"
 MDKIT = ["mdkit", "mde12"]
@@ -145,17 +146,22 @@ def sample_wrap(mid):
 
 def effect_wrap(mid):
     """A send effect's screen in a stand-in synth: its own display files, with
-    the shift row render.html hands the display."""
+    the shift row render.html hands the display. The stand-in takes its own ID,
+    as Grains' does: the catalog holds the effect's."""
     wrap = HERE / "effect-wrap" / mid
     shutil.rmtree(wrap, ignore_errors=True)
     python = REPOS / "open-xy" / ".venv" / "bin" / "python"
     with tempfile.TemporaryDirectory() as scratch:
-        run(python, SDKS["aux"] / "sdk.py", "new", "--repository", "--kind", "synth", "--controls", "8",
-            "--id", mid, "--name", mid.capitalize(), "--out", pathlib.Path(scratch) / mid, stdout=subprocess.DEVNULL)
+        run(python, SDKS["effects"] / "sdk.py", "new", "--repository", "--kind", "synth", "--controls", "8",
+            "--id", f"{mid}view", "--name", mid.capitalize(), "--out", pathlib.Path(scratch) / mid, stdout=subprocess.DEVNULL)
         shutil.copytree(pathlib.Path(scratch) / mid, wrap)
     source = MODFX / mid
-    for name in ("display.cpp", "display.h", "panel.h", "tables.h", "panel.svg.fragment"):
-        shutil.copy(source / name, wrap / name)
+    # The display code's namespace, and the artwork's node, text and palette
+    # IDs, follow the stand-in's.
+    for name in ("display.cpp", "display.h", "panel.h", "tables.h"):
+        text = (source / name).read_text()
+        (wrap / name).write_text(text.replace(f"namespace {mid} ", f"namespace {mid}view ").replace(f"{mid}::", f"{mid}view::"))
+    (wrap / "panel.svg.fragment").write_text((source / "panel.svg.fragment").read_text().replace(f'id="{mid}_', f'id="{mid}view_'))
     real = json.loads((source / "definition.json").read_text())
     synth = json.loads((wrap / "definition.json").read_text())
     synth["parameters"] = real["parameters"]
@@ -223,7 +229,7 @@ def build():
     for mid in MDKIT:
         preview("drum", "--machine", machines / mid, HERE / "m" / mid)
     preview("aux", "--machine", MODFX / "omnifilter", HERE / "m" / "omnifilter")
-    preview("aux", "--source", effect_wrap("lint"), HERE / "m" / "lint")
+    preview("effects", "--source", effect_wrap("lint"), HERE / "m" / "lint")
 
 
 def grid(ids, columns, out):

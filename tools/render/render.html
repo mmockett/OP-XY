@@ -74,7 +74,7 @@ window.step = (events, elapsed) => {
   while (words.length < 8) words.push(0);
   const frame = t.display.tick(t.shownControls(words, t.shown), Math.round(elapsed * 1.024),
                                t.notes.note_on_serial >>> 0, 0, false, t.notes,
-                               t.config.sdk === 'aux' ? t.shiftRow : t.model,
+                               ['aux', 'effects'].includes(t.config.sdk) ? t.shiftRow : t.model,
                                ...(t.config.sdk === 'drum' ? [Number(t.drumShift.shift), t.drumShift.choices] : []));
   t.scene.apply(frame);
   const p = t.definition.parameters;

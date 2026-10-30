@@ -3,10 +3,11 @@
 // (20 px), and page 2 in grey below (docs/ux.md, sdk/browser/display.mjs).
 (() => {
   const SITE = window.SITE;
-  const RANK = { lab: 0, diy: 1, soon: 2, live: 3 };
-  const ORDER = ["live", "soon", "diy", "lab"];
+  const RANK = { lab: 0, diy: 1, soon: 2, beta: 3, live: 4 };
+  const ORDER = ["live", "beta", "soon", "diy", "lab"];
   const STEPS = ["#000000", "#323232", "#4B4B4B", "#646464", "#7D7D7D", "#969696", "#AFAFAF", "#CDCDCD"];
-  const CATALOG = "https://raw.githubusercontent.com/etcetc000/open-xy/main/catalog/machines.json";
+  // Each catalog branch feeds a builder: staging the beta site, main open-xy.com.
+  const CATALOG = branch => `https://raw.githubusercontent.com/etcetc000/open-xy/${branch}/catalog/machines.json`;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const $ = (s, el = document) => el.querySelector(s);
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
@@ -19,6 +20,7 @@
     code: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
     play: '<polygon points="6 3 20 12 6 21 6 3"/>',
     pause: '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
+    download: '<path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/>',
     cpu: '<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/>',
   };
   const icon = name => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
@@ -116,6 +118,9 @@
   const best = list => list.reduce((a, m) => (RANK[m.status] > RANK[a] ? m.status : a), "lab");
   const all = () => SITE.projects.flatMap(p => p.machines);
   const count = st => all().filter(m => m.status === st).length;
+  // The builder a status installs from, if any, and a machine's own page there.
+  const site = st => (st === "live" ? SITE.builder : st === "beta" ? SITE.beta : null);
+  const install = m => (m.catalog && site(m.status) ? `${site(m.status)}/#preview/machines/${m.catalog}` : null);
   const ext = (href, label, cls = "btn", lead = "") => `<a class="${cls}" href="${esc(href)}">${lead ? icon(lead) : ""}${esc(label)}${icon("arrow-up-right")}</a>`;
 
   // A kit's controls are its first key's machine (bd); each key's machine has its own.
@@ -134,7 +139,8 @@
     const rows = ctrlRows(m);
     const meta = [
       m.cpu ? `<span>${icon("cpu")}${esc(m.cpu)} ${esc(m.cpuNote || "a voice")}</span>` : "",
-      m.source ? `<a href="${esc(m.source)}">${icon("code")}source</a>` : ""
+      m.source ? `<a href="${esc(m.source)}">${icon("code")}source</a>` : "",
+      install(m) ? `<a href="${esc(install(m))}">${icon("download")}${m.status === "beta" ? "beta builder" : "builder"}</a>` : ""
     ].join("");
     const gallery = m.gallery ? [m.media, ...m.gallery] : null;
     el.innerHTML = `
@@ -185,7 +191,7 @@
       <div class="p-body">
         <div class="p-desc">${p.description.map(t => `<p>${esc(t)}</p>`).join("")}
           ${solo ? `<div class="ctrls">${ctrlRows(solo)}</div>` : ""}
-          <p class="actions">${ext(p.repo, "repository", "btn btn-ink", "github")}${ext(SITE.builder, "open-xy")}${p.links.map(l => ext(l.href, l.label)).join("")}</p>
+          <p class="actions">${ext(p.repo, "repository", "btn btn-ink", "github")}${status === "beta" ? ext(SITE.beta, "beta builder") : ext(SITE.builder, "open-xy")}${p.links.map(l => ext(l.href, l.label)).join("")}</p>
         </div>
       </div>`;
     if (p.media) {
@@ -268,6 +274,7 @@
       empty.style.padding = "48px var(--gut)";
       empty.textContent = filter === "live"
         ? "Nothing is in the open-xy.com builder yet."
+        : filter === "beta" ? "Nothing is in the beta builder yet."
         : "No machines with this status right now.";
     } else if (empty) empty.remove();
   }
@@ -330,12 +337,17 @@
     return r.json();
   }
 
-  // A machine published in the catalog's main branch is in the builder: live.
+  // A machine published on the catalog's staging branch is in the beta builder;
+  // on main, in open-xy.com: live.
   async function syncCatalog() {
-    const published = new Set((await json(CATALOG)).machines.filter(m => m.status === "published").map(m => m.id));
+    const [main, staging] = await Promise.allSettled(["main", "staging"].map(b => json(CATALOG(b))));
+    if (main.status === "rejected" && staging.status === "rejected") throw main.reason;
+    const published = r => new Set(r.status === "fulfilled" ? r.value.machines.filter(m => m.status === "published").map(m => m.id) : []);
+    const live = published(main), beta = published(staging);
     let changed = false;
     for (const m of all()) {
-      if (m.catalog && published.has(m.catalog) && m.status !== "live") { m.status = "live"; changed = true; }
+      const st = live.has(m.catalog) ? "live" : beta.has(m.catalog) ? "beta" : null;
+      if (m.catalog && st && RANK[st] > RANK[m.status]) { m.status = st; changed = true; }
     }
     return changed;
   }

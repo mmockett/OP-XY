@@ -119,6 +119,8 @@ img, video, svg { display: block; max-width: 100%; }
 .st i { width: 7px; height: 7px; border-radius: 50%; flex: none; }
 .st-live { background: var(--ink); color: var(--body); }
 .st-live i { background: var(--body); box-shadow: 0 0 0 2px rgba(228,228,225,.25); }
+.st-beta { border-color: var(--ink); color: var(--ink); }
+.st-beta i { background: var(--ink); }
 .st-soon { border-color: var(--ink); color: var(--ink); }
 .st-soon i { border: 1px solid var(--ink); }
 .st-diy { border: 1px dashed var(--ink-3); color: var(--ink-2); }

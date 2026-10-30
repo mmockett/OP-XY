@@ -34,12 +34,19 @@ Open `index.html` straight from disk to check it first.
 | Status | Means |
 | --- | --- |
 | `live` | Published in the Open-XY catalog on `main`, so it is in the open-xy.com builder |
+| `beta` | Published on the catalog's `staging` branch, so it is in the beta builder at beta.open-xy.com |
 | `soon` | Coming soon: runs on the OP–XY, not yet in the builder |
 | `diy` | Needs samples from your own ROM; built from source only |
 | `lab` | Experimental: runs on the OP–XY but still being refined; built from source only |
 
 Each time the page loads, it reads etcetc000/open-xy's
-`catalog/machines.json` on `main` and shows a published machine as `live`.
+`catalog/machines.json` on `main` and `staging`, and shows a machine published
+on `main` as `live` and one published only on `staging` as `beta`. A catalog
+change reaches each builder with its next release, so a status can lead the
+builder by a few days. A machine in a builder links to its own page there
+(`#preview/machines/<catalog id>`). The hero's builder button points at the beta
+builder while every published machine is there; point it back at open-xy.com
+once they reach `main`.
 
 ## Screens
 

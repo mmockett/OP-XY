@@ -8,7 +8,8 @@ copies the rendered screens into the site.
 
 The machine repositories and SDK checkouts sit beside this one (../opxy-pads,
 ../opxy-nonagon, ../OP-XY-MNMD, ../opxy-grains, ../OP-XY-Macro (OP-XY-ModFX), ../open-xy-staging,
-../open-xy, ../open-xy-pr3, ../open-xy-aux on sdk/aux-modules, ../open-xy-effects on
+../open-xy, ../open-xy-pr3, ../open-xy-aux-machines-lfo (Omnifilter: #234 with #230,
+#182 and the LFO names, as the device firmware), ../open-xy-effects on
 sdk/effect-screens, ../open-xy-drum-device).
 MD KIT and MD E12 come from OP-XY-MNMD's mdkit branch, read with git archive
 (the checkout itself is left alone), on the drum kind's SDK (open-xy #143).
@@ -32,7 +33,7 @@ FONT = pathlib.Path(os.environ.get("XY_FONT", pathlib.Path.home() / "Downloads/u
 
 # Which SDK checkout each machine builds against, as each repository's README says.
 SDKS = {"staging": REPOS / "open-xy-staging", "fork": REPOS / "open-xy", "pr3": REPOS / "open-xy-pr3",
-        "aux": REPOS / "open-xy-aux", "effects": REPOS / "open-xy-effects", "drum": REPOS / "open-xy-drum-device"}
+        "aux": REPOS / "open-xy-aux-machines-lfo", "effects": REPOS / "open-xy-effects", "drum": REPOS / "open-xy-drum-device"}
 # The branch MD KIT is on, and the machines built from it.
 MDKIT_BRANCH = "mdkit"
 MDKIT = ["mdkit", "mde12"]

@@ -87,11 +87,11 @@ const mdkit = (model, values, set, to, every) => ({ machine: 'mdkit', sdk: 'drum
   key(0, model, values), ...plucks(0.3, 6.3, every, [60], 0.08), sweep(set, to, 2.2, 4.6)] });
 Object.assign(S, {
   'mdkit-bd': mdkit(0, [40, 52, 44, 36, 0, 12, 0, 0], 2, 0.95, 0.8),       // TRX-BD: RAMP
-  'mdkit-cb': mdkit(5, [64, 60, 40, 0, 64, 0, 0, 0], 3, 0.8, 0.6),         // TRX-CB: DAMP
+  'mdkit-cb': mdkit(5, [64, 60, 20, 0, 64, 0, 0, 0], 2, 0.9, 0.6),         // TRX-CB: ENH
   'mdkit-cp': mdkit(3, [80, 64, 64, 40, 64, 40, 50, 64], 5, 0.9, 1.2),     // TRX-CP: ROOM
   'mdkit-xt': mdkit(15, [64, 70, 40, 40, 20, 64, 64, 0], 4, 0.9, 0.9),     // EFM-XT: MOD
   'mdkit-oh': mdkit(7, [10, 64, 0, 127, 64, 0, 0, 0], 0, 0.8, 0.7),        // TRX-OH: GAP
-  'mdkit-ma': mdkit(25, [30, 64, 64, 0, 64, 64, 0, 0], 0, 0.9, 0.5),       // P-I MA: GRNS
+  'mdkit-ma': mdkit(9, [0, 40, 0, 0, 20, 0, 64, 64], 4, 0.9, 0.5),         // TRX-MA: RATL
   'mdkit-ml': mdkit(24, [64, 64, 40, 40, 0, 0, 0, 0], 2, 0.9, 1.0),        // P-I ML: HARD
   'mdkit-sn': mdkit(30, [40, 70, 40, 40, 0, 0, 0, 0], 0, 0.85, 0.8),       // GND-SN: PTCH
   'mdkit-ns': mdkit(31, [30, 0, 0, 0, 0, 0, 0, 0], 0, 0.9, 0.9),           // GND-NS: DEC

@@ -39,6 +39,8 @@ MDKIT_BRANCH = "mdkit"
 MDKIT = ["mdkit", "mde12"]
 # MD KIT replaces these three kits on the site.
 MDKIT_REPLACES = ["mdtrx", "mdefm", "mdpi"]
+# Its grid: nine of its machines, across its four families.
+MDKIT_GRID = ["mdkit-bd", "mdkit-cb", "mdkit-cp", "mdkit-xt", "mdkit-oh", "mdkit-ma", "mdkit-ml", "mdkit-sn", "mdkit-ns"]
 MODFX = REPOS / "OP-XY-Macro"
 HEXAGON = ["wane", "bloom", "hollow", "orbit", "bend", "moth"]
 NONAGON = ["sand", "cocoa", "ghost", "coin", "recur", "fermi", "mach", "butterfly", "drop"]
@@ -53,11 +55,12 @@ WRAP_ID = "grainsview"
 
 # The site's media: each project's folder, its machines, and its grid of screens.
 MEDIA = {
-    "hexagon": {"ids": HEXAGON, "grid": ("hexagon", HEXAGON, 3)},
-    "nonagon": {"ids": NONAGON, "grid": ("nonagon", NONAGON, 3)},
+    "hexagon": {"ids": HEXAGON, "grids": [("hexagon", HEXAGON, 3)]},
+    "nonagon": {"ids": NONAGON, "grids": [("nonagon", NONAGON, 3)]},
     "grains": {"ids": ["grains"]},
     "modfx": {"ids": ["omnifilter", "lint"]},
-    "mnmd": {"ids": None, "grid": ("overview", ["mdkit", "mde12", "mmsid", "mmvo6", "mmstat", "mmpulse", "mmwave", "mmdens"], 4)},
+    "mnmd": {"ids": None, "grids": [("mdkit", MDKIT_GRID, 3),
+                                     ("overview", ["mdkit-bd", "mde12", "mmsid", "mmvo6", "mmstat", "mmpulse", "mmwave", "mmdens"], 4)]},
 }
 
 
@@ -250,12 +253,11 @@ def publish():
         target = SITE / "assets" / "media" / project
         target.mkdir(parents=True, exist_ok=True)
         ids = spec["ids"] or [p.name for p in sorted((REPOS / "OP-XY-MNMD" / "machines").iterdir())
-                              if (p / "machine.json").exists() and p.name not in MDKIT_REPLACES] + ["mdkit"]
+                              if (p / "machine.json").exists() and p.name not in [*MDKIT_REPLACES, "mdkit"]]
         for mid in ids:
             for ext in ("mp4", "jpg"):
                 shutil.copy(HERE / "out" / f"{mid}.{ext}", target / f"{mid}.{ext}")
-        if "grid" in spec:
-            name, members, columns = spec["grid"]
+        for name, members, columns in spec.get("grids", []):
             grid(members, columns, target / name)
         print(f"published {project}")
 

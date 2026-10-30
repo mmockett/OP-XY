@@ -12,7 +12,8 @@
 //        {type: "youtube", id} | omitted (the page draws a blank OP-XY screen
 //        with the machine's real control labels). Screens are rendered by
 //        tools/render (README.md), so they match the device. A project's
-//        video may give its own `aspect` ("w / h") when its grid isn't 4 x 2.
+//        or machine's video may give its own `aspect` ("w / h") when its grid isn't
+//        4 x 2. A machine with `flagship` takes two columns.
 //
 // A project's `audio` names its preset clips, assets/audio/<project>.json:
 // machine id -> [{preset, slug, src, role, phrase, seconds}]. Each card then
@@ -411,13 +412,13 @@ window.SITE = {
           media: { type: "video", src: "assets/media/mnmd/mmbbox.mp4", poster: "assets/media/mnmd/mmbbox.jpg", alt: "DPRO-BBOX's screen as its samples are struck" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmbbox" },
 
-        { id: "mdkit", group: 1, name: "MD KIT", kind: "drum machine", catalog: "mdkit", status: "dev",
+        { id: "mdkit", group: 1, name: "MD KIT", kind: "drum machine", catalog: "mdkit", status: "dev", flagship: true,
           description: "One drum machine for four of the Machinedrum's families: TRX, EFM, P-I and GND, 33 machines in all. Any of them goes on any of the 24 keys, and each key keeps its own controls. A key chokes its own last note, as on the Machinedrum.",
           screen: "Screen: the instrument on the left; on the right its sounding part in section, like a patent drawing: the drumhead's waves, the snare wires, the clap's echo chamber, GND's tuning fork. Each control moves one part, as far as it changes the sound.",
           kit: ["TRX 13", "EFM 8", "P-I 9", "GND 3"],
           pages: [["ptch", "dec", "ramp", "rdec"], ["strt", "nois", "harm", "clip"]],
           shift: ["kit", "machine", "choke", ""],
-          media: { type: "video", src: "assets/media/mnmd/mdkit.mp4", poster: "assets/media/mnmd/mdkit.jpg", alt: "MD KIT's screen: TRX's kick, snare, clap, open hat and cymbal struck as a control turns on each, then Shift to GND and its tuning fork" } },
+          media: { type: "video", aspect: "1448 / 668", src: "assets/media/mnmd/mdkit.mp4", poster: "assets/media/mnmd/mdkit.jpg", alt: "Nine of MD KIT's machines playing together: kick, cowbell and clap on top; FM tom, open hat and maracas in the middle; struck bar, tuning fork and noise below" } },
         { id: "mde12", group: 1, name: "MD E12", kind: "drum kit", catalog: "mde12", status: "diy",
           description: "The E12 family's sixteen sampled machines, from your own ROM.",
           screen: "Screen: the instrument on the left; on the right a strip of tape on a splicing block.",

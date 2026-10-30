@@ -58,18 +58,6 @@ const S = {
   mdtrx: { sdk: 'fork', events: kit([0, 1, 3, 5]) },    // BD SD CP CB
   mdefm: { sdk: 'fork', events: kit([3, 4, 6, 8]) },    // BD SD CP CB
   mdpi:  { sdk: 'fork', events: kit([3, 4, 5, 10]) },   // BD SD MT CC
-  // MD KIT (OP-XY-MNMD's mdkit branch, drum SDK): a kick, a snare, the clap's
-  // chamber, a hat opening, the cymbal, then Shift to GND and its tuning fork.
-  // Each machine is struck while one of its controls turns.
-  mdkit: { sdk: 'drum', dur: 12.8, events: [
-    key(0, 0, [40, 52, 44, 36, 0, 12, 0, 0]), ...plucks(0.2, 1.8, 0.6, [36], 0.08), sweep(1, 0.8, 0.5, 1.4),          // TRX-BD: DEC
-    key(1.9, 1, [48, 50, 40, 30, 50, 64, 40, 0]), ...plucks(2.0, 3.7, 0.6, [37], 0.08), sweep(4, 0.95, 2.3, 3.2),   // TRX-SD: SNAP
-    key(3.8, 3, [80, 64, 64, 40, 64, 40, 50, 64]), ...plucks(3.9, 5.7, 0.9, [41], 0.08), sweep(5, 0.9, 4.2, 5.1),   // TRX-CP: ROOM
-    key(5.8, 7, [32, 50, 0, 127, 64, 0, 0, 0]), ...plucks(5.9, 7.5, 0.55, [45], 0.08), sweep(1, 0.95, 6.2, 7.2),    // TRX-OH: DEC
-    key(7.6, 8, [64, 80, 72, 64, 100, 84, 0, 0]), ...plucks(7.7, 9.5, 0.9, [46], 0.08), sweep(4, 0.95, 8.0, 9.0),   // TRX-CY: SIZE
-    { t: 9.7, shift: true }, { t: 9.9, choice: [0, 3] }, key(9.9, 30, [64, 70, 40, 40, 0, 0, 0, 0]), { t: 10.5, shift: false },
-    ...plucks(10.6, 12.7, 0.6, [60], 0.08), sweep(0, 0.85, 11.2, 12.2),                                              // GND-SN: PTCH
-  ] },
   // MD E12: four sampled machines on the tape, each with a control turned
   mde12: { sdk: 'drum', events: [
     key(0, 0, [64, 110, 0, 40, 0, 0, 64, 64]), ...plucks(0.2, 1.5, 0.45, [36], 0.08), sweep(3, 0.9, 0.4, 1.3),       // BD: SPLN
@@ -92,6 +80,22 @@ for (const id of ['mmsid', 'mmvo6', 'mmstat', 'mmpulse', 'mmens', 'mmpar', 'mmdy
 }
 S.mmnois = { sdk: 'fork', events: [...held([0.3], [60], 5.7), sweep(1, '+0.5', 2.0, 4.6)] };
 S.mmsin = { sdk: 'fork', events: [...held([0.3, 0.9, 1.5], [48, 55, 60], 5.7)] };
+
+// MD KIT (OP-XY-MNMD's mdkit branch, drum SDK): nine of its machines for its
+// grid, across its four families, each struck while one of its controls turns.
+const mdkit = (model, values, set, to, every) => ({ machine: 'mdkit', sdk: 'drum', events: [
+  key(0, model, values), ...plucks(0.3, 6.3, every, [60], 0.08), sweep(set, to, 2.2, 4.6)] });
+Object.assign(S, {
+  'mdkit-bd': mdkit(0, [40, 52, 44, 36, 0, 12, 0, 0], 2, 0.95, 0.8),       // TRX-BD: RAMP
+  'mdkit-cb': mdkit(5, [64, 60, 40, 0, 64, 0, 0, 0], 3, 0.8, 0.6),         // TRX-CB: DAMP
+  'mdkit-cp': mdkit(3, [80, 64, 64, 40, 64, 40, 50, 64], 5, 0.9, 1.2),     // TRX-CP: ROOM
+  'mdkit-xt': mdkit(15, [64, 70, 40, 40, 20, 64, 64, 0], 4, 0.9, 0.9),     // EFM-XT: MOD
+  'mdkit-oh': mdkit(7, [10, 64, 0, 127, 64, 0, 0, 0], 0, 0.8, 0.7),        // TRX-OH: GAP
+  'mdkit-ma': mdkit(25, [30, 64, 64, 0, 64, 64, 0, 0], 0, 0.9, 0.5),       // P-I MA: GRNS
+  'mdkit-ml': mdkit(24, [64, 64, 40, 40, 0, 0, 0, 0], 2, 0.9, 1.0),        // P-I ML: HARD
+  'mdkit-sn': mdkit(30, [40, 70, 40, 40, 0, 0, 0, 0], 0, 0.85, 0.8),       // GND-SN: PTCH
+  'mdkit-ns': mdkit(31, [30, 0, 0, 0, 0, 0, 0, 0], 0, 0.9, 0.9),           // GND-NS: DEC
+});
 
 // Four decaying hits, as a drum loop's overview would look.
 const peaks = Array.from({ length: 64 }, (_, i) => {
@@ -172,7 +176,7 @@ const evaluate = async expression => {
 };
 await cdp('Emulation.setDeviceMetricsOverride', { width: 480, height: 220, deviceScaleFactor: 2, mobile: false });
 
-const ids = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(S).filter(id => !S[id].machine);
+const ids = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(S).filter(id => id !== 'grains-empty');
 mkdirSync(OUT, { recursive: true });
 try {
   for (const id of ids) {

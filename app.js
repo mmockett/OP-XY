@@ -137,7 +137,7 @@
 
   function card(m, p) {
     const el = document.createElement("article");
-    el.className = "card";
+    el.className = m.flagship ? "card flagship" : "card";
     el.dataset.status = m.status;
     el.dataset.machine = m.id;
     const rows = ctrlRows(m);
@@ -148,7 +148,7 @@
     ].join("");
     const gallery = m.gallery ? [m.media, ...m.gallery] : null;
     el.innerHTML = `
-      <div class="screen">${m.media ? mediaHtml(m.media) : blankScreen(m, p)}</div>
+      <div class="screen"${m.media?.aspect ? ` style="aspect-ratio: ${esc(m.media.aspect)}"` : ""}>${m.media ? mediaHtml(m.media) : blankScreen(m, p)}</div>
       ${gallery ? `<div class="thumbs">${gallery.map((g, i) => `<button type="button" aria-label="Show ${esc(g.alt)}" aria-current="${i === 0}"><img src="${esc(g.src)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}
       <div class="card-h"><h3>${esc(m.name)}<small>${esc(m.kind)}${m.after ? ` · after ${esc(m.after)}` : ""}</small></h3>${pill(m.status)}</div>
       <p>${esc(m.description)}</p>

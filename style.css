@@ -180,6 +180,7 @@ img, video, svg { display: block; max-width: 100%; }
 .card { display: grid; gap: 14px; align-content: start; }
 .card[hidden] { display: none; }
 .card .screen { aspect-ratio: 480 / 220; margin: 6px; }
+@media (min-width: 900px) { .card.flagship { grid-column: span 2; } }
 .card .screen.short { aspect-ratio: 960 / 440; }
 .thumbs { display: flex; gap: 8px; margin: 2px 6px 0; }
 .thumbs button { all: unset; cursor: pointer; width: 64px; aspect-ratio: 480/220; border-radius: 4px; overflow: hidden; background: #000;

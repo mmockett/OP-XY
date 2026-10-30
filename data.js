@@ -4,7 +4,9 @@
 // status: one of the keys in `statuses`. Machines with a `catalog` id are
 // checked against the Open-XY catalog when the page loads: published on its
 // staging branch they become "beta" (beta.open-xy.com), on main "live"
-// (open-xy.com). A machine in a builder links to its page there.
+// (open-xy.com). A machine in a builder links to its page there, and shows
+// the catalog's tag for it: the version that builder installs. A project's
+// `version` is its latest release, shown until the catalog says otherwise.
 //
 // media: {type: "video", src, poster} | {type: "image", src} |
 //        {type: "youtube", id} | omitted (the page draws a blank OP-XY screen

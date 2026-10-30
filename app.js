@@ -121,6 +121,10 @@
   // The builder a status installs from, if any, and a machine's own page there.
   const site = st => (st === "live" ? SITE.builder : st === "beta" ? SITE.beta : null);
   const install = m => (m.catalog && site(m.status) ? `${site(m.status)}/#preview/machines/${m.catalog}` : null);
+  // The versions a project's machines install at from the builder, read from the
+  // catalog: one tag, or each tag when its machines are on different releases.
+  const shipped = p => [...new Set(p.machines.filter(install).map(m => m.tag).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, "en", { numeric: true })).join(" · ");
   const ext = (href, label, cls = "btn", lead = "") => `<a class="${cls}" href="${esc(href)}">${lead ? icon(lead) : ""}${esc(label)}${icon("arrow-up-right")}</a>`;
 
   // A kit's controls are its first key's machine (bd); each key's machine has its own.
@@ -140,7 +144,7 @@
     const meta = [
       m.cpu ? `<span>${icon("cpu")}${esc(m.cpu)} ${esc(m.cpuNote || "a voice")}</span>` : "",
       m.source ? `<a href="${esc(m.source)}">${icon("code")}source</a>` : "",
-      install(m) ? `<a href="${esc(install(m))}">${icon("download")}${m.status === "beta" ? "beta builder" : "builder"}</a>` : ""
+      install(m) ? `<a href="${esc(install(m))}">${icon("download")}${m.status === "beta" ? "beta builder" : "builder"}${m.tag ? ` · ${esc(m.tag)}` : ""}</a>` : ""
     ].join("");
     const gallery = m.gallery ? [m.media, ...m.gallery] : null;
     el.innerHTML = `
@@ -180,7 +184,7 @@
       <div class="sec-head">
         <span class="num">${String(i + 1).padStart(2, "0")} · ${esc(p.kicker)}</span>
         <div>
-          <h2 id="${p.id}-h">${esc(p.name)} <small>${esc(p.version)}</small></h2>
+          <h2 id="${p.id}-h">${esc(p.name)} <small${shipped(p) && shipped(p) !== p.version ? ` title="${esc(`In the builder; latest release ${p.version}`)}"` : ""}>${esc(shipped(p) || p.version)}</small></h2>
           <p class="sub">${esc(p.tagline)}</p>
         </div>
         <div class="sec-tools">${pill(status)}<span class="tally">${esc(tally)}</span></div>
@@ -327,7 +331,16 @@
       if (p.audio) loadClips(p, sec);
     });
     wireVideos(host);
-    legend(); chips(); applyFilter();
+    legend(); chips(); applyFilter(); heroBuilder();
+  }
+
+  // The hero's builder button: open-xy.com once any machine is live there, the
+  // beta builder while machines are only in beta.
+  function heroBuilder() {
+    const a = $("#hero-builder"), st = best(all());
+    const beta = st === "beta";
+    a.href = beta ? SITE.beta : SITE.builder;
+    a.firstChild.textContent = beta ? "beta builder" : "open-xy builder";
   }
 
   // ---- live status ---------------------------------------------------------
@@ -338,16 +351,20 @@
   }
 
   // A machine published on the catalog's staging branch is in the beta builder;
-  // on main, in open-xy.com: live.
+  // on main, in open-xy.com: live. Its tag there is the version it installs at.
   async function syncCatalog() {
     const [main, staging] = await Promise.allSettled(["main", "staging"].map(b => json(CATALOG(b))));
     if (main.status === "rejected" && staging.status === "rejected") throw main.reason;
-    const published = r => new Set(r.status === "fulfilled" ? r.value.machines.filter(m => m.status === "published").map(m => m.id) : []);
+    const published = r => new Map(r.status === "fulfilled"
+      ? r.value.machines.filter(m => m.status === "published").map(m => [m.id, m.tag]) : []);
     const live = published(main), beta = published(staging);
     let changed = false;
     for (const m of all()) {
+      if (!m.catalog) continue;
       const st = live.has(m.catalog) ? "live" : beta.has(m.catalog) ? "beta" : null;
-      if (m.catalog && st && RANK[st] > RANK[m.status]) { m.status = st; changed = true; }
+      if (st && RANK[st] > RANK[m.status]) { m.status = st; changed = true; }
+      const tag = (m.status === "live" ? live : m.status === "beta" ? beta : new Map()).get(m.catalog);
+      if (tag && tag !== m.tag) { m.tag = tag; changed = true; }
     }
     return changed;
   }

@@ -44,9 +44,11 @@ Each time the page loads, it reads etcetc000/open-xy's
 on `main` as `live` and one published only on `staging` as `beta`. A catalog
 change reaches each builder with its next release, so a status can lead the
 builder by a few days. A machine in a builder links to its own page there
-(`#preview/machines/<catalog id>`). The hero's builder button points at the beta
-builder while every published machine is there; point it back at open-xy.com
-once they reach `main`.
+(`#preview/machines/<catalog id>`) and shows its catalog tag, the version that
+builder installs; a project's heading shows those tags, each one when its
+machines are on different releases, and its `version` (latest release) only
+until the catalog loads. The hero's builder button points at open-xy.com once
+any machine is live there, and at the beta builder until then.
 
 ## Screens
 

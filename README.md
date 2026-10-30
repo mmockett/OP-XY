@@ -9,7 +9,7 @@ A static page with no build step. GitHub Pages serves it from `main`.
 | --- | --- |
 | `data.js` | Every project, machine, status, link and description |
 | `app.js` | Draws the page from `data.js`, and checks statuses live |
-| `style.css` | The look: aluminium body, black screens, the header's grey steps |
+| `style.css` | The look: a dark grey page, black screens, the header's grey steps |
 | `assets/media/<project>/` | Screens: MP4 + JPG poster |
 | `tools/render/` | Renders the screens from each machine's display code |
 | `assets/audio/<project>/` and `<project>.json` | Preset clips and their list; each card plays them |

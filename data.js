@@ -35,8 +35,8 @@ window.SITE = {
     beta: { label: "in beta",     note: "In the beta builder at beta.open-xy.com. Coming to open-xy.com." },
     soon: { label: "coming soon", note: "Runs on the OP–XY. Coming to the open-xy.com builder." },
     diy:  { label: "diy",         note: "Needs samples from your own ROM. Build from source." },
-    lab:  { label: "experimental", note: "Runs on the OP–XY; still being refined. Build from source." },
-    dev:  { label: "in development", note: "Not yet installable. Coming with the Open-XY SDK's drum kits." }
+    lab:  { label: "experimental", note: "Runs on the OP–XY. Build from source." },
+    dev:  { label: "in development", note: "In the works. Not yet installable." }
   },
 
   projects: [
@@ -134,7 +134,7 @@ window.SITE = {
       tagline: "Nine experimental sounds, each grown from a piece of physics.",
       description: [
         "Sand, Cocoa, Ghost, Coin, Recur, Fermi, Mach, Butterfly and Drop. Each starts from something odd in the physical world (Chladni's sand figures, the hot chocolate effect, a phantom pitch heard only between the ears, Euler's disk, a scrambled picture that always comes home, the Fermi–Pasta–Ulam–Tsingou chain, a supersonic flyby, the Hofstadter butterfly and the Leidenfrost drop) and turns it into an instrument with eight controls on two pages.",
-        "Each screen is one object, drawn in outline, that every control visibly changes. Their levels match Hexagon's. The seven synths are in the open-xy.com builder. Ghost and Recur, the sample engines, are still being refined, so build them from source."
+        "Each screen is one object, drawn in outline, that every control visibly changes. Their levels match Hexagon's, so the two suites layer."
       ],
       specs: [
         [["synths", "7"], ["sample", "2"], ["cpu", "1–6%"], ["os", "1.2.1"]],
@@ -282,7 +282,7 @@ window.SITE = {
         {
           id: "chroma", name: "Chroma", kind: "send effect", catalog: "chroma", status: "lab",
           after: "Hologram's Chroma Console",
-          description: "Four modules in a row, character, movement, diffuse and texture, each running one of its effects or none. Most voices reach a send in the centre, so each module that can parts left and right, and a mono source leaves wide. It's built from the pedal's manual, as no pedal has been measured.",
+          description: "Four stereo modules in a row: character, movement, diffuse and texture. Choose an effect for each, from warm saturation and swirling phasers to vast clouds, reversed delays and worn cassette, and even a mono voice leaves wide.",
           screen: "Screen: a Victorian optical bench. The magic lantern's flame burns as Character's effect does, the prism rocks and doubles with Movement, and its light fans out with Diffuse. Time slides the ground-glass screen along the rail.",
           pages: [["charactr", "movement", "diffuse", "texture"], ["tilt", "rate", "time", "drift"]],
           shift: ["charactr", "movement", "diffuse", "texture"],
@@ -326,12 +326,12 @@ window.SITE = {
       links: [],
       tagline: "Elektron's Machinedrum and Monomachine, rebuilt for the OP–XY.",
       description: [
-        "Sixteen engines: two Machinedrum kits and fourteen Monomachine synths. No Elektron code, firmware or ROM data. Voices were matched by ear and by measurement against the original ROMs in an emulator, and written in fixed point for the OP–XY's Blackfin.",
+        "Sixteen engines: two Machinedrum kits and fourteen Monomachine synths, from the Commodore 64's sound chip and FM bells to robot speech and supersaws.",
         "The kits play like the OP–XY's Drumline, with a different machine on each of the 24 keys. The synths play chromatically, with the Monomachine's SYN page as two pages of four controls."
       ],
       specs: [
         [["kits", "2"], ["synths", "14"], ["keys", "24"], ["os", "1.2.1"]],
-        [["dsp", "fixed"], ["release", "v1.1.4"], ["screens", "16"], ["licence", "MIT"]]
+        [["drums", "49"], ["release", "v1.1.4"], ["screens", "16"], ["licence", "MIT"]]
       ],
       media: { type: "video", src: "assets/media/mnmd/overview.mp4", poster: "assets/media/mnmd/overview.jpg", alt: "Eight MNMD screens: MD KIT, MD E12, SID-6581, VO-6, FM STAT, SWAVE-PULSE, DPRO-WAVE and DPRO-DENS" },
       groups: [

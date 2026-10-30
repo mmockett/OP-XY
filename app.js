@@ -380,8 +380,6 @@
 
   Promise.allSettled([syncCatalog()]).then(([cat]) => {
     if (cat.status === "fulfilled" && cat.value) render();
-    $("#synced").textContent = cat.status === "fulfilled"
-      ? "Statuses update from the Open-XY catalog."
-      : "Statuses as last updated; the Open-XY catalog is unreachable.";
+    if (cat.status !== "fulfilled") $("#synced").textContent = "Statuses as last updated; the Open-XY catalog is unreachable.";
   });
 })();

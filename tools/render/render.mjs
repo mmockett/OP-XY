@@ -24,6 +24,9 @@ const plucks = (from, to, every, pitches, len = 0.12) => {
 const sweep = (set, to, t0, t1) => ({ sweep: { set, to, t0, t1 } });
 const CHORD = [48, 55, 60, 64];
 
+// A drum kit's key: its machine (the drum kind's model) and its controls, 0..127.
+const key = (t, model, values) => ({ t, key: { model, values: values.map(v => v / 127) } });
+
 const kit = (models) => models.flatMap((model, k) => {
   const t0 = 0.2 + k * 1.55;
   return [{ t: t0 - 0.05, model }, ...plucks(t0, t0 + 1.4, 0.55, [60], 0.08)];
@@ -55,7 +58,25 @@ const S = {
   mdtrx: { sdk: 'fork', events: kit([0, 1, 3, 5]) },    // BD SD CP CB
   mdefm: { sdk: 'fork', events: kit([3, 4, 6, 8]) },    // BD SD CP CB
   mdpi:  { sdk: 'fork', events: kit([3, 4, 5, 10]) },   // BD SD MT CC
-  mde12: { sdk: 'fork', events: kit([0, 1, 4, 6]) },    // BD SD CP CB
+  // MD KIT (OP-XY-MNMD's mdkit branch, drum SDK): a kick, a snare, the clap's
+  // chamber, a hat opening, the cymbal, then Shift to GND and its tuning fork.
+  // Each machine is struck while one of its controls turns.
+  mdkit: { sdk: 'drum', dur: 12.8, events: [
+    key(0, 0, [40, 52, 44, 36, 0, 12, 0, 0]), ...plucks(0.2, 1.8, 0.6, [36], 0.08), sweep(1, 0.8, 0.5, 1.4),          // TRX-BD: DEC
+    key(1.9, 1, [48, 50, 40, 30, 50, 64, 40, 0]), ...plucks(2.0, 3.7, 0.6, [37], 0.08), sweep(4, 0.95, 2.3, 3.2),   // TRX-SD: SNAP
+    key(3.8, 3, [80, 64, 64, 40, 64, 40, 50, 64]), ...plucks(3.9, 5.7, 0.9, [41], 0.08), sweep(5, 0.9, 4.2, 5.1),   // TRX-CP: ROOM
+    key(5.8, 7, [32, 50, 0, 127, 64, 0, 0, 0]), ...plucks(5.9, 7.5, 0.55, [45], 0.08), sweep(1, 0.95, 6.2, 7.2),    // TRX-OH: DEC
+    key(7.6, 8, [64, 80, 72, 64, 100, 84, 0, 0]), ...plucks(7.7, 9.5, 0.9, [46], 0.08), sweep(4, 0.95, 8.0, 9.0),   // TRX-CY: SIZE
+    { t: 9.7, shift: true }, { t: 9.9, choice: [0, 3] }, key(9.9, 30, [64, 70, 40, 40, 0, 0, 0, 0]), { t: 10.5, shift: false },
+    ...plucks(10.6, 12.7, 0.6, [60], 0.08), sweep(0, 0.85, 11.2, 12.2),                                              // GND-SN: PTCH
+  ] },
+  // MD E12: four sampled machines on the tape, each with a control turned
+  mde12: { sdk: 'drum', events: [
+    key(0, 0, [64, 110, 0, 40, 0, 0, 64, 64]), ...plucks(0.2, 1.5, 0.45, [36], 0.08), sweep(3, 0.9, 0.4, 1.3),       // BD: SPLN
+    key(1.6, 1, [64, 110, 0, 0, 0, 0, 64, 64]), ...plucks(1.7, 3.1, 0.45, [37], 0.08), sweep(4, 0.6, 1.9, 2.9),     // SD: STRT
+    key(3.2, 4, [64, 110, 0, 0, 0, 0, 64, 64]), ...plucks(3.3, 4.7, 0.45, [41], 0.08), sweep(0, 0.85, 3.5, 4.5),    // CP: PTCH
+    key(4.8, 8, [64, 110, 0, 0, 0, 0, 64, 64]), ...plucks(4.9, 6.3, 0.45, [45], 0.08), sweep(3, 0.9, 5.0, 6.0),     // OH: STOP
+  ] },
   mmbbox: { sdk: 'fork', events: plucks(0.3, 5.9, 0.4, [48, 50, 52, 55]) },
   // ModFX: Omnifilter's iris closed, sharpened, its rings turned, then opened;
   // Lint's bays turned up, then the shift row's order, loop and wobble changed.
@@ -88,18 +109,22 @@ function timeline(id) {
   const preset = s.preset ? def.presets[s.preset] : null;
   if (s.preset && !preset) throw new Error(`${id}: no preset ${s.preset}`);
   const values = ps.map(p => (p.absent ? 0 : preset && p.id in preset ? preset[p.id] : p.default));
-  const frames = Math.round(DUR * FPS);
+  const frames = Math.round((s.dur || DUR) * FPS);
   const steps = Array.from({ length: frames }, () => []);
   const at = t => Math.min(frames - 1, Math.max(0, Math.round(t * FPS)));
+  // The values a sweep starts from: the scenario's, or the last drum key's before it.
+  let current = values.slice();
   for (const e of s.events) {
+    if (e.key) current = e.key.values.slice();
     if (e.sweep) {
       const { set, t0, t1 } = e.sweep;
-      const from = values[set];
+      const from = current[set];
       const to = typeof e.sweep.to === 'string' ? Math.min(1, from + Number(e.sweep.to)) : e.sweep.to;
       for (let f = at(t0); f <= at(t1); f++) {
         const x = (f / FPS - t0) / Math.max(1e-6, t1 - t0);
         steps[f].push({ set, value: from + (to - from) * Math.min(1, Math.max(0, x)) });
       }
+      current[set] = to;
     } else {
       const { t, ...rest } = e;
       steps[at(t)].push(rest);

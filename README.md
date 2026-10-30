@@ -38,6 +38,7 @@ Open `index.html` straight from disk to check it first.
 | `soon` | Coming soon: runs on the OP–XY, not yet in the builder |
 | `diy` | Needs samples from your own ROM; built from source only |
 | `lab` | Experimental: runs on the OP–XY but still being refined; built from source only |
+| `dev` | In development: not yet installable or on the OP–XY |
 
 Each time the page loads, it reads etcetc000/open-xy's
 `catalog/machines.json` on `main` and `staging`, and shows a machine published

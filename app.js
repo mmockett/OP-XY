@@ -3,8 +3,8 @@
 // (20 px), and page 2 in grey below (docs/ux.md, sdk/browser/display.mjs).
 (() => {
   const SITE = window.SITE;
-  const RANK = { lab: 0, diy: 1, soon: 2, beta: 3, live: 4 };
-  const ORDER = ["live", "beta", "soon", "diy", "lab"];
+  const RANK = { dev: 0, lab: 1, diy: 2, soon: 3, beta: 4, live: 5 };
+  const ORDER = ["live", "beta", "soon", "diy", "lab", "dev"];
   const STEPS = ["#000000", "#323232", "#4B4B4B", "#646464", "#7D7D7D", "#969696", "#AFAFAF", "#CDCDCD"];
   // Each catalog branch feeds a builder: staging the beta site, main open-xy.com.
   const CATALOG = branch => `https://raw.githubusercontent.com/etcetc000/open-xy/${branch}/catalog/machines.json`;
@@ -115,7 +115,7 @@
 
   // ---- pieces --------------------------------------------------------------
   const pill = st => `<span class="st st-${st}"><i aria-hidden="true"></i>${esc(SITE.statuses[st].label)}</span>`;
-  const best = list => list.reduce((a, m) => (RANK[m.status] > RANK[a] ? m.status : a), "lab");
+  const best = list => list.reduce((a, m) => (RANK[m.status] > RANK[a] ? m.status : a), "dev");
   const all = () => SITE.projects.flatMap(p => p.machines);
   const count = st => all().filter(m => m.status === st).length;
   // The builder a status installs from, if any, and a machine's own page there.

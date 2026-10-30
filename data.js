@@ -34,7 +34,8 @@ window.SITE = {
     beta: { label: "in beta",     note: "In the beta builder at beta.open-xy.com. Coming to open-xy.com." },
     soon: { label: "coming soon", note: "Runs on the OP–XY. Coming to the open-xy.com builder." },
     diy:  { label: "diy",         note: "Needs samples from your own ROM. Build from source." },
-    lab:  { label: "experimental", note: "Runs on the OP–XY; still being refined. Build from source." }
+    lab:  { label: "experimental", note: "Runs on the OP–XY; still being refined. Build from source." },
+    dev:  { label: "in development", note: "Not yet installable. Coming with the Open-XY SDK's drum kits." }
   },
 
   projects: [
@@ -43,7 +44,7 @@ window.SITE = {
       audio: "assets/audio/hexagon.json",
       name: "Hexagon Suite",
       kicker: "six synths",
-      status: "beta",
+      status: "live",
       version: "v1.0.0",
       repo: "https://github.com/mmockett/OP-XY-Hexagon",
       links: [],
@@ -58,7 +59,7 @@ window.SITE = {
       ],
       machines: [
         {
-          id: "wane", name: "Wane", kind: "synth", catalog: "wane", status: "beta",
+          id: "wane", name: "Wane", kind: "synth", catalog: "wane", status: "live",
           after: "a worn cassette",
           description: "Polysynth through a worn cassette. Two detuned oscillators, a sub and noise per note. Wow, flutter and sag move the whole chord; age dulls the top and adds hiss.",
           screen: "Screen: a C60 cassette. The reels turn and the tape wobbles with the wow and flutter.",
@@ -68,7 +69,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Hexagon/tree/main/wane"
         },
         {
-          id: "bloom", name: "Bloom", kind: "synth", catalog: "bloom", status: "beta",
+          id: "bloom", name: "Bloom", kind: "synth", catalog: "bloom", status: "live",
           after: "additive synthesis",
           description: "Additive synth with 24 sine partials. Shape sets the waveform, vowel adds formants from oo to ee. Breath, blur and haze add drift, noise and beating.",
           screen: "Screen: partials as stems under a low sun, formants as hills behind.",
@@ -78,7 +79,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Hexagon/tree/main/bloom"
         },
         {
-          id: "hollow", name: "Hollow", kind: "synth", catalog: "hollow", status: "beta",
+          id: "hollow", name: "Hollow", kind: "synth", catalog: "hollow", status: "live",
           after: "blown and bowed bodies",
           description: "Blown and bowed resonator. Eight tuned resonances shaped like a voice, violin, organ pipe or wine glass. Held notes resonate together; spread adds drifting detuned copies.",
           screen: "Screen: an engraved acoustics plate, with flames that rise with each resonance.",
@@ -88,7 +89,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Hexagon/tree/main/hollow"
         },
         {
-          id: "orbit", name: "Orbit", kind: "synth", catalog: "orbit", status: "beta",
+          id: "orbit", name: "Orbit", kind: "synth", catalog: "orbit", status: "live",
           after: "the Prophet VS",
           description: "Vector synth. Four single-cycle waves on a diamond, mixed by a point moving in a circle, ellipse, figure 8 or steps. Grit runs it through an old DAC, down to 10 kHz and 8 bits.",
           screen: "Screen: the VS joystick field, each note's path, and the mixed wave on a scope.",
@@ -98,7 +99,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Hexagon/tree/main/orbit"
         },
         {
-          id: "bend", name: "Bend", kind: "synth", catalog: "bend", status: "beta",
+          id: "bend", name: "Bend", kind: "synth", catalog: "bend", status: "live",
           after: "the Casio CZ",
           description: "Phase distortion. Sine, saw, square, pulse, or three resonant waves that sweep like a filter. A second line adds an interval, detune or ring mod.",
           screen: "Screen: the phase map beside its waveform, drawn like the CZ manual.",
@@ -108,7 +109,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Hexagon/tree/main/bend"
         },
         {
-          id: "moth", name: "Moth", kind: "synth", catalog: "moth", status: "beta",
+          id: "moth", name: "Moth", kind: "synth", catalog: "moth", status: "live",
           after: "Buchla's west coast",
           description: "FM sine, wavefolder and vactrol lowpass gate. Strike up for plucks, mallets and bongos; at zero it holds like a pad. Glow sets the gate's release.",
           screen: "Screen: a moth on a specimen plate, its wing edges drawn by the folded waveform.",
@@ -125,14 +126,14 @@ window.SITE = {
       audio: "assets/audio/nonagon.json",
       name: "Nonagon Suite",
       kicker: "nine experiments",
-      status: "beta",
+      status: "live",
       version: "v0.1.0",
       repo: "https://github.com/mmockett/OP-XY-Nonagon",
       links: [],
       tagline: "Nine experimental sounds, each grown from a piece of physics.",
       description: [
         "Sand, Cocoa, Ghost, Coin, Recur, Fermi, Mach, Butterfly and Drop. Each starts from something odd in the physical world (Chladni's sand figures, the hot chocolate effect, a phantom pitch heard only between the ears, Euler's disk, a scrambled picture that always comes home, the Fermi–Pasta–Ulam–Tsingou chain, a supersonic flyby, the Hofstadter butterfly and the Leidenfrost drop) and turns it into an instrument with eight controls on two pages.",
-        "Each screen is one object, drawn in outline, that every control visibly changes. Their levels match Hexagon's. The seven synths are in the beta builder. Ghost and Recur, the sample engines, are still being refined, so build them from source."
+        "Each screen is one object, drawn in outline, that every control visibly changes. Their levels match Hexagon's. The seven synths are in the open-xy.com builder. Ghost and Recur, the sample engines, are still being refined, so build them from source."
       ],
       specs: [
         [["synths", "7"], ["sample", "2"], ["cpu", "1–6%"], ["os", "1.2.1"]],
@@ -141,7 +142,7 @@ window.SITE = {
       media: { type: "video", aspect: "1448 / 668", src: "assets/media/nonagon/nonagon.mp4", poster: "assets/media/nonagon/nonagon.jpg", alt: "Nonagon Suite's nine screens playing together: Sand, Cocoa and Ghost on top; Coin, Recur and Fermi in the middle; Mach, Butterfly and Drop below" },
       machines: [
         {
-          id: "sand", name: "Sand", kind: "synth", catalog: "sand", status: "beta",
+          id: "sand", name: "Sand", kind: "synth", catalog: "sand", status: "live",
           after: "Chladni's figures",
           description: "A bowed plate strewn with sand. Grains rattle on its moving areas, then settle into the figure's nodal lines, leaving a glassy tone. Tilt runs the sand downhill; shake keeps it jumping.",
           screen: "Screen: the plate on its column, tipping with tilt, the sand drawing the figure.",
@@ -151,7 +152,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/sand"
         },
         {
-          id: "cocoa", name: "Cocoa", kind: "synth", catalog: "cocoa", status: "beta",
+          id: "cocoa", name: "Cocoa", kind: "synth", catalog: "cocoa", status: "live",
           after: "the hot chocolate effect",
           description: "A spoon tapping a mug of cocoa. Stirred-in powder fills the drink with bubbles that slow sound down, so each tap starts low and climbs to pitch as they clear. Cup, fill and spoon set the ring.",
           screen: "Screen: the mug, spoon in the drink; froth on the drink clears as the note comes into tune.",
@@ -171,7 +172,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/ghost"
         },
         {
-          id: "coin", name: "Coin", kind: "synth", catalog: "coin", status: "beta",
+          id: "coin", name: "Coin", kind: "synth", catalog: "coin", status: "live",
           after: "Euler's disk",
           description: "A disk spun on a mirror. As it falls, its wobble speeds up, so each note's ring rises and quickens until it settles. Size, disk and base set the metal and the surface; many adds companion disks.",
           screen: "Screen: the disk spinning on its base, leaning as it slows, rings spreading across the glass.",
@@ -191,7 +192,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/recur"
         },
         {
-          id: "fermi", name: "Fermi", kind: "synth", catalog: "fermi", status: "beta",
+          id: "fermi", name: "Fermi", kind: "synth", catalog: "fermi", status: "live",
           after: "the FPUT problem",
           description: "A chain of masses on nonlinear springs. Energy in its first mode spreads into higher ones, then flows almost wholly back, so the tone slowly breathes. More energy and stiffer springs push it into chaos.",
           screen: "Screen: the chain on its stand, drawn back by energy, with a damping lever and a timing pendulum.",
@@ -201,7 +202,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/fermi"
         },
         {
-          id: "mach", name: "Mach", kind: "synth", catalog: "mach", status: "beta",
+          id: "mach", name: "Mach", kind: "synth", catalog: "mach", status: "live",
           after: "a supersonic flyby",
           description: "Each note flies a sound past you at up to Mach 3: the Doppler sweep, the sonic boom as the Mach cone crosses, and an echo off the ground, all worked out from the geometry of the pass.",
           screen: "Screen: the pass seen from above, wavefronts trailing the source and the cone sweeping the listener.",
@@ -211,7 +212,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/mach"
         },
         {
-          id: "butterfly", name: "Butterfly", kind: "synth", catalog: "butterfly", status: "beta",
+          id: "butterfly", name: "Butterfly", kind: "synth", catalog: "butterfly", status: "live",
           after: "the Hofstadter butterfly",
           description: "The fractal spectrum of an electron in a crystal under a magnetic field, played as a ringing chain. Flux reshapes the bands and gaps; coupling traps the ringing in place.",
           screen: "Screen: a butterfly whose wing edges are the spectrum and whose markings are the chain.",
@@ -221,7 +222,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/butterfly"
         },
         {
-          id: "drop", name: "Drop", kind: "synth", catalog: "drop", status: "beta",
+          id: "drop", name: "Drop", kind: "synth", catalog: "drop", status: "live",
           after: "the Leidenfrost effect",
           description: "A drop skating on a hot pan on its own vapour, quivering into a star whose lobes set the beat. Heat and liquid decide how it floats, sizzles and boils away.",
           screen: "Screen: a skillet at an angle, star-shaped drops floating with their steam.",
@@ -306,62 +307,62 @@ window.SITE = {
       id: "mnmd",
       name: "MNMD",
       kicker: "machinedrum + monomachine",
-      status: "beta",
+      status: "live",
       version: "v1.1.4",
       repo: "https://github.com/mmockett/OP-XY-MNMD",
       links: [],
       tagline: "Elektron's Machinedrum and Monomachine, rebuilt for the OP–XY.",
       description: [
-        "Eighteen engines: four Machinedrum kits and fourteen Monomachine synths. No Elektron code, firmware or ROM data. Voices were matched by ear and by measurement against the original ROMs in an emulator, and written in fixed point for the OP–XY's Blackfin.",
+        "Sixteen engines: two Machinedrum kits and fourteen Monomachine synths. No Elektron code, firmware or ROM data. Voices were matched by ear and by measurement against the original ROMs in an emulator, and written in fixed point for the OP–XY's Blackfin.",
         "The kits play like the OP–XY's Drumline, with a different machine on each of the 24 keys. The synths play chromatically, with the Monomachine's SYN page as two pages of four controls."
       ],
       specs: [
-        [["kits", "4"], ["synths", "14"], ["keys", "24"], ["os", "1.2.1"]],
-        [["dsp", "fixed"], ["release", "v1.1.4"], ["screens", "18"], ["licence", "MIT"]]
+        [["kits", "2"], ["synths", "14"], ["keys", "24"], ["os", "1.2.1"]],
+        [["dsp", "fixed"], ["release", "v1.1.4"], ["screens", "16"], ["licence", "MIT"]]
       ],
-      media: { type: "video", src: "assets/media/mnmd/overview.mp4", poster: "assets/media/mnmd/overview.jpg", alt: "Eight MNMD screens: MD TRX, MD EFM, SID-6581, VO-6, FM STAT, SWAVE-PULSE, DPRO-WAVE and DPRO-DENS" },
+      media: { type: "video", src: "assets/media/mnmd/overview.mp4", poster: "assets/media/mnmd/overview.jpg", alt: "Eight MNMD screens: MD KIT, MD E12, SID-6581, VO-6, FM STAT, SWAVE-PULSE, DPRO-WAVE and DPRO-DENS" },
       groups: [
         { title: "monomachine synths", note: "Chromatic, two pages of four." },
         { title: "machinedrum kits", note: "24 keys, a machine on each." }
       ],
       machines: [
-        { id: "mmsid", group: 0, name: "SID-6581", kind: "synth", catalog: "mmsid", status: "beta",
+        { id: "mmsid", group: 0, name: "SID-6581", kind: "synth", catalog: "mmsid", status: "live",
           description: "The Commodore 64 sound chip: triangle, saw, pulse, mixed and noise, with pulse-width sweep, ring mod and sync.",
           pages: [["pw", "pwad", "pwrs", "wave"], ["mod", "msrc", "mfrq", "tune"]],
           presets: ["Saw", "Square", "Sweep", "Sync", "Ring", "Mixed", "Noise"],
           media: { type: "video", src: "assets/media/mnmd/mmsid.mp4", poster: "assets/media/mnmd/mmsid.jpg", alt: "SID-6581's screen: a stepped 4-bit saw" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmsid" },
-        { id: "mmvo6", group: 0, name: "VO-6", kind: "synth", catalog: "mmvo6", status: "beta",
+        { id: "mmvo6", group: 0, name: "VO-6", kind: "synth", catalog: "mmvo6", status: "live",
           description: "Two-formant voice with twenty consonants. Vowels, robot speech and whispers.",
           pages: [["voc1", "voc2", "v sw", "voic"], ["cons", "clen", "cvol", "tune"]],
           presets: ["Ah", "Ee", "Oh", "Ma", "Sing La", "Robot Rr", "Whisper", "Tick"],
           media: { type: "video", src: "assets/media/mnmd/mmvo6.mp4", poster: "assets/media/mnmd/mmvo6.jpg", alt: "VO-6's screen: a vowel chart with the current vowel marked, beside its waveform" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmvo6" },
-        { id: "mmstat", group: 0, name: "FM STAT", kind: "synth", catalog: "mmstat", status: "beta",
+        { id: "mmstat", group: 0, name: "FM STAT", kind: "synth", catalog: "mmstat", status: "live",
           description: "Two modulators into one carrier; the first has decay and feedback. Tines, bells, growls.",
           pages: [["1frq", "1fin", "1env", "1fb"], ["2frq", "2vol", "tone", "tune"]],
           presets: ["Tine", "Bell", "Growl", "Wobble"],
           media: { type: "video", src: "assets/media/mnmd/mmstat.mp4", poster: "assets/media/mnmd/mmstat.jpg", alt: "FM STAT's screen: an operator diagram, M1 and M2 into a carrier, beside the output wave" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmstat" },
-        { id: "mmpulse", group: 0, name: "SWAVE-PULSE", kind: "synth", catalog: "mmpulse", status: "beta",
+        { id: "mmpulse", group: 0, name: "SWAVE-PULSE", kind: "synth", catalog: "mmpulse", status: "live",
           description: "Detuned pulses with width sweep and two sub-octaves.",
           pages: [["unil", "uniw", "sub1", "sub2"], ["pw", "pwad", "pwrs", "tune"]],
           presets: ["Sweep", "Square", "Reed", "Strings", "Bass"],
           media: { type: "video", src: "assets/media/mnmd/mmpulse.mp4", poster: "assets/media/mnmd/mmpulse.jpg", alt: "SWAVE-PULSE's screen: a pulse wave over its sub-octaves" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmpulse" },
-        { id: "mmens", group: 0, name: "SWAVE-ENS", kind: "synth", catalog: "mmens", status: "beta",
+        { id: "mmens", group: 0, name: "SWAVE-ENS", kind: "synth", catalog: "mmens", status: "live",
           description: "A four-note chord of saws or pulses from one key, with chorus.",
           pages: [["pch2", "pch3", "pch4", "wave"], ["pw", "chrl", "chrw", "tune"]],
           presets: ["Major", "Minor", "Fifths", "Organ", "Seventh"],
           media: { type: "video", src: "assets/media/mnmd/mmens.mp4", poster: "assets/media/mnmd/mmens.jpg", alt: "SWAVE-ENS's screen as a chord plays" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmens" },
-        { id: "mmpar", group: 0, name: "FM PAR", kind: "synth", catalog: "mmpar", status: "beta",
+        { id: "mmpar", group: 0, name: "FM PAR", kind: "synth", catalog: "mmpar", status: "live",
           description: "Three parallel modulators into one carrier, each with depth or decay.",
           pages: [["1frq", "1env", "2frq", "2env"], ["3frq", "3env", "tone", "tune"]],
           presets: ["Keys", "Organ", "Pluck", "Glass"],
           media: { type: "video", src: "assets/media/mnmd/mmpar.mp4", poster: "assets/media/mnmd/mmpar.jpg", alt: "FM PAR's screen: three operators into a carrier, beside the output wave" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmpar" },
-        { id: "mmdyn", group: 0, name: "FM DYN", kind: "synth", catalog: "mmdyn", status: "beta",
+        { id: "mmdyn", group: 0, name: "FM DYN", kind: "synth", catalog: "mmdyn", status: "live",
           description: "FM with pitch and depth envelopes on the first modulator, decay and feedback on the second.",
           pages: [["1frq", "1fen", "1vol", "1ven"], ["2frq", "2env", "2fb", "tune"]],
           presets: ["Strike", "Zap", "Bass", "Reed"],
@@ -410,29 +411,19 @@ window.SITE = {
           media: { type: "video", src: "assets/media/mnmd/mmbbox.mp4", poster: "assets/media/mnmd/mmbbox.jpg", alt: "DPRO-BBOX's screen as its samples are struck" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmbbox" },
 
-        { id: "mdtrx", group: 1, name: "MD TRX", kind: "drum kit", catalog: "mdtrx", status: "soon",
-          description: "Analog-modelled drums: kick, snare, toms, clap, rim, cowbell, hats and cymbals.",
-          kit: ["BD", "B2", "SD", "XT", "XC", "CP", "RS", "CB", "CH", "OH", "CY", "MA", "CL"],
+        { id: "mdkit", group: 1, name: "MD KIT", kind: "drum machine", catalog: "mdkit", status: "dev",
+          description: "One drum machine for four of the Machinedrum's families: TRX, EFM, P-I and GND, 33 machines in all. Any of them goes on any of the 24 keys, and each key keeps its own controls. A key chokes its own last note, as on the Machinedrum.",
+          screen: "Screen: the instrument on the left; on the right its sounding part in section, like a patent drawing: the drumhead's waves, the snare wires, the clap's echo chamber, GND's tuning fork. Each control moves one part, as far as it changes the sound.",
+          kit: ["TRX 13", "EFM 8", "P-I 9", "GND 3"],
           pages: [["ptch", "dec", "ramp", "rdec"], ["strt", "nois", "harm", "clip"]],
-          media: { type: "video", src: "assets/media/mnmd/mdtrx.mp4", poster: "assets/media/mnmd/mdtrx.jpg", alt: "MD TRX's screen as BD, SD, CP and CB are struck" },
-          source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mdtrx" },
-        { id: "mdefm", group: 1, name: "MD EFM", kind: "drum kit", catalog: "mdefm", status: "soon",
-          description: "FM drums, plus the GND snare, noise and impulse.",
-          kit: ["BD", "SD", "XT", "CP", "RS", "CB", "HH", "CY", "SN", "NS", "IM"],
-          pages: [["ptch", "dec", "ramp", "rdec"], ["mod", "mfrq", "mdec", "mfb"]],
-          media: { type: "video", src: "assets/media/mnmd/mdefm.mp4", poster: "assets/media/mnmd/mdefm.jpg", alt: "MD EFM's screen as BD, SD, CP and CB are struck" },
-          source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mdefm" },
-        { id: "mdpi", group: 1, name: "MD P-I", kind: "drum kit", catalog: "mdpi", status: "soon",
-          description: "Physically modelled drums and cymbals.",
-          kit: ["BD", "SD", "MT", "ML", "MA", "RS", "RC", "CC", "HH"],
-          pages: [["ptch", "dec", "hard", "hamr"], ["tens", "damp", "", ""]],
-          media: { type: "video", src: "assets/media/mnmd/mdpi.mp4", poster: "assets/media/mnmd/mdpi.jpg", alt: "MD P-I's screen as BD, SD, MT and CC are struck" },
-          source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mdpi" },
+          shift: ["kit", "machine", "choke", ""],
+          media: { type: "video", src: "assets/media/mnmd/mdkit.mp4", poster: "assets/media/mnmd/mdkit.jpg", alt: "MD KIT's screen: TRX's kick, snare, clap, open hat and cymbal struck as a control turns on each, then Shift to GND and its tuning fork" } },
         { id: "mde12", group: 1, name: "MD E12", kind: "drum kit", catalog: "mde12", status: "diy",
           description: "The E12 family's sixteen sampled machines, from your own ROM.",
+          screen: "Screen: the instrument on the left; on the right a strip of tape on a splicing block.",
           kit: ["16 machines"],
           pages: [["ptch", "dec", "snap", "spln"], ["strt", "rtrg", "rtim", "bend"]],
-          media: { type: "video", src: "assets/media/mnmd/mde12.mp4", poster: "assets/media/mnmd/mde12.jpg", alt: "MD E12's screen as BD, SD, CP and CB are struck" },
+          media: { type: "video", src: "assets/media/mnmd/mde12.mp4", poster: "assets/media/mnmd/mde12.jpg", alt: "MD E12's screen, a strip of tape on a splicing block, as BD, SD, CP and OH are struck" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mde12" }
       ]
     }

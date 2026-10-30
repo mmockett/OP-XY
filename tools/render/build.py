@@ -8,7 +8,9 @@ copies the rendered screens into the site.
 
 The machine repositories and SDK checkouts sit beside this one (../opxy-pads,
 ../opxy-nonagon, ../OP-XY-MNMD, ../opxy-grains, ../OP-XY-Macro (OP-XY-ModFX), ../open-xy-staging,
-../open-xy, ../open-xy-pr3, ../open-xy-aux on sdk/effect-screens).
+../open-xy, ../open-xy-pr3, ../open-xy-aux on sdk/effect-screens, ../open-xy-drum-device).
+MD KIT and MD E12 come from OP-XY-MNMD's mdkit branch, read with git archive
+(the checkout itself is left alone), on the drum kind's SDK (open-xy #143).
 The screen font is the OP-XY's, Univers Next Pro Light: set XY_FONT to its file.
 It is copied into tools/render/font for rendering only and never committed.
 """
@@ -29,7 +31,12 @@ FONT = pathlib.Path(os.environ.get("XY_FONT", pathlib.Path.home() / "Downloads/u
 
 # Which SDK checkout each machine builds against, as each repository's README says.
 SDKS = {"staging": REPOS / "open-xy-staging", "fork": REPOS / "open-xy", "pr3": REPOS / "open-xy-pr3",
-        "aux": REPOS / "open-xy-aux"}
+        "aux": REPOS / "open-xy-aux", "drum": REPOS / "open-xy-drum-device"}
+# The branch MD KIT is on, and the machines built from it.
+MDKIT_BRANCH = "mdkit"
+MDKIT = ["mdkit", "mde12"]
+# MD KIT replaces these three kits on the site.
+MDKIT_REPLACES = ["mdtrx", "mdefm", "mdpi"]
 MODFX = REPOS / "OP-XY-Macro"
 HEXAGON = ["wane", "bloom", "hollow", "orbit", "bend", "moth"]
 NONAGON = ["sand", "cocoa", "ghost", "coin", "recur", "fermi", "mach", "butterfly", "drop"]
@@ -48,7 +55,7 @@ MEDIA = {
     "nonagon": {"ids": NONAGON, "grid": ("nonagon", NONAGON, 3)},
     "grains": {"ids": ["grains"]},
     "modfx": {"ids": ["omnifilter", "lint"]},
-    "mnmd": {"ids": None, "grid": ("overview", ["mdtrx", "mdefm", "mmsid", "mmvo6", "mmstat", "mmpulse", "mmwave", "mmdens"], 4)},
+    "mnmd": {"ids": None, "grid": ("overview", ["mdkit", "mde12", "mmsid", "mmvo6", "mmstat", "mmpulse", "mmwave", "mmdens"], 4)},
 }
 
 
@@ -163,6 +170,21 @@ def effect_wrap(mid):
     return wrap
 
 
+def mdkit_source():
+    """MD KIT's branch as files: git archive, so OP-XY-MNMD's checkout is untouched.
+    MD E12 gets the repository's silent stand-in for its samples, scoped as
+    make_engine.py scopes an engine's headers: its screen needs no samples."""
+    out = HERE / "mdkit-src"
+    shutil.rmtree(out, ignore_errors=True)
+    out.mkdir()
+    archive = subprocess.run(["git", "-C", REPOS / "OP-XY-MNMD", "archive", MDKIT_BRANCH], capture_output=True, check=True).stdout
+    subprocess.run(["tar", "-x", "-C", out], input=archive, check=True)
+    silent = (out / "voices" / "silent" / "private_e12.hpp").read_text()
+    (out / "machines" / "mde12" / "private_e12.hpp").write_text(
+        silent.replace("namespace md {", "namespace md_mde12 {} namespace md = md_mde12; namespace md_mde12 {"))
+    return out / "machines"
+
+
 def kit_labels():
     labels = {}
     for kit in KITS:
@@ -197,6 +219,9 @@ def build():
             preview("pr3", "--source", sample_wrap(mid), HERE / "m" / mid)
         else:
             preview("staging", "--machine", REPOS / "opxy-nonagon" / mid, HERE / "m" / mid)
+    machines = mdkit_source()
+    for mid in MDKIT:
+        preview("drum", "--machine", machines / mid, HERE / "m" / mid)
     preview("aux", "--machine", MODFX / "omnifilter", HERE / "m" / "omnifilter")
     preview("aux", "--source", effect_wrap("lint"), HERE / "m" / "lint")
 
@@ -207,7 +232,7 @@ def grid(ids, columns, out):
         args += ["-i", HERE / "out" / f"{mid}.mp4"]
         scale += f"[{k}]scale=480:220[v{k}];"
     layout = "|".join(f"{(k % columns) * 484}_{(k // columns) * 224}" for k in range(len(ids)))
-    graph = scale + "".join(f"[v{k}]" for k in range(len(ids))) + f"xstack=inputs={len(ids)}:layout={layout}:fill=black"
+    graph = scale + "".join(f"[v{k}]" for k in range(len(ids))) + f"xstack=inputs={len(ids)}:layout={layout}:fill=black:shortest=1"
     run("ffmpeg", "-loglevel", "error", "-y", *args, "-filter_complex", graph, "-movflags", "+faststart",
         "-pix_fmt", "yuv420p", "-c:v", "libx264", "-crf", "22", "-preset", "slow", "-an", f"{out}.mp4")
     run("ffmpeg", "-loglevel", "error", "-y", "-ss", "4", "-i", f"{out}.mp4", "-frames:v", "1", "-q:v", "3", f"{out}.jpg")
@@ -217,7 +242,8 @@ def publish():
     for project, spec in MEDIA.items():
         target = SITE / "assets" / "media" / project
         target.mkdir(parents=True, exist_ok=True)
-        ids = spec["ids"] or [p.name for p in sorted((REPOS / "OP-XY-MNMD" / "machines").iterdir()) if (p / "machine.json").exists()]
+        ids = spec["ids"] or [p.name for p in sorted((REPOS / "OP-XY-MNMD" / "machines").iterdir())
+                              if (p / "machine.json").exists() and p.name not in MDKIT_REPLACES] + ["mdkit"]
         for mid in ids:
             for ext in ("mp4", "jpg"):
                 shutil.copy(HERE / "out" / f"{mid}.{ext}", target / f"{mid}.{ext}")

@@ -28,7 +28,7 @@ window.SITE = {
   catalog: "https://github.com/etcetc000/open-xy/blob/main/catalog/machines.json",
 
   // The hero screen at the top of the page.
-  hero: { type: "video", src: "assets/media/hexagon/hexagon.mp4", poster: "assets/media/hexagon/hexagon.jpg", alt: "The Hexagon Suite's six screens playing together: Wane, Bloom and Hollow on top; Orbit, Bend and Moth below" },
+  hero: { type: "video", src: "assets/media/hero.mp4", poster: "assets/media/hero.jpg", alt: "Nine screens playing together: Moth, Hollow and Wane on top; Chroma, Ghost and Recur in the middle; Bloom, Orbit and Lint below" },
 
   statuses: {
     live: { label: "live",        note: "In the open-xy.com builder." },
@@ -206,7 +206,7 @@ window.SITE = {
           id: "mach", name: "Mach", kind: "synth", catalog: "mach", status: "live",
           after: "a supersonic flyby",
           description: "Each note flies a sound past you at up to Mach 3: the Doppler sweep, the sonic boom as the Mach cone crosses, and an echo off the ground, all worked out from the geometry of the pass.",
-          screen: "Screen: the pass seen from above, wavefronts trailing the source and the cone sweeping the listener.",
+          screen: "Screen: a schlieren photograph after Mach and Salcher's images of a bullet in flight, the wavefronts trailing the source and the cone sweeping the listener.",
           pages: [["mach", "pass", "source", "dur"], ["boom", "air", "tune", "echo"]],
           cpu: "4.5%",
           media: { type: "video", src: "assets/media/nonagon/mach.mp4", poster: "assets/media/nonagon/mach.jpg", alt: "Mach's flybys, the wavefronts folding into a cone as mach rises" },
@@ -272,7 +272,7 @@ window.SITE = {
       tagline: "A filter for every track, and a 1970s effects box and an ethereal stereo console for the sends.",
       description: [
         "Three machines that work across the whole OP–XY instead of on one track. Chroma and Lint are send effects, each with its own page on FX I or II. Omnifilter sits on an aux track, takes no instrument slot and steers all eight instrument tracks at once.",
-        "Chroma's screen is a Victorian optical bench; Lint's is the effects box seen from above; Omnifilter's is a rangefinder's lens."
+        "Chroma's screen is a Victorian optical bench; Lint's is an effects chassis with its lid off; Omnifilter's is a rangefinder's lens."
       ],
       specs: [
         [["aux", "1"], ["send", "2"], ["presets", "19"], ["os", "1.2.1"]],
@@ -300,7 +300,7 @@ window.SITE = {
           shift: ["order", "shape", "loop", "wobble"],
           presets: ["Dusty", "Tank", "Slapback", "Swoosh", "Runaway", "Crushed"],
           cpu: "7.8%", cpuNote: "of the audio",
-          media: { type: "video", src: "assets/media/modfx/lint.mp4", poster: "assets/media/modfx/lint.jpg", alt: "Lint's effects box: dust, phase and echo turned up, then Shift held to reorder the bays and patch tape 2 into the echo's loop" },
+          media: { type: "video", src: "assets/media/modfx/lint.mp4", poster: "assets/media/modfx/lint.jpg", alt: "Lint's chassis: dust, phase and echo turned up, then Shift held to reorder the modules and patch tape 2 into the echo's loop" },
           source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/lint"
         },
         {

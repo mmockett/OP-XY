@@ -42,6 +42,10 @@ MDKIT_REPLACES = ["mdtrx", "mdefm", "mdpi"]
 # Its grid: nine of its machines, across its four families.
 MDKIT_GRID = ["mdkit-bd", "mdkit-cb", "mdkit-cp", "mdkit-xt", "mdkit-oh", "mdkit-ma", "mdkit-ml", "mdkit-sn", "mdkit-ns"]
 MODFX = REPOS / "OP-XY-Macro"
+# The commits the suites' screens are finalised at, read with git archive.
+SOURCES = {"opxy-pads": "3aa0c15", "opxy-nonagon": "v0.3.0", "OP-XY-Macro": "v1.5.0"}
+# The hero at the top of the page: nine machines from three suites.
+HERO = ["moth", "hollow", "wane", "chroma", "ghost", "recur", "bloom", "orbit", "lint"]
 HEXAGON = ["wane", "bloom", "hollow", "orbit", "bend", "moth"]
 NONAGON = ["sand", "cocoa", "ghost", "coin", "recur", "fermi", "mach", "butterfly", "drop"]
 # Nonagon's sample engines, and the files their screens are drawn from.
@@ -55,7 +59,7 @@ WRAP_ID = "grainsview"
 
 # The site's media: each project's folder, its machines, and its grid of screens.
 MEDIA = {
-    "hexagon": {"ids": HEXAGON, "grids": [("hexagon", HEXAGON, 3)]},
+    "hexagon": {"ids": HEXAGON},
     "nonagon": {"ids": NONAGON, "grids": [("nonagon", NONAGON, 3)]},
     "grains": {"ids": ["grains"]},
     "modfx": {"ids": ["chroma", "lint", "omnifilter"]},
@@ -122,20 +126,36 @@ def grains_wrap():
     return wrap
 
 
-def sample_wrap(mid):
+def source(repo):
+    """A suite at its finalised commit, as files: its checkouts are left alone."""
+    out = HERE / "src" / repo
+    shutil.rmtree(out, ignore_errors=True)
+    out.mkdir(parents=True)
+    archive = subprocess.run(["git", "-C", REPOS / repo, "archive", SOURCES[repo]], capture_output=True, check=True).stdout
+    subprocess.run(["tar", "-x", "-C", out], input=archive, check=True)
+    return out
+
+
+def sample_wrap(mid, nonagon):
     """A Nonagon sample engine's screen in a stand-in synth, as for Grains: its own
-    display files, and the sample's overview written by render.html."""
+    display files, and the sample's overview written by render.html. The stand-in
+    takes its own ID, as Grains' does: the SDK refuses one a local machine has."""
     wrap = HERE / "nonagon-wrap" / mid
     shutil.rmtree(wrap, ignore_errors=True)
     python = REPOS / "open-xy" / ".venv" / "bin" / "python"
     with tempfile.TemporaryDirectory() as scratch:
         run(python, SDKS["pr3"] / "sdk.py", "new", "--repository", "--kind", "synth", "--controls", "8",
-            "--id", mid, "--name", mid.capitalize(), "--out", pathlib.Path(scratch) / mid, stdout=subprocess.DEVNULL)
+            "--id", f"{mid}view", "--name", mid.capitalize(), "--out", pathlib.Path(scratch) / mid, stdout=subprocess.DEVNULL)
         shutil.copytree(pathlib.Path(scratch) / mid, wrap)
-    source = REPOS / "opxy-nonagon" / mid
+    machine = nonagon / mid
+    # The display code's namespace, and the artwork's IDs, follow the stand-in's.
     for name in NONAGON_SAMPLE[mid]:
-        shutil.copy(source / name, wrap / name)
-    real = json.loads((source / "definition.json").read_text())
+        text = (machine / name).read_text()
+        if name == "panel.svg.fragment":
+            (wrap / name).write_text(text.replace(f'id="{mid}_', f'id="{mid}view_'))
+        else:
+            (wrap / name).write_text(re.sub(rf"\bnamespace {mid}\b", f"namespace {mid}view", text).replace(f"{mid}::", f"{mid}view::"))
+    real = json.loads((machine / "definition.json").read_text())
     synth = json.loads((wrap / "definition.json").read_text())
     synth["parameters"] = real["parameters"]
     for i, p in enumerate(synth["parameters"]):
@@ -148,7 +168,7 @@ def sample_wrap(mid):
     return wrap
 
 
-def effect_wrap(mid):
+def effect_wrap(mid, modfx):
     """A send effect's screen in a stand-in synth: its own display files, with
     the shift row render.html hands the display. The stand-in takes its own ID,
     as Grains' does: the catalog holds the effect's."""
@@ -159,14 +179,14 @@ def effect_wrap(mid):
         run(python, SDKS["effects"] / "sdk.py", "new", "--repository", "--kind", "synth", "--controls", "8",
             "--id", f"{mid}view", "--name", mid.capitalize(), "--out", pathlib.Path(scratch) / mid, stdout=subprocess.DEVNULL)
         shutil.copytree(pathlib.Path(scratch) / mid, wrap)
-    source = MODFX / mid
+    machine = modfx / mid
     # The display code's namespace, and the artwork's node, text and palette
     # IDs, follow the stand-in's.
     for name in ("display.cpp", "display.h", "panel.h", "tables.h"):
-        text = (source / name).read_text()
+        text = (machine / name).read_text()
         (wrap / name).write_text(text.replace(f"namespace {mid} ", f"namespace {mid}view ").replace(f"{mid}::", f"{mid}view::"))
-    (wrap / "panel.svg.fragment").write_text((source / "panel.svg.fragment").read_text().replace(f'id="{mid}_', f'id="{mid}view_'))
-    real = json.loads((source / "definition.json").read_text())
+    (wrap / "panel.svg.fragment").write_text((machine / "panel.svg.fragment").read_text().replace(f'id="{mid}_', f'id="{mid}view_'))
+    real = json.loads((machine / "definition.json").read_text())
     synth = json.loads((wrap / "definition.json").read_text())
     synth["parameters"] = real["parameters"]
     synth["press"] = real.get("press", "page")
@@ -216,8 +236,9 @@ def build():
         for module in ("display.mjs", "controls.mjs"):
             shutil.copy(checkout / "sdk" / "browser" / module, HERE / "sdk" / name / module)
     kit_labels()
+    pads, nonagon, modfx = (source(repo) for repo in SOURCES)
     for mid in HEXAGON:
-        preview("staging", "--machine", REPOS / "opxy-pads" / mid, HERE / "m" / mid)
+        preview("staging", "--machine", pads / mid, HERE / "m" / mid)
     for folder in sorted((REPOS / "OP-XY-MNMD" / "machines").iterdir()):
         if not (folder / "machine.json").exists():
             continue
@@ -226,15 +247,15 @@ def build():
     preview("pr3", "--source", grains_wrap(), HERE / "m" / "grains")
     for mid in NONAGON:
         if mid in NONAGON_SAMPLE:
-            preview("pr3", "--source", sample_wrap(mid), HERE / "m" / mid)
+            preview("pr3", "--source", sample_wrap(mid, nonagon), HERE / "m" / mid)
         else:
-            preview("staging", "--machine", REPOS / "opxy-nonagon" / mid, HERE / "m" / mid)
+            preview("staging", "--machine", nonagon / mid, HERE / "m" / mid)
     machines = mdkit_source()
     for mid in MDKIT:
         preview("drum", "--machine", machines / mid, HERE / "m" / mid)
     preview("aux", "--machine", MODFX / "omnifilter", HERE / "m" / "omnifilter")
     for mid in ("chroma", "lint"):
-        preview("effects", "--source", effect_wrap(mid), HERE / "m" / mid)
+        preview("effects", "--source", effect_wrap(mid, modfx), HERE / "m" / mid)
 
 
 def grid(ids, columns, out):
@@ -250,6 +271,7 @@ def grid(ids, columns, out):
 
 
 def publish():
+    grid(HERO, 3, SITE / "assets" / "media" / "hero")
     for project, spec in MEDIA.items():
         target = SITE / "assets" / "media" / project
         target.mkdir(parents=True, exist_ok=True)

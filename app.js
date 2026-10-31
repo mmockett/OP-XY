@@ -520,15 +520,20 @@
     hero.innerHTML = mediaHtml(SITE.hero) + `<div class="hot">${nine.map(m => `<a href="#${m.id}" aria-label="${esc(m.name)}"><span>${esc(m.name.toLowerCase())}</span></a>`).join("")}</div>`;
     $("#hero-cap").innerHTML = nine.map(m => `<a href="#${m.id}">${esc(m.name)}</a>`).join(", ");
   } else hero.innerHTML = mediaHtml(SITE.hero);
+  // The first thing on the page: its poster doesn't wait to be seen.
+  const heroVideo = $("video", hero);
+  if (heroVideo) heroVideo.poster = heroVideo.dataset.poster;
   wireVideos(hero);
   nav();
   // The clips' rows and the catalog's versions move later cards as they arrive, so
   // a link into the page lands again after each, unless the reader has already moved.
+  // Scrolling turns smooth only after all that, so no animation races a landing.
   let moved = false;
   for (const ev of ["wheel", "touchstart", "keydown"]) addEventListener(ev, () => { moved = true; }, { once: true, passive: true });
-  const land = () => { if (location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({ behavior: "instant" }); };
+  const land = () => { if (!moved && location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({ behavior: "instant" }); };
   land();
-  render().then(() => { if (!moved) land(); });
+  const drawn = render().then(land);
+  addEventListener("load", land);
 
   // The phone's index: a sheet over the page, closed by choosing a machine.
   const sheet = $("#sheet");
@@ -546,8 +551,10 @@
   $("#lightbox").addEventListener("click", e => { if (e.target.id === "lightbox") e.target.close(); });
   $("#lightbox").addEventListener("close", () => { $("#lb-media").textContent = ""; });
 
-  Promise.allSettled([syncCatalog()]).then(([cat]) => {
-    if (cat.status === "fulfilled" && cat.value) { refresh(); if (!moved) land(); }
+  Promise.allSettled([syncCatalog(), drawn]).then(([cat]) => {
+    if (cat.status === "fulfilled" && cat.value) refresh();
+    land();
+    document.documentElement.classList.add("settled");
     if (cat.status !== "fulfilled") $("#synced").textContent = "Statuses as last updated; the Open-XY catalog is unreachable.";
   });
 })();

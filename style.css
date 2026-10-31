@@ -36,8 +36,9 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 64px; -webkit-text-size-adjust: 100%; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+html { scroll-padding-top: 64px; -webkit-text-size-adjust: 100%; }
+/* Smooth only once the page has settled (app.js): a link into the page must land exactly. */
+@media (prefers-reduced-motion: no-preference) { html.settled { scroll-behavior: smooth; } }
 body {
   margin: 0; background: var(--body); color: var(--ink);
   font: 400 15px/1.5 var(--xy);

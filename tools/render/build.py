@@ -11,8 +11,8 @@ The machine repositories and SDK checkouts sit beside this one (../opxy-pads,
 ../open-xy, ../open-xy-pr3, ../open-xy-aux-machines-lfo (Omnifilter: #234 with #230,
 #182 and the LFO names, as the device firmware), ../open-xy-effects on
 sdk/effect-screens, ../open-xy-drum-device).
-MD KIT and MD E12 come from OP-XY-MNMD's mdkit branch, read with git archive
-(the checkout itself is left alone), on the drum kind's SDK (open-xy #143).
+Each suite is read at its commit in SOURCES with git archive, so its checkouts
+are left alone. MD KIT and MD E12 build on the drum kind's SDK (open-xy #143).
 The screen font is the OP-XY's, Univers Next Pro Light: set XY_FONT to its file.
 It is copied into tools/render/font for rendering only and never committed.
 """
@@ -34,8 +34,10 @@ FONT = pathlib.Path(os.environ.get("XY_FONT", pathlib.Path.home() / "Downloads/u
 # Which SDK checkout each machine builds against, as each repository's README says.
 SDKS = {"staging": REPOS / "open-xy-staging", "fork": REPOS / "open-xy", "pr3": REPOS / "open-xy-pr3",
         "aux": REPOS / "open-xy-aux-machines-lfo", "effects": REPOS / "open-xy-effects", "drum": REPOS / "open-xy-drum-device"}
-# The branch MD KIT is on, and the machines built from it.
-MDKIT_BRANCH = "mdkit"
+# These draw the waves captured from the owner's ROM, which no repository holds:
+# from a checkout they are flat lines, so their screens stay as first rendered.
+ROM_SCREENS = ["mmbbox", "mmdens", "mmwave", "mmddrw"]
+# The machines on the drum kind's SDK.
 MDKIT = ["mdkit", "mde12"]
 # MD KIT replaces these three kits on the site.
 MDKIT_REPLACES = ["mdtrx", "mdefm", "mdpi"]
@@ -43,7 +45,7 @@ MDKIT_REPLACES = ["mdtrx", "mdefm", "mdpi"]
 MDKIT_GRID = ["mdkit-bd", "mdkit-cb", "mdkit-cp", "mdkit-xt", "mdkit-oh", "mdkit-ma", "mdkit-ml", "mdkit-sn", "mdkit-ns"]
 MODFX = REPOS / "OP-XY-Macro"
 # The commits the suites' screens are finalised at, read with git archive.
-SOURCES = {"opxy-pads": "v1.2.0", "opxy-nonagon": "v0.3.0", "OP-XY-Macro": "v1.5.0"}
+SOURCES = {"opxy-pads": "v1.4.0", "opxy-nonagon": "v0.5.0", "OP-XY-Macro": "v1.7.0", "OP-XY-MNMD": "v1.1.9"}
 # The hero at the top of the page: nine machines from three suites.
 HERO = ["moth", "hollow", "wane", "chroma", "ghost", "recur", "bloom", "orbit", "lint"]
 HEXAGON = ["wane", "bloom", "hollow", "orbit", "bend", "moth"]
@@ -53,7 +55,7 @@ NONAGON_SAMPLE = {
     "ghost": ["display.cpp", "display.h", "captions.h", "figure.h", "tables.h", "ghost.h", "panel.svg.fragment"],
     "recur": ["display.cpp", "display.h", "layout.h", "recur.h", "panel.svg.fragment"],
 }
-KITS = ["mdtrx", "mdefm", "mdpi", "mde12"]
+KITS = ["mde12"]
 # The stand-in synth for Grains' screen: the catalog holds "grains" itself.
 WRAP_ID = "grainsview"
 
@@ -200,15 +202,11 @@ def effect_wrap(mid, modfx):
     return wrap
 
 
-def mdkit_source():
-    """MD KIT's branch as files: git archive, so OP-XY-MNMD's checkout is untouched.
-    MD E12 gets the repository's silent stand-in for its samples, scoped as
-    make_engine.py scopes an engine's headers: its screen needs no samples."""
-    out = HERE / "mdkit-src"
-    shutil.rmtree(out, ignore_errors=True)
-    out.mkdir()
-    archive = subprocess.run(["git", "-C", REPOS / "OP-XY-MNMD", "archive", MDKIT_BRANCH], capture_output=True, check=True).stdout
-    subprocess.run(["tar", "-x", "-C", out], input=archive, check=True)
+def mnmd_source():
+    """OP-XY-MNMD at its commit. MD E12 gets the repository's silent stand-in for
+    its samples, scoped as make_engine.py scopes an engine's headers: its screen
+    needs no samples."""
+    out = source("OP-XY-MNMD")
     silent = (out / "voices" / "silent" / "private_e12.hpp").read_text()
     (out / "machines" / "mde12" / "private_e12.hpp").write_text(
         silent.replace("namespace md {", "namespace md_mde12 {} namespace md = md_mde12; namespace md_mde12 {"))
@@ -218,7 +216,7 @@ def mdkit_source():
 def kit_labels():
     labels = {}
     for kit in KITS:
-        text = (REPOS / "OP-XY-MNMD" / "machines" / kit / "kit.h").read_text()
+        text = (HERE / "src" / "OP-XY-MNMD" / "machines" / kit / "kit.h").read_text()
         body = text[text.index("const Model model[models]"):]
         body = body[:body.index("};")]
         rows = re.findall(r'\{\s*"([^"]*)"\s*,.*?\{([^}]*)\}', body, re.S)
@@ -235,12 +233,13 @@ def build():
         (HERE / "sdk" / name).mkdir(parents=True, exist_ok=True)
         for module in ("display.mjs", "controls.mjs"):
             shutil.copy(checkout / "sdk" / "browser" / module, HERE / "sdk" / name / module)
+    pads, nonagon, modfx = (source(repo) for repo in ("opxy-pads", "opxy-nonagon", "OP-XY-Macro"))
+    machines = mnmd_source()
     kit_labels()
-    pads, nonagon, modfx = (source(repo) for repo in SOURCES)
     for mid in HEXAGON:
         preview("staging", "--machine", pads / mid, HERE / "m" / mid)
-    for folder in sorted((REPOS / "OP-XY-MNMD" / "machines").iterdir()):
-        if not (folder / "machine.json").exists():
+    for folder in sorted(machines.iterdir()):
+        if not (folder / "machine.json").exists() or folder.name in MDKIT + ROM_SCREENS:
             continue
         kind = json.loads((folder / "machine.json").read_text())["kind"]
         preview("fork", "--machine" if kind == "drum" else "--source", folder, HERE / "m" / folder.name)
@@ -250,7 +249,6 @@ def build():
             preview("pr3", "--source", sample_wrap(mid, nonagon), HERE / "m" / mid)
         else:
             preview("staging", "--machine", nonagon / mid, HERE / "m" / mid)
-    machines = mdkit_source()
     for mid in MDKIT:
         preview("drum", "--machine", machines / mid, HERE / "m" / mid)
     preview("aux", "--machine", MODFX / "omnifilter", HERE / "m" / "omnifilter")
@@ -286,7 +284,7 @@ def publish():
     for project, spec in MEDIA.items():
         target = SITE / "assets" / "media" / project
         target.mkdir(parents=True, exist_ok=True)
-        ids = spec["ids"] or [p.name for p in sorted((REPOS / "OP-XY-MNMD" / "machines").iterdir())
+        ids = spec["ids"] or [p.name for p in sorted((HERE / "src" / "OP-XY-MNMD" / "machines").iterdir())
                               if (p / "machine.json").exists() and p.name not in [*MDKIT_REPLACES, "mdkit"]]
         for mid in ids:
             for ext in ("mp4", "jpg"):

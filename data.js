@@ -287,7 +287,7 @@ window.SITE = {
           pages: [["charactr", "movement", "diffuse", "texture"], ["tilt", "rate", "time", "drift"]],
           shift: ["charactr", "movement", "diffuse", "texture"],
           presets: ["Halo", "Aurora", "Mirage", "Tide", "Postcard", "Mosaic", "Static"],
-          cpu: "7.2–10.8%", cpuNote: "of the audio",
+          cpu: "7.3–10.9%", cpuNote: "of the audio",
           media: { type: "video", src: "assets/media/modfx/chroma.mp4", poster: "assets/media/modfx/chroma.jpg", alt: "Chroma's optical bench: the light fanning wider as its modules turn up, then Shift held to change its effects to howl, swirl, slice and radio" },
           source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/chroma"
         },

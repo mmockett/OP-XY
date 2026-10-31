@@ -27,11 +27,6 @@ const CHORD = [48, 55, 60, 64];
 // A drum kit's key: its machine (the drum kind's model) and its controls, 0..127.
 const key = (t, model, values) => ({ t, key: { model, values: values.map(v => v / 127) } });
 
-const kit = (models) => models.flatMap((model, k) => {
-  const t0 = 0.2 + k * 1.55;
-  return [{ t: t0 - 0.05, model }, ...plucks(t0, t0 + 1.4, 0.55, [60], 0.08)];
-});
-
 const S = {
   // Hexagon Suite: the scenes of its README's animations
   wane:   { sdk: 'staging', preset: 'Attic', events: [...held([0.3, 0.8, 1.3, 1.8], CHORD, 5.7), sweep(4, 0.8, 3.0, 4.6)] },
@@ -54,10 +49,6 @@ const S = {
   grains: { sdk: 'pr3', sample: true, events: [...held([0.4], [60], 5.8), sweep(0, 0.55, 1.2, 3.4), sweep(5, 5.5 / 7, 3.8, 3.85)] },
   // Grains with no sample assigned, for its README
   'grains-empty': { machine: 'grains', sdk: 'pr3', events: [] },
-  // MNMD's kits: four of each kit's machines, struck in turn
-  mdtrx: { sdk: 'fork', events: kit([0, 1, 3, 5]) },    // BD SD CP CB
-  mdefm: { sdk: 'fork', events: kit([3, 4, 6, 8]) },    // BD SD CP CB
-  mdpi:  { sdk: 'fork', events: kit([3, 4, 5, 10]) },   // BD SD MT CC
   // MD E12: four sampled machines on the tape, each with a control turned
   mde12: { sdk: 'drum', events: [
     key(0, 0, [64, 110, 0, 40, 0, 0, 64, 64]), ...plucks(0.2, 1.5, 0.45, [36], 0.08), sweep(3, 0.9, 0.4, 1.3),       // BD: SPLN
@@ -86,7 +77,7 @@ for (const id of ['mmsid', 'mmvo6', 'mmstat', 'mmpulse', 'mmens', 'mmpar', 'mmdy
 S.mmnois = { sdk: 'fork', events: [...held([0.3], [60], 5.7), sweep(1, '+0.5', 2.0, 4.6)] };
 S.mmsin = { sdk: 'fork', events: [...held([0.3, 0.9, 1.5], [48, 55, 60], 5.7)] };
 
-// MD KIT (OP-XY-MNMD's mdkit branch, drum SDK): nine of its machines for its
+// MD KIT (drum SDK): nine of its machines for its
 // grid, across its four families, each struck while one of its controls turns.
 const mdkit = (model, values, set, to, every) => ({ machine: 'mdkit', sdk: 'drum', events: [
   key(0, model, values), ...plucks(0.3, 6.3, every, [60], 0.08), sweep(set, to, 2.2, 4.6)] });

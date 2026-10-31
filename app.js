@@ -11,7 +11,11 @@
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const $ = (s, el = document) => el.querySelector(s);
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
-  let filter = "all";
+  // What the filters show: a machine's kind and its status.
+  const filters = { kind: "all", status: "all" };
+  const KINDS = ["synth", "drum", "effect", "sample"];
+  const kindOf = m => (/drum/.test(m.kind) ? "drum" : /effect|aux/.test(m.kind) ? "effect" : /sample/.test(m.kind) ? "sample" : "synth");
+  const matches = (m, f = filters) => (f.kind === "all" || kindOf(m) === f.kind) && (f.status === "all" || m.status === f.status);
 
   // Lucide icons (lucide.dev, ISC licence), inlined so the page needs no library.
   const ICONS = {
@@ -21,6 +25,8 @@
     play: '<polygon points="6 3 20 12 6 21 6 3"/>',
     pause: '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
     download: '<path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/>',
+    list: '<path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/>',
+    x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
     cpu: '<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/>',
   };
   const icon = name => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
@@ -72,10 +78,16 @@
   }
 
   // ---- media -------------------------------------------------------------
-  function mediaHtml(md, eager = false) {
-    if (!md) return "";
+  // A video gets its poster when it nears the view and its file only once it has
+  // stayed in view, so scrolling past costs nothing. The lightbox loads at once.
+  function mediaHtml(given, eager = false) {
+    if (!given) return "";
+    // A phone gets the lighter file where there is one.
+    const md = given.small && innerWidth < 720 ? { ...given, ...given.small } : given;
     if (md.type === "video") {
-      return `<video muted loop playsinline ${reduced ? "controls" : ""} preload="${eager ? "auto" : "none"}" poster="${esc(md.poster)}" aria-label="${esc(md.alt)}"><source src="${esc(md.src)}" type="video/mp4"></video>`;
+      return eager
+        ? `<video muted loop playsinline ${reduced ? "controls" : ""} preload="auto" poster="${esc(md.poster)}" src="${esc(md.src)}" aria-label="${esc(md.alt)}"></video>`
+        : `<video muted loop playsinline ${reduced ? "controls" : ""} preload="none" data-poster="${esc(md.poster)}" data-src="${esc(md.src)}" aria-label="${esc(md.alt)}"></video>`;
     }
     if (md.type === "youtube") {
       return `<iframe src="https://www.youtube-nocookie.com/embed/${esc(md.id)}?rel=0" title="${esc(md.alt || "video")}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width:100%;aspect-ratio:16/9;border:0;display:block"></iframe>`;
@@ -83,16 +95,39 @@
     return `<img src="${esc(md.src)}" alt="${esc(md.alt)}" loading="${eager ? "eager" : "lazy"}" decoding="async">`;
   }
 
-  const autoplay = new IntersectionObserver(entries => {
-    for (const e of entries) {
-      const v = e.target;
-      if (e.isIntersecting) { if (v.preload === "none") v.preload = "auto"; v.play().catch(() => {}); }
-      else v.pause();
+  // Phones play two at a time, and a reader saving data gets posters: a tap on
+  // one plays it in the lightbox.
+  const net = navigator.connection || {};
+  const frugal = reduced || net.saveData || /2g/.test(net.effectiveType || "");
+  const inView = new Set();
+  let settle;
+  const load = v => { if (v.dataset.src && !v.getAttribute("src")) v.src = v.dataset.src; };
+  function playVisible() {
+    const most = innerWidth < 720 ? 2 : 6;
+    let n = 0;
+    for (const v of inView) {
+      if (frugal || n >= most) { v.pause(); continue; }
+      n++;
+      load(v);
+      v.play().catch(() => {});
     }
+  }
+  const nearby = new IntersectionObserver(entries => {
+    for (const { target: v, isIntersecting } of entries) {
+      if (isIntersecting) { if (v.dataset.poster && !v.getAttribute("poster")) v.poster = v.dataset.poster; }
+      else if (v.dataset.src && v.getAttribute("src")) { v.pause(); v.removeAttribute("src"); v.load(); }
+    }
+  }, { rootMargin: "1200px 0px" });
+  const visible = new IntersectionObserver(entries => {
+    for (const { target: v, isIntersecting } of entries) {
+      if (isIntersecting) inView.add(v);
+      else { inView.delete(v); v.pause(); }
+    }
+    clearTimeout(settle);
+    settle = setTimeout(playVisible, 200);
   }, { threshold: 0.35 });
   function wireVideos(root) {
-    if (reduced) return;
-    root.querySelectorAll("video").forEach(v => autoplay.observe(v));
+    root.querySelectorAll("video").forEach(v => { nearby.observe(v); visible.observe(v); });
   }
 
   function zoomable(el, md) {
@@ -135,28 +170,36 @@
       (m.shift ? `<span>shift</span>` + m.shift.map(c => `<b style="font-weight:400">${esc(c)}</b>`).join("") : "");
   }
 
-  function card(m, p) {
+  const metaHtml = m => [
+    m.cpu ? `<span>${icon("cpu")}${esc(m.cpu)} ${esc(m.cpuNote || "a voice")}</span>` : "",
+    m.source ? `<a href="${esc(m.source)}">${icon("code")}source</a>` : "",
+    install(m) ? `<a href="${esc(install(m))}">${icon("download")}${m.status === "beta" ? "beta builder" : "builder"}${m.tag ? ` · ${esc(m.tag)}` : ""}</a>` : ""
+  ].join("");
+
+  // size: "feature" (the full width), "pair" (half) or "compact" (a third).
+  function card(m, p, size) {
     const el = document.createElement("article");
-    el.className = m.flagship ? "card flagship" : "card";
+    el.className = `card ${size}`;
+    el.id = m.id;
     el.dataset.status = m.status;
     el.dataset.machine = m.id;
-    const rows = ctrlRows(m);
-    const meta = [
-      m.cpu ? `<span>${icon("cpu")}${esc(m.cpu)} ${esc(m.cpuNote || "a voice")}</span>` : "",
-      m.source ? `<a href="${esc(m.source)}">${icon("code")}source</a>` : "",
-      install(m) ? `<a href="${esc(install(m))}">${icon("download")}${m.status === "beta" ? "beta builder" : "builder"}${m.tag ? ` · ${esc(m.tag)}` : ""}</a>` : ""
-    ].join("");
     const gallery = m.gallery ? [m.media, ...m.gallery] : null;
     el.innerHTML = `
       <div class="screen"${m.media?.aspect ? ` style="aspect-ratio: ${esc(m.media.aspect)}"` : ""}>${m.media ? mediaHtml(m.media) : blankScreen(m, p)}</div>
       ${gallery ? `<div class="thumbs">${gallery.map((g, i) => `<button type="button" aria-label="Show ${esc(g.alt)}" aria-current="${i === 0}"><img src="${esc(g.src)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}
-      <div class="card-h"><h3>${esc(m.name)}<small>${esc(m.kind)}${m.after ? ` · after ${esc(m.after)}` : ""}</small></h3>${pill(m.status)}</div>
-      <p>${esc(m.description)}</p>
-      ${m.screen ? `<p class="scr">${esc(m.screen)}</p>` : ""}
-      ${m.kit ? `<div class="keys" aria-label="Machines in the kit">${m.kit.map(k => `<span>${esc(k)}</span>`).join("")}</div>` : ""}
-      <div class="ctrls">${rows}</div>
-      ${p.audio ? `<div class="sounds" aria-label="${esc(m.name)}'s presets" hidden></div>` : ""}
-      ${meta ? `<div class="meta">${meta}</div>` : ""}`;
+      <div class="card-body">
+        <div class="card-main">
+          <div class="card-h"><h3>${esc(m.name)}<small>${esc(m.kind)}${m.after ? ` · after ${esc(m.after)}` : ""}</small></h3><span class="pill">${pill(m.status)}</span></div>
+          <p>${esc(m.description)}</p>
+          ${m.screen ? `<p class="scr">${esc(m.screen)}</p>` : ""}
+          ${m.kit ? `<div class="keys" aria-label="Machines in the kit">${m.kit.map(k => `<span>${esc(k)}</span>`).join("")}</div>` : ""}
+        </div>
+        <div class="card-side">
+          ${p.audio ? `<div class="sounds" aria-label="${esc(m.name)}'s presets" hidden></div>` : ""}
+          <details class="more"${size === "feature" ? " open" : ""}><summary>controls</summary><div class="ctrls">${ctrlRows(m)}</div></details>
+          <div class="meta">${metaHtml(m)}</div>
+        </div>
+      </div>`;
     if (m.media) zoomable($(".screen", el), m.media);
     if (gallery) el.querySelectorAll(".thumbs button").forEach((b, i) => b.addEventListener("click", () => {
       const fresh = document.createElement("div");
@@ -169,37 +212,53 @@
     return el;
   }
 
+  // The page's rhythm: a machine with its own screen story runs wide, then two
+  // side by side; a flagship always runs wide; the rest sit three to a row.
+  function sizes(list) {
+    let beat = 0;
+    return list.map((m, i) => {
+      if (m.flagship) { beat = 0; return "feature"; }
+      if (!m.screen) return "compact";
+      const size = beat % 3 === 0 || (beat % 3 === 1 && !list[i + 1]?.screen) ? "feature" : "pair";
+      beat = size === "feature" ? 1 : beat + 1;
+      return size;
+    });
+  }
+
+  const projectStatus = p => (p.machines.length === 1 ? p.machines[0].status : RANK[p.status] > RANK[best(p.machines)] ? p.status : best(p.machines));
+  const tallyOf = p => (p.machines.length === 1 ? p.machines[0].kind : ORDER.map(st => [st, p.machines.filter(m => m.status === st).length]).filter(([, n]) => n)
+    .map(([st, n]) => `${n} ${SITE.statuses[st].label}`).join(" · "));
+  const versionHtml = p => `<small${shipped(p) && shipped(p) !== p.version ? ` title="${esc(`In the builder; latest release ${p.version}`)}"` : ""}>${esc(shipped(p) || p.version)}</small>`;
+  const actionsHtml = p => ext(p.repo, "repository", "btn btn-ink", "github") + (projectStatus(p) === "beta" ? ext(SITE.beta, "beta builder") : ext(SITE.builder, "open-xy")) + p.links.map(l => ext(l.href, l.label)).join("");
+
   function project(p, i) {
     const sec = document.createElement("section");
-    sec.className = "project wrap";
+    sec.className = "project";
     sec.id = p.id;
+    sec.dataset.project = p.id;
     sec.setAttribute("aria-labelledby", `${p.id}-h`);
     // A project of one machine shows that machine's screen and controls itself, with no cards.
     const solo = p.machines.length === 1 ? p.machines[0] : null;
-    const status = solo ? solo.status : RANK[p.status] > RANK[best(p.machines)] ? p.status : best(p.machines);
-    if (solo) { sec.dataset.solo = ""; sec.dataset.status = status; }
-    const tally = solo ? solo.kind : ORDER.map(st => [st, p.machines.filter(m => m.status === st).length]).filter(([, n]) => n)
-      .map(([st, n]) => `${n} ${SITE.statuses[st].label}`).join(" · ");
+    if (solo) sec.dataset.solo = solo.id;
     sec.innerHTML = `
+      <div class="steps" aria-hidden="true"></div>
       <div class="sec-head">
         <span class="num">${String(i + 1).padStart(2, "0")} · ${esc(p.kicker)}</span>
-        <div>
-          <h2 id="${p.id}-h">${esc(p.name)} <small${shipped(p) && shipped(p) !== p.version ? ` title="${esc(`In the builder; latest release ${p.version}`)}"` : ""}>${esc(shipped(p) || p.version)}</small></h2>
-          <p class="sub">${esc(p.tagline)}</p>
-        </div>
-        <div class="sec-tools">${pill(status)}<span class="tally">${esc(tally)}</span></div>
+        <h2 id="${p.id}-h">${esc(p.name)} <span class="ver">${versionHtml(p)}</span></h2>
+        <p class="sub">${esc(p.tagline)}</p>
+        <div class="sec-tools"><span class="pill">${pill(projectStatus(p))}</span><span class="tally">${esc(tallyOf(p))}</span></div>
       </div>
-      ${p.specs ? specStrip(p.specs) : ""}
-      ${solo ? `<figure class="device p-media solo"><div class="screen">${solo.media ? mediaHtml(solo.media) : blankScreen(solo, p)}</div></figure>` : ""}
       ${p.media ? `<figure class="device p-media"><div class="screen"${p.media.aspect ? ` style="aspect-ratio: ${esc(p.media.aspect)}"` : ""}></div></figure>` : ""}
+      ${solo ? `<figure class="device p-media solo"><div class="screen">${solo.media ? mediaHtml(solo.media) : blankScreen(solo, p)}</div></figure>` : ""}
       <div class="p-body">
         <div class="p-desc">${p.description.map(t => `<p>${esc(t)}</p>`).join("")}
           ${solo ? `<div class="ctrls">${ctrlRows(solo)}</div>` : ""}
-          <p class="actions">${ext(p.repo, "repository", "btn btn-ink", "github")}${status === "beta" ? ext(SITE.beta, "beta builder") : ext(SITE.builder, "open-xy")}${p.links.map(l => ext(l.href, l.label)).join("")}</p>
+          <p class="actions">${actionsHtml(p)}</p>
         </div>
+        ${p.specs ? specStrip(p.specs) : ""}
       </div>`;
     if (p.media) {
-      const ms = $(".p-media .screen", sec);
+      const ms = $(".p-media:not(.solo) .screen", sec);
       ms.innerHTML = mediaHtml(p.media);
       zoomable(ms, p.media);
     }
@@ -220,7 +279,8 @@
       }
       const grid = document.createElement("div");
       grid.className = "cards";
-      list.forEach(m => grid.append(card(m, p)));
+      const size = sizes(list);
+      list.forEach((m, k) => grid.append(card(m, p, size[k])));
       sec.append(grid);
     });
     return sec;
@@ -240,53 +300,112 @@
     $("#legend").innerHTML = ORDER.map(st => `<li>${pill(st)}<span>${esc(SITE.statuses[st].note)}</span></li>`).join("");
   }
 
-  function chips() {
-    const opts = [["all", "all", all().length], ...ORDER.map(st => [st, SITE.statuses[st].label, count(st)])];
-    $("#filter").innerHTML = opts.map(([k, label, n]) =>
-      `<button class="chip" type="button" data-f="${k}" aria-pressed="${filter === k}">${esc(label)} <b>${n}</b></button>`).join("");
-    $("#filter").querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => { filter = b.dataset.f; chips(); applyFilter(); }));
+  // The filters: drawn in the wall, the rail and the sheet, one state between them.
+  function filtersHtml() {
+    const row = (facet, label, opts) => `<div class="f-row" role="group" aria-label="${label}"><span class="f-label">${label}</span>` + opts.map(([k, text, n]) =>
+      `<button class="chip" type="button" data-facet="${facet}" data-value="${k}" aria-pressed="${filters[facet] === k}"${n === 0 && filters[facet] !== k ? " disabled" : ""}>${esc(text)}${n === null ? "" : ` <b>${n}</b>`}</button>`).join("") + `</div>`;
+    const tally = (facet, value) => all().filter(m => matches(m, { ...filters, [facet]: value })).length;
+    return row("kind", "kind", [["all", "all", tally("kind", "all")], ...KINDS.map(k => [k, k, tally("kind", k)])]) +
+      row("status", "status", [["all", "all", tally("status", "all")], ...ORDER.map(st => [st, SITE.statuses[st].label, tally("status", st)])]);
+  }
+  function drawFilters() {
+    document.querySelectorAll("[data-filters]").forEach(el => { el.innerHTML = filtersHtml(); });
+  }
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-facet]");
+    if (!b) return;
+    filters[b.dataset.facet] = filters[b.dataset.facet] === b.dataset.value ? "all" : b.dataset.value;
+    drawFilters();
+    applyFilter();
+  });
+
+  // A project's machines in the order the page shows them: by group.
+  const inOrder = p => (p.groups || [{}]).flatMap((_, gi) => p.machines.filter(m => (m.group ?? 0) === gi));
+  const anchor = m => (SITE.projects.find(p => p.machines.length === 1 && p.machines[0] === m)?.id ?? m.id);
+  const dot = st => `<i class="dot st-${st}" title="${esc(SITE.statuses[st].label)}" aria-hidden="true"></i>`;
+
+  // Every machine at a glance: each tile a small poster, a click from its card.
+  function drawWall() {
+    $("#wall").innerHTML = SITE.projects.map(p => `<div class="wall-group" data-project="${p.id}">
+      <h3><a href="#${p.id}">${esc(p.name.toLowerCase())}</a></h3>
+      <div class="tiles">${inOrder(p).map(m => `<a class="tile" href="#${anchor(m)}" data-machine="${m.id}">
+        <span class="thumb">${m.media?.poster ? `<img src="${esc(m.media.poster.replace(/\.jpg$/, "-t.jpg"))}" alt="" loading="lazy" decoding="async">` : ""}</span>
+        <span class="tile-n">${dot(m.status)}${esc(m.name.toLowerCase())}</span></a>`).join("")}</div></div>`).join("");
+    // No thumbnail yet: a machine the routine has just added shows its name alone.
+    $("#wall").querySelectorAll("img").forEach(img => img.addEventListener("error", () => img.remove()));
+  }
+
+  // The list of suites and machines: the rail on a wide screen, the sheet on a phone.
+  function drawIndex() {
+    document.querySelectorAll("[data-index]").forEach(el => {
+      el.innerHTML = SITE.projects.map(p => `<li class="ix-suite" data-project="${p.id}">
+        <a class="ix-head" href="#${p.id}">${esc(p.name.toLowerCase())}<span>${p.machines.length}</span></a>
+        ${p.machines.length > 1 ? `<ul>${inOrder(p).map(m => `<li data-machine="${m.id}"><a href="#${m.id}">${dot(m.status)}${esc(m.name.toLowerCase())}</a></li>`).join("")}</ul>` : ""}
+      </li>`).join("");
+    });
   }
 
   function applyFilter() {
-    let shown = 0;
+    const byId = new Map(all().map(m => [m.id, m]));
+    const on = id => matches(byId.get(id));
     document.querySelectorAll(".project").forEach(sec => {
-      if (sec.dataset.solo !== undefined) {
-        const on = filter === "all" || sec.dataset.status === filter;
-        sec.hidden = !on;
-        shown += on;
-        return;
-      }
+      if (sec.dataset.solo) { sec.hidden = !on(sec.dataset.solo); return; }
       let inSec = 0;
       sec.querySelectorAll(".cards").forEach(grid => {
         let inGrid = 0;
-        grid.querySelectorAll(".card").forEach(c => {
-          const on = filter === "all" || c.dataset.status === filter;
-          c.hidden = !on;
-          inGrid += on;
-        });
+        grid.querySelectorAll(".card").forEach(c => { c.hidden = !on(c.dataset.machine); inGrid += !c.hidden; });
         const h = grid.previousElementSibling;
         if (h && h.dataset.group !== undefined) h.hidden = !inGrid;
         grid.hidden = !inGrid;
         inSec += inGrid;
       });
       sec.hidden = !inSec;
-      shown += inSec;
     });
+    // The tiles and the index follow the filters too.
+    document.querySelectorAll(".tile, [data-index] li[data-machine]").forEach(el => { el.hidden = !on(el.dataset.machine); });
+    document.querySelectorAll(".wall-group, .ix-suite").forEach(el => {
+      const p = SITE.projects.find(x => x.id === el.dataset.project);
+      el.hidden = !p.machines.some(m => matches(m));
+    });
+    const shown = all().filter(m => matches(m)).length;
+    $("#shown").textContent = `${shown} machine${shown === 1 ? "" : "s"}`;
     let empty = $("#empty");
     if (!shown) {
-      if (!empty) { empty = document.createElement("p"); empty.id = "empty"; empty.className = "wrap lead"; $("#projects").append(empty); }
-      empty.style.padding = "48px var(--gut)";
-      empty.textContent = filter === "live"
-        ? "Nothing is in the open-xy.com builder yet."
-        : filter === "beta" ? "Nothing is in the beta builder yet."
-        : "No machines with this status right now.";
+      if (!empty) { empty = document.createElement("p"); empty.id = "empty"; empty.className = "lead"; $("#projects").append(empty); }
+      empty.textContent = "No machines match these filters.";
     } else if (empty) empty.remove();
   }
 
   function nav() {
-    $("#nav").innerHTML = SITE.projects.map(p => `<a href="#${p.id}">${esc(p.name.toLowerCase())}</a>`).join("") +
+    $("#nav").innerHTML = SITE.projects.map(p => `<a href="#${p.id}" data-project="${p.id}">${esc(p.name.toLowerCase())}</a>`).join("") +
       `<a class="opt" href="${SITE.github}">${icon("github")}github</a>`;
   }
+
+  // Where you are: the section and machine crossing the reading line, marked in
+  // the bar, the rail and the phone's index button.
+  const crossing = new Set();
+  function mark() {
+    const els = [...crossing];
+    const sec = els.find(e => e.classList.contains("project"));
+    const card = els.find(e => e.classList.contains("card"));
+    const pid = sec?.dataset.project, mid = card?.dataset.machine;
+    document.querySelectorAll("#nav a[data-project], .ix-suite").forEach(a => a.classList.toggle("here", a.dataset.project === pid));
+    document.querySelectorAll("#nav a[data-project]").forEach(a => (a.dataset.project === pid ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")));
+    document.querySelectorAll("[data-index] li[data-machine]").forEach(li => li.classList.toggle("here", li.dataset.machine === mid));
+    const name = SITE.projects.find(p => p.id === pid)?.name.toLowerCase();
+    const m = mid && all().find(x => x.id === mid);
+    $("#where").textContent = name ? (m ? `${name} · ${m.name.toLowerCase()}` : name) : "all machines";
+    // Keep the marked line in sight in a rail too long for the window, without moving the page.
+    const rail = $(".rail-list"), line = rail && rail.querySelector("li[data-machine].here");
+    if (rail && line && rail.scrollHeight > rail.clientHeight) {
+      const r = rail.getBoundingClientRect(), l = line.getBoundingClientRect();
+      if (l.top < r.top || l.bottom > r.bottom) rail.scrollTop += l.top - r.top - r.height / 2;
+    }
+  }
+  const spy = new IntersectionObserver(entries => {
+    for (const e of entries) e.isIntersecting ? crossing.add(e.target) : crossing.delete(e.target);
+    mark();
+  }, { rootMargin: "-30% 0px -65% 0px" });
 
   // ---- preset clips ----------------------------------------------------------
   // A project's clips (assets/audio/<project>.json: machine id -> [{preset, src, phrase}])
@@ -325,13 +444,37 @@
   function render() {
     const host = $("#projects");
     host.textContent = "";
-    SITE.projects.forEach((p, i) => {
+    const clips = SITE.projects.map((p, i) => {
       const sec = project(p, i);
       host.append(sec);
-      if (p.audio) loadClips(p, sec);
+      return p.audio ? loadClips(p, sec) : null;
     });
     wireVideos(host);
-    legend(); chips(); applyFilter(); heroBuilder();
+    host.querySelectorAll(".project, .card").forEach(el => spy.observe(el));
+    drawWall(); drawIndex();
+    legend(); drawFilters(); applyFilter(); heroBuilder();
+    return Promise.all(clips);
+  }
+
+  // After the catalog: statuses and versions change in place, so nothing playing restarts.
+  function refresh() {
+    for (const p of SITE.projects) {
+      const sec = document.getElementById(p.id);
+      $(".sec-head .pill", sec).innerHTML = pill(projectStatus(p));
+      $(".tally", sec).textContent = tallyOf(p);
+      $(".ver", sec).innerHTML = versionHtml(p);
+      $(".actions", sec).innerHTML = actionsHtml(p);
+      for (const m of p.machines) {
+        const c = document.getElementById(m.id);
+        if (c?.classList.contains("card")) {
+          c.dataset.status = m.status;
+          $(".pill", c).innerHTML = pill(m.status);
+          $(".meta", c).innerHTML = metaHtml(m);
+        }
+        document.querySelectorAll(`[data-machine="${m.id}"] .dot`).forEach(d => { d.className = `dot st-${m.status}`; d.title = SITE.statuses[m.status].label; });
+      }
+    }
+    legend(); drawFilters(); applyFilter(); heroBuilder();
   }
 
   // The hero's builder button: open-xy.com once any machine is live there, the
@@ -369,17 +512,42 @@
     return changed;
   }
 
+  // The hero: each of its nine screens is a link to that machine's card, and
+  // the caption lists them in the grid's order.
   const hero = $("#hero-media");
-  hero.innerHTML = mediaHtml(SITE.hero, true);
-  zoomable(hero, SITE.hero);
+  const nine = SITE.hero.machines.map(id => all().find(m => m.id === id));
+  if (nine.every(Boolean)) {
+    hero.innerHTML = mediaHtml(SITE.hero) + `<div class="hot">${nine.map(m => `<a href="#${m.id}" aria-label="${esc(m.name)}"><span>${esc(m.name.toLowerCase())}</span></a>`).join("")}</div>`;
+    $("#hero-cap").innerHTML = nine.map(m => `<a href="#${m.id}">${esc(m.name)}</a>`).join(", ");
+  } else hero.innerHTML = mediaHtml(SITE.hero);
   wireVideos(hero);
   nav();
-  render();
+  // The clips' rows push later cards down as they arrive, so a link into the page
+  // lands again once they have, unless the reader has already moved.
+  let moved = false;
+  for (const ev of ["wheel", "touchstart", "keydown"]) addEventListener(ev, () => { moved = true; }, { once: true, passive: true });
+  const land = () => { if (location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({ behavior: "instant" }); };
+  land();
+  render().then(() => { if (!moved) land(); });
+
+  // The phone's index: a sheet over the page, closed by choosing a machine.
+  const sheet = $("#sheet");
+  $("#index-btn").addEventListener("click", () => sheet.showModal());
+  sheet.addEventListener("click", e => { if (e.target === sheet || e.target.closest("[data-index] a")) sheet.close(); });
+
+  // A link to a machine the filters are hiding clears them.
+  function reveal() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const m = all().find(x => x.id === id);
+    if (id && m && !matches(m)) { filters.kind = filters.status = "all"; drawFilters(); applyFilter(); document.getElementById(id)?.scrollIntoView(); }
+  }
+  addEventListener("hashchange", reveal);
+
   $("#lightbox").addEventListener("click", e => { if (e.target.id === "lightbox") e.target.close(); });
   $("#lightbox").addEventListener("close", () => { $("#lb-media").textContent = ""; });
 
   Promise.allSettled([syncCatalog()]).then(([cat]) => {
-    if (cat.status === "fulfilled" && cat.value) render();
+    if (cat.status === "fulfilled" && cat.value) refresh();
     if (cat.status !== "fulfilled") $("#synced").textContent = "Statuses as last updated; the Open-XY catalog is unreachable.";
   });
 })();

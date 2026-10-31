@@ -10,7 +10,7 @@ A static page with no build step. GitHub Pages serves it from `main`.
 | `data.js` | Every project, machine, status, link and description |
 | `app.js` | Draws the page from `data.js`, and checks statuses live |
 | `style.css` | The look: a dark grey page, black screens, the header's grey steps |
-| `assets/media/<project>/` | Screens: MP4 + JPG poster |
+| `assets/media/<project>/` | Screens: MP4, JPG poster, and `-t.jpg`, a small poster for the machine's tile |
 | `tools/render/` | Renders the screens from each machine's display code |
 | `assets/audio/<project>/` and `<project>.json` | Preset clips and their list; each card plays them |
 
@@ -73,8 +73,25 @@ python3 tools/render/build.py --publish
 The first builds each machine's browser preview, the second plays notes and
 turns controls through each one (the scenes are in `render.mjs`; name
 machines to render only those), and the third copies the MP4s and posters
-into `assets/media` and rebuilds the hero and MNMD grids. The font is used
-for rendering only: it is never committed or served.
+into `assets/media` and rebuilds the grids and the small posters. The font is
+used for rendering only: it is never committed or served.
+
+## The page
+
+The hero's nine screens link to their machines, which `hero.machines` in
+`data.js` lists in the grid's order. Under it, every machine is a tile, and a
+tile with no small poster yet shows just its name. The filters, the tiles, the
+rail beside the suites and the phone's index all draw from `data.js`, so a new
+machine needs nothing beyond its entry there. Every card has its machine's `id`
+as its anchor, so `#moth` and `#modfx` both link in.
+
+A card's size comes from its entry. A `flagship` runs the full width. A machine
+with a `screen` line takes the suite's rhythm: one wide, then two side by side.
+One without a `screen` line sits three to a row.
+
+A video gets its poster when it nears the view, and its file only once it has
+stayed in view. Up to six play at once, two on a phone, and a reader saving
+data gets posters, with a tap playing one in the lightbox.
 
 ## Daily sync
 

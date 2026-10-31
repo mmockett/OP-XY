@@ -270,8 +270,19 @@ def grid(ids, columns, out):
     run("ffmpeg", "-loglevel", "error", "-y", "-ss", "4", "-i", f"{out}.mp4", "-frames:v", "1", "-q:v", "3", f"{out}.jpg")
 
 
+def thumbnails():
+    """The small poster each machine's tile shows: about 10 KB, against 40 KB for the full one."""
+    for poster in (SITE / "assets" / "media").glob("*/*.jpg"):
+        if not poster.stem.endswith("-t") and poster.stem not in ("hexagon", "nonagon", "overview"):
+            run("ffmpeg", "-loglevel", "error", "-y", "-i", poster, "-vf", "scale=360:-2", "-q:v", "4", poster.with_name(f"{poster.stem}-t.jpg"))
+
+
 def publish():
     grid(HERO, 3, SITE / "assets" / "media" / "hero")
+    # A phone's hero: half the size, for a screen that can't show more.
+    run("ffmpeg", "-loglevel", "error", "-y", "-i", SITE / "assets" / "media" / "hero.mp4", "-vf", "scale=724:-2", "-movflags", "+faststart",
+        "-pix_fmt", "yuv420p", "-c:v", "libx264", "-crf", "24", "-preset", "slow", "-an", SITE / "assets" / "media" / "hero-s.mp4")
+    run("ffmpeg", "-loglevel", "error", "-y", "-i", SITE / "assets" / "media" / "hero.jpg", "-vf", "scale=724:-2", "-q:v", "4", SITE / "assets" / "media" / "hero-s.jpg")
     for project, spec in MEDIA.items():
         target = SITE / "assets" / "media" / project
         target.mkdir(parents=True, exist_ok=True)
@@ -283,6 +294,7 @@ def publish():
         for name, members, columns in spec.get("grids", []):
             grid(members, columns, target / name)
         print(f"published {project}")
+    thumbnails()
 
 
 if __name__ == "__main__":

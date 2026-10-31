@@ -522,8 +522,8 @@
   } else hero.innerHTML = mediaHtml(SITE.hero);
   wireVideos(hero);
   nav();
-  // The clips' rows push later cards down as they arrive, so a link into the page
-  // lands again once they have, unless the reader has already moved.
+  // The clips' rows and the catalog's versions move later cards as they arrive, so
+  // a link into the page lands again after each, unless the reader has already moved.
   let moved = false;
   for (const ev of ["wheel", "touchstart", "keydown"]) addEventListener(ev, () => { moved = true; }, { once: true, passive: true });
   const land = () => { if (location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({ behavior: "instant" }); };
@@ -547,7 +547,7 @@
   $("#lightbox").addEventListener("close", () => { $("#lb-media").textContent = ""; });
 
   Promise.allSettled([syncCatalog()]).then(([cat]) => {
-    if (cat.status === "fulfilled" && cat.value) refresh();
+    if (cat.status === "fulfilled" && cat.value) { refresh(); if (!moved) land(); }
     if (cat.status !== "fulfilled") $("#synced").textContent = "Statuses as last updated; the Open-XY catalog is unreachable.";
   });
 })();

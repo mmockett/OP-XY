@@ -46,7 +46,7 @@ window.SITE = {
       name: "Hexagon Suite",
       kicker: "six synths",
       status: "live",
-      version: "v1.0.0",
+      version: "v1.1.0",
       repo: "https://github.com/mmockett/OP-XY-Hexagon",
       links: [],
       tagline: "Six synths, made to be played together.",
@@ -56,7 +56,7 @@ window.SITE = {
       ],
       specs: [
         [["synths", "6"], ["controls", "8"], ["cpu", "2–6%"], ["os", "1.2.1"]],
-        [["sdk", "1.4"], ["release", "v1.0.0"], ["screens", "6"], ["licence", "MIT"]]
+        [["sdk", "1.4"], ["release", "v1.1.0"], ["screens", "6"], ["licence", "MIT"]]
       ],
       machines: [
         {
@@ -128,7 +128,7 @@ window.SITE = {
       name: "Nonagon Suite",
       kicker: "nine experiments",
       status: "live",
-      version: "v0.1.0",
+      version: "v0.3.0",
       repo: "https://github.com/mmockett/OP-XY-Nonagon",
       links: [],
       tagline: "Nine experimental sounds, each grown from a piece of physics.",
@@ -138,7 +138,7 @@ window.SITE = {
       ],
       specs: [
         [["synths", "7"], ["sample", "2"], ["cpu", "1–6%"], ["os", "1.2.1"]],
-        [["sdk", "1.4"], ["release", "v0.1.0"], ["screens", "9"], ["licence", "MIT"]]
+        [["sdk", "1.4"], ["release", "v0.3.0"], ["screens", "9"], ["licence", "MIT"]]
       ],
       media: { type: "video", aspect: "1448 / 668", src: "assets/media/nonagon/nonagon.mp4", poster: "assets/media/nonagon/nonagon.jpg", alt: "Nonagon Suite's nine screens playing together: Sand, Cocoa and Ghost on top; Coin, Recur and Fermi in the middle; Mach, Butterfly and Drop below" },
       machines: [
@@ -266,7 +266,7 @@ window.SITE = {
       name: "ModFX",
       kicker: "mod + effect",
       status: "soon",
-      version: "v1.4.0",
+      version: "v1.5.0",
       repo: "https://github.com/mmockett/OP-XY-ModFX",
       links: [],
       tagline: "A filter for every track, and a 1970s effects box and an ethereal stereo console for the sends.",
@@ -276,7 +276,7 @@ window.SITE = {
       ],
       specs: [
         [["aux", "1"], ["send", "2"], ["presets", "19"], ["os", "1.2.1"]],
-        [["sdk", "1.8"], ["release", "v1.4.0"], ["screens", "3"], ["licence", "MIT"]]
+        [["sdk", "1.8"], ["release", "v1.5.0"], ["screens", "3"], ["licence", "MIT"]]
       ],
       machines: [
         {
@@ -295,7 +295,7 @@ window.SITE = {
           id: "lint", name: "Lint", kind: "send effect", catalog: "lint", status: "soon",
           after: "Finegear's Dust Collector",
           description: "Two tape saturations, an optical phaser, a gritty echo and a three-spring tank, in any of six orders. One can be patched into the echo's feedback loop, and two LFOs move them. At full send a track runs wholly through the box.",
-          screen: "Screen: the box from above, its four bays in order on one patch cable. Each control moves its own bay.",
+          screen: "Screen: an effects chassis with its lid off, seen from above. Its four modules sit in order on one patch cable, and each control moves a part of its module.",
           pages: [["dust", "phase", "echo", "spring"], ["tape 2", "rate", "time", "tone"]],
           shift: ["order", "shape", "loop", "wobble"],
           presets: ["Dusty", "Tank", "Slapback", "Swoosh", "Runaway", "Crushed"],
@@ -321,7 +321,7 @@ window.SITE = {
       name: "MNMD",
       kicker: "machinedrum + monomachine",
       status: "live",
-      version: "v1.1.4",
+      version: "v1.1.6",
       repo: "https://github.com/mmockett/OP-XY-MNMD",
       links: [],
       tagline: "Elektron's Machinedrum and Monomachine, rebuilt for the OP–XY.",
@@ -331,7 +331,7 @@ window.SITE = {
       ],
       specs: [
         [["kits", "2"], ["synths", "14"], ["keys", "24"], ["os", "1.2.1"]],
-        [["drums", "49"], ["release", "v1.1.4"], ["screens", "16"], ["licence", "MIT"]]
+        [["drums", "49"], ["release", "v1.1.6"], ["screens", "16"], ["licence", "MIT"]]
       ],
       media: { type: "video", src: "assets/media/mnmd/overview.mp4", poster: "assets/media/mnmd/overview.jpg", alt: "Eight MNMD screens: MD KIT, MD E12, SID-6581, VO-6, FM STAT, SWAVE-PULSE, DPRO-WAVE and DPRO-DENS" },
       groups: [
@@ -381,19 +381,19 @@ window.SITE = {
           presets: ["Strike", "Zap", "Bass", "Reed"],
           media: { type: "video", src: "assets/media/mnmd/mmdyn.mp4", poster: "assets/media/mnmd/mmdyn.jpg", alt: "FM DYN's screen: two operators into a carrier, beside the output wave" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmdyn" },
-        { id: "mmsaw", group: 1, name: "SWAVE-SAW", kind: "synth", catalog: "mmsaw", status: "soon",
+        { id: "mmsaw", group: 1, name: "SWAVE-SAW", kind: "synth", catalog: "mmsaw", status: "beta",
           description: "Detuned saw stack with sub-octaves, from a single saw to a supersaw.",
           pages: [["unil", "uniw", "unix", ""], ["subx", "sub1", "sub2", "tune"]],
           presets: ["Stack", "Super", "Wide", "Thin", "Sub"],
           media: { type: "video", src: "assets/media/mnmd/mmsaw.mp4", poster: "assets/media/mnmd/mmsaw.jpg", alt: "SWAVE-SAW's screen: the saw stack over its sub-octaves" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmsaw" },
-        { id: "mmsin", group: 1, name: "GND-SIN", kind: "synth", catalog: "mmsin", status: "soon",
+        { id: "mmsin", group: 1, name: "GND-SIN", kind: "synth", catalog: "mmsin", status: "beta",
           description: "A sine wave.",
           pages: [["", "", "", "tune"]],
           presets: ["Sine"],
           media: { type: "video", src: "assets/media/mnmd/mmsin.mp4", poster: "assets/media/mnmd/mmsin.jpg", alt: "GND-SIN's screen: a sine" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmsin" },
-        { id: "mmnois", group: 1, name: "GND-NOIS", kind: "synth", catalog: "mmnois", status: "soon",
+        { id: "mmnois", group: 1, name: "GND-NOIS", kind: "synth", catalog: "mmnois", status: "beta",
           description: "Noise, from white to red.",
           pages: [["st", "red", "ston", "tune"]],
           presets: ["White", "Pink", "Red", "Loud"],

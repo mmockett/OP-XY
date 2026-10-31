@@ -43,7 +43,7 @@ MDKIT_REPLACES = ["mdtrx", "mdefm", "mdpi"]
 MDKIT_GRID = ["mdkit-bd", "mdkit-cb", "mdkit-cp", "mdkit-xt", "mdkit-oh", "mdkit-ma", "mdkit-ml", "mdkit-sn", "mdkit-ns"]
 MODFX = REPOS / "OP-XY-Macro"
 # The commits the suites' screens are finalised at, read with git archive.
-SOURCES = {"opxy-pads": "3aa0c15", "opxy-nonagon": "v0.3.0", "OP-XY-Macro": "v1.5.0"}
+SOURCES = {"opxy-pads": "v1.2.0", "opxy-nonagon": "v0.3.0", "OP-XY-Macro": "v1.5.0"}
 # The hero at the top of the page: nine machines from three suites.
 HERO = ["moth", "hollow", "wane", "chroma", "ghost", "recur", "bloom", "orbit", "lint"]
 HEXAGON = ["wane", "bloom", "hollow", "orbit", "bend", "moth"]

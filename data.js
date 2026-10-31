@@ -28,7 +28,7 @@ window.SITE = {
   catalog: "https://github.com/etcetc000/open-xy/blob/main/catalog/machines.json",
 
   // The hero screen at the top of the page.
-  hero: { type: "video", src: "assets/media/hero.mp4", poster: "assets/media/hero.jpg", alt: "Nine screens playing together: Moth, Hollow and Wane on top; Chroma, Ghost and Recur in the middle; Bloom, Orbit and Lint below" },
+  hero: { type: "video", src: "assets/media/hero.mp4", poster: "assets/media/hero.jpg", alt: "Screens of Moth, Hollow and Wane on top; Chroma, Ghost and Recur in the middle; Bloom, Orbit and Lint below" },
 
   statuses: {
     live: { label: "live",        note: "In the open-xy.com builder." },

@@ -46,7 +46,7 @@ window.SITE = {
       name: "Hexagon Suite",
       kicker: "six synths",
       status: "live",
-      version: "v1.1.0",
+      version: "v1.4.0",
       repo: "https://github.com/mmockett/OP-XY-Hexagon",
       links: [],
       tagline: "Six synths, made to be played together.",
@@ -55,8 +55,8 @@ window.SITE = {
         "Levels are matched and layouts shared, so they layer and swap within a project. Each has an animated screen that follows the sound."
       ],
       specs: [
-        [["synths", "6"], ["controls", "8"], ["cpu", "2–6%"], ["os", "1.2.1"]],
-        [["sdk", "1.4"], ["release", "v1.1.0"], ["screens", "6"], ["licence", "MIT"]]
+        [["synths", "6"], ["controls", "8"], ["cpu", "2–9%"], ["os", "1.2.1"]],
+        [["sdk", "1.4"], ["release", "v1.4.0"], ["screens", "6"], ["licence", "MIT"]]
       ],
       machines: [
         {
@@ -75,7 +75,7 @@ window.SITE = {
           description: "Additive synth with 24 sine partials. Shape sets the waveform, vowel adds formants from oo to ee. Breath, blur and haze add drift, noise and beating.",
           screen: "Screen: partials as stems under a low sun, formants as hills behind.",
           pages: [["tilt", "shape", "stretch", "vowel"], ["breath", "blur", "haze", "time"]],
-          cpu: "6.2%",
+          cpu: "9.0%",
           media: { type: "video", src: "assets/media/hexagon/bloom.mp4", poster: "assets/media/hexagon/bloom.jpg", alt: "Bloom's screen: partials as stems, formant hills sliding as the vowel sweeps" },
           source: "https://github.com/mmockett/OP-XY-Hexagon/tree/main/bloom"
         },
@@ -85,7 +85,7 @@ window.SITE = {
           description: "Blown and bowed resonator. Eight tuned resonances shaped like a voice, violin, organ pipe or wine glass. Held notes resonate together; spread adds drifting detuned copies.",
           screen: "Screen: an engraved acoustics plate, with flames that rise with each resonance.",
           pages: [["breath", "body", "bright", "ring"], ["air", "vowel", "spread", "sympathy"]],
-          cpu: "4.9%",
+          cpu: "4.5%",
           media: { type: "video", src: "assets/media/hexagon/hollow.mp4", poster: "assets/media/hexagon/hollow.jpg", alt: "Hollow's engraved acoustics plate, the body changing from a voice to wine glasses" },
           source: "https://github.com/mmockett/OP-XY-Hexagon/tree/main/hollow"
         },
@@ -115,7 +115,7 @@ window.SITE = {
           description: "FM sine, wavefolder and vactrol lowpass gate. Strike up for plucks, mallets and bongos; at zero it holds like a pad. Glow sets the gate's release.",
           screen: "Screen: a moth on a specimen plate, its wing edges drawn by the folded waveform.",
           pages: [["fold", "fm", "ratio", "strike"], ["glow", "bias", "mode", "drift"]],
-          cpu: "4.9%",
+          cpu: "3.9%",
           media: { type: "video", src: "assets/media/hexagon/moth.mp4", poster: "assets/media/hexagon/moth.jpg", alt: "Moth's wings, edged by the folded waveform, lighting with each plucked note" },
           source: "https://github.com/mmockett/OP-XY-Hexagon/tree/main/moth"
         }
@@ -128,7 +128,7 @@ window.SITE = {
       name: "Nonagon Suite",
       kicker: "nine experiments",
       status: "live",
-      version: "v0.3.0",
+      version: "v0.5.0",
       repo: "https://github.com/mmockett/OP-XY-Nonagon",
       links: [],
       tagline: "Nine experimental sounds, each grown from a piece of physics.",
@@ -138,7 +138,7 @@ window.SITE = {
       ],
       specs: [
         [["synths", "7"], ["sample", "2"], ["cpu", "1–6%"], ["os", "1.2.1"]],
-        [["sdk", "1.4"], ["release", "v0.3.0"], ["screens", "9"], ["licence", "MIT"]]
+        [["sdk", "1.4"], ["release", "v0.5.0"], ["screens", "9"], ["licence", "MIT"]]
       ],
       media: { type: "video", aspect: "1448 / 668", src: "assets/media/nonagon/nonagon.mp4", poster: "assets/media/nonagon/nonagon.jpg", alt: "Nonagon Suite's nine screens playing together: Sand, Cocoa and Ghost on top; Coin, Recur and Fermi in the middle; Mach, Butterfly and Drop below" },
       machines: [
@@ -148,7 +148,7 @@ window.SITE = {
           description: "A bowed plate strewn with sand. Grains rattle on its moving areas, then settle into the figure's nodal lines, leaving a glassy tone. Tilt runs the sand downhill; shake keeps it jumping.",
           screen: "Screen: the plate on its column, tipping with tilt, the sand drawing the figure.",
           pages: [["figure", "bow", "sand", "grain"], ["plate", "settle", "tilt", "shake"]],
-          cpu: "5.4%",
+          cpu: "5.0%",
           media: { type: "video", src: "assets/media/nonagon/sand.mp4", poster: "assets/media/nonagon/sand.jpg", alt: "Sand's plate tipping on its column as three notes ring, the sand running downhill" },
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/sand"
         },
@@ -158,7 +158,7 @@ window.SITE = {
           description: "A spoon tapping a mug of cocoa. Stirred-in powder fills the drink with bubbles that slow sound down, so each tap starts low and climbs to pitch as they clear. Cup, fill and spoon set the ring.",
           screen: "Screen: the mug, spoon in the drink; froth on the drink clears as the note comes into tune.",
           pages: [["powder", "taps", "fizz", "cup"], ["fill", "spoon", "pops", "stir"]],
-          cpu: "5.7%",
+          cpu: "5.0%",
           media: { type: "video", src: "assets/media/nonagon/cocoa.mp4", poster: "assets/media/nonagon/cocoa.jpg", alt: "Cocoa's mug, the spoon tapping as the drink darkens with powder" },
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/cocoa"
         },
@@ -208,7 +208,7 @@ window.SITE = {
           description: "Each note flies a sound past you at up to Mach 3: the Doppler sweep, the sonic boom as the Mach cone crosses, and an echo off the ground, all worked out from the geometry of the pass.",
           screen: "Screen: a schlieren photograph after Mach and Salcher's images of a bullet in flight, the wavefronts trailing the source and the cone sweeping the listener.",
           pages: [["mach", "pass", "source", "dur"], ["boom", "air", "tune", "echo"]],
-          cpu: "4.5%",
+          cpu: "5.9%",
           media: { type: "video", src: "assets/media/nonagon/mach.mp4", poster: "assets/media/nonagon/mach.jpg", alt: "Mach's flybys, the wavefronts folding into a cone as mach rises" },
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/mach"
         },
@@ -265,8 +265,8 @@ window.SITE = {
       id: "modfx",
       name: "ModFX",
       kicker: "mod + effect",
-      status: "soon",
-      version: "v1.5.0",
+      status: "beta",
+      version: "v1.8.0",
       repo: "https://github.com/mmockett/OP-XY-ModFX",
       links: [],
       tagline: "A filter for every track, and a 1970s effects box and an ethereal stereo console for the sends.",
@@ -276,30 +276,30 @@ window.SITE = {
       ],
       specs: [
         [["aux", "1"], ["send", "2"], ["presets", "19"], ["os", "1.2.1"]],
-        [["sdk", "1.8"], ["release", "v1.5.0"], ["screens", "3"], ["licence", "MIT"]]
+        [["sdk", "1.8"], ["release", "v1.8.0"], ["screens", "3"], ["licence", "MIT"]]
       ],
       machines: [
         {
-          id: "chroma", name: "Chroma", kind: "send effect", catalog: "chroma", status: "lab",
+          id: "chroma", name: "Chroma", kind: "send effect", catalog: "chroma", status: "beta",
           after: "Hologram's Chroma Console",
           description: "Four stereo modules in a row: character, movement, diffuse and texture. Choose an effect for each, from warm saturation and swirling phasers to vast clouds, reversed delays and worn cassette, and even a mono voice leaves wide.",
           screen: "Screen: a Victorian optical bench. The magic lantern's flame burns as Character's effect does, the prism rocks and doubles with Movement, and its light fans out with Diffuse. Time slides the ground-glass screen along the rail.",
           pages: [["charactr", "movement", "diffuse", "texture"], ["tilt", "rate", "time", "drift"]],
           shift: ["charactr", "movement", "diffuse", "texture"],
           presets: ["Halo", "Aurora", "Mirage", "Tide", "Postcard", "Mosaic", "Static"],
-          cpu: "7.3–10.9%", cpuNote: "of the audio",
+          cpu: "7.3%", cpuNote: "of the audio",
           media: { type: "video", src: "assets/media/modfx/chroma.mp4", poster: "assets/media/modfx/chroma.jpg", alt: "Chroma's optical bench: the light fanning wider as its modules turn up, then Shift held to change its effects to howl, swirl, slice and radio" },
           source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/chroma"
         },
         {
-          id: "lint", name: "Lint", kind: "send effect", catalog: "lint", status: "soon",
+          id: "lint", name: "Lint", kind: "send effect", catalog: "lint", status: "beta",
           after: "Finegear's Dust Collector",
           description: "Two tape saturations, an optical phaser, a gritty echo and a three-spring tank, in any of six orders. One can be patched into the echo's feedback loop, and two LFOs move them. At full send a track runs wholly through the box.",
           screen: "Screen: an effects chassis with its lid off, seen from above. Its four modules sit in order on one patch cable, and each control moves a part of its module.",
           pages: [["dust", "phase", "echo", "spring"], ["tape 2", "rate", "time", "tone"]],
           shift: ["order", "shape", "loop", "wobble"],
           presets: ["Dusty", "Tank", "Slapback", "Swoosh", "Runaway", "Crushed"],
-          cpu: "7.8%", cpuNote: "of the audio",
+          cpu: "5.4%", cpuNote: "of the audio",
           media: { type: "video", src: "assets/media/modfx/lint.mp4", poster: "assets/media/modfx/lint.jpg", alt: "Lint's chassis: dust, phase and echo turned up, then Shift held to reorder the modules and patch tape 2 into the echo's loop" },
           source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/lint"
         },
@@ -321,7 +321,7 @@ window.SITE = {
       name: "MNMD",
       kicker: "machinedrum + monomachine",
       status: "live",
-      version: "v1.1.6",
+      version: "v1.1.9",
       repo: "https://github.com/mmockett/OP-XY-MNMD",
       links: [],
       tagline: "Elektron's Machinedrum and Monomachine, rebuilt for the OP–XY.",
@@ -331,7 +331,7 @@ window.SITE = {
       ],
       specs: [
         [["kits", "2"], ["synths", "14"], ["keys", "24"], ["os", "1.2.1"]],
-        [["drums", "49"], ["release", "v1.1.6"], ["screens", "16"], ["licence", "MIT"]]
+        [["drums", "49"], ["release", "v1.1.9"], ["screens", "16"], ["licence", "MIT"]]
       ],
       media: { type: "video", src: "assets/media/mnmd/overview.mp4", poster: "assets/media/mnmd/overview.jpg", alt: "Eight MNMD screens: MD KIT, MD E12, SID-6581, VO-6, FM STAT, SWAVE-PULSE, DPRO-WAVE and DPRO-DENS" },
       groups: [

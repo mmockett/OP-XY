@@ -206,7 +206,7 @@ window.SITE = {
           id: "mach", name: "Mach", kind: "synth", catalog: "mach", status: "live",
           after: "a supersonic flyby",
           description: "Each note flies a sound past you at up to Mach 3: the Doppler sweep, the sonic boom as the Mach cone crosses, and an echo off the ground, all worked out from the geometry of the pass.",
-          screen: "Screen: a schlieren photograph after Mach and Salcher's images of a bullet in flight, the wavefronts trailing the source and the cone sweeping the listener.",
+          screen: "Screen: a glass plate after Mach and Salcher's schlieren images of a bullet in flight: the wavefronts inside the cone, the listener below, a Mach scale down its edge and sparks timing the flight.",
           pages: [["mach", "pass", "source", "dur"], ["boom", "air", "tune", "echo"]],
           cpu: "5.9%",
           media: { type: "video", src: "assets/media/nonagon/mach.mp4", poster: "assets/media/nonagon/mach.jpg", alt: "Mach's flybys, the wavefronts folding into a cone as mach rises" },

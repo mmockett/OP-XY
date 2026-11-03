@@ -1,5 +1,5 @@
 {
-  "checked": "2026-11-02T00:20:00Z",
+  "checked": "2026-11-03T00:20:00Z",
   "note": "What the site last reflected. The daily sync routine compares against this and updates it.",
   "repos": {
     "mmockett/OP-XY-MNMD": {
@@ -7,8 +7,8 @@
       "tags": "v1.2.3,v1.2.2,v1.2.1,v1.2.0,v1.1.9,v1.1.8,v1.1.7,v1.1.6,v1.1.5,v1.1.4,v1.1.3,v1.1.2,v1.1.1,v1.1.0,v1.0.1,v1.0.0"
     },
     "mmockett/OP-XY-Hexagon": {
-      "head": "3e74b0184d5ba667ea8d6ec9d4660557b802fe36",
-      "tags": "v1.4.0,v1.3.0,v1.2.0,v1.1.0,v1.0.0"
+      "head": "94935b42ca3b7ccdd8b72aeb45baa03d4b4ad53c",
+      "tags": "v1.5.0,v1.4.0,v1.3.0,v1.2.0,v1.1.0,v1.0.0"
     },
     "mmockett/OP-XY-Grains": {
       "head": "dee67f6a3348959c1759143525b1fdeddff703ea",
@@ -19,12 +19,16 @@
       "tags": "v1.8.0,v1.7.0,v1.6.0,v1.5.0,v1.4.1,v1.4.0,v1.3.0,v1.2.0,v1.1.0,v1.0.0"
     },
     "mmockett/OP-XY-Nonagon": {
-      "head": "d9ad12b828b8f0eeea9cfb89439984f93545ae81",
-      "tags": "v0.5.0,v0.4.0,v0.3.0,v0.2.0,v0.1.0"
+      "head": "0844ea96e0fb91e623726bda34debc8ea864e54e",
+      "tags": "v0.6.0,v0.5.0,v0.4.0,v0.3.0,v0.2.0,v0.1.0"
+    },
+    "mmockett/OP-XY-Conductor": {
+      "head": "52cfa232dfc3bd5b685c54dbfbf247a5bc9f78cc",
+      "tags": ""
     }
   },
   "catalog_blob": {
-    "main": "6534af2b04564c16bd2cefd73650f323d4d8a875",
-    "staging": "9fd0f3b030db877e0557b2c16d2799762fb18799"
+    "main": "61c1f3404bae61156e04dd814e1067f7e701f225",
+    "staging": "7e11702db2ebb1e2e16c8a3da6330ab844278d57"
   }
 }

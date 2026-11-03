@@ -46,7 +46,7 @@ window.SITE = {
       name: "Hexagon Suite",
       kicker: "six synths",
       status: "live",
-      version: "v1.4.0",
+      version: "v1.5.0",
       repo: "https://github.com/mmockett/OP-XY-Hexagon",
       links: [],
       tagline: "Six synths, made to be played together.",
@@ -56,7 +56,7 @@ window.SITE = {
       ],
       specs: [
         [["synths", "6"], ["controls", "8"], ["cpu", "2–9%"], ["os", "1.2.1"]],
-        [["sdk", "1.4"], ["release", "v1.4.0"], ["screens", "6"], ["licence", "MIT"]]
+        [["sdk", "1.4"], ["release", "v1.5.0"], ["screens", "6"], ["licence", "MIT"]]
       ],
       machines: [
         {
@@ -72,10 +72,10 @@ window.SITE = {
         {
           id: "bloom", name: "Bloom", kind: "synth", catalog: "bloom", status: "live",
           after: "additive synthesis",
-          description: "Additive synth with 24 sine partials. Shape sets the waveform, vowel adds formants from oo to ee. Breath, blur and haze add drift, noise and beating.",
+          description: "Additive synth with up to 24 sine partials. Shape sets the waveform, vowel adds formants from oo to ee. Breath, blur and haze add drift, noise and beating.",
           screen: "Screen: partials as stems under a low sun, formants as hills behind.",
           pages: [["tilt", "shape", "stretch", "vowel"], ["breath", "blur", "haze", "time"]],
-          cpu: "9.0%",
+          cpu: "8.5%",
           media: { type: "video", src: "assets/media/hexagon/bloom.mp4", poster: "assets/media/hexagon/bloom.jpg", alt: "Bloom's screen: partials as stems, formant hills sliding as the vowel sweeps" },
           source: "https://github.com/mmockett/OP-XY-Hexagon/tree/main/bloom"
         },
@@ -128,7 +128,7 @@ window.SITE = {
       name: "Nonagon Suite",
       kicker: "nine experiments",
       status: "live",
-      version: "v0.5.0",
+      version: "v0.6.0",
       repo: "https://github.com/mmockett/OP-XY-Nonagon",
       links: [],
       tagline: "Nine experimental sounds, each grown from a piece of physics.",
@@ -137,8 +137,8 @@ window.SITE = {
         "Each screen is one object, drawn in outline, that every control visibly changes. Their levels match Hexagon's, so the two suites layer."
       ],
       specs: [
-        [["synths", "7"], ["sample", "2"], ["cpu", "1–6%"], ["os", "1.2.1"]],
-        [["sdk", "1.4"], ["release", "v0.5.0"], ["screens", "9"], ["licence", "MIT"]]
+        [["synths", "7"], ["sample", "2"], ["cpu", "1–8%"], ["os", "1.2.1"]],
+        [["sdk", "1.4"], ["release", "v0.6.0"], ["screens", "9"], ["licence", "MIT"]]
       ],
       media: { type: "video", aspect: "1448 / 668", src: "assets/media/nonagon/nonagon.mp4", poster: "assets/media/nonagon/nonagon.jpg", alt: "Nonagon Suite's nine screens playing together: Sand, Cocoa and Ghost on top; Coin, Recur and Fermi in the middle; Mach, Butterfly and Drop below" },
       machines: [
@@ -158,7 +158,7 @@ window.SITE = {
           description: "A spoon tapping a mug of cocoa. Stirred-in powder fills the drink with bubbles that slow sound down, so each tap starts low and climbs to pitch as they clear. Cup, fill and spoon set the ring.",
           screen: "Screen: the mug, spoon in the drink; froth on the drink clears as the note comes into tune.",
           pages: [["powder", "taps", "fizz", "cup"], ["fill", "spoon", "pops", "stir"]],
-          cpu: "5.0%",
+          cpu: "4.7%",
           media: { type: "video", src: "assets/media/nonagon/cocoa.mp4", poster: "assets/media/nonagon/cocoa.jpg", alt: "Cocoa's mug, the spoon tapping as the drink darkens with powder" },
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/cocoa"
         },
@@ -178,7 +178,7 @@ window.SITE = {
           description: "A disk spun on a mirror. As it falls, its wobble speeds up, so each note's ring rises and quickens until it settles. Size, disk and base set the metal and the surface; many adds companion disks.",
           screen: "Screen: the disk spinning on its base, leaning as it slows, rings spreading across the glass.",
           pages: [["spin", "size", "disk", "base"], ["wobble", "air", "ring", "many"]],
-          cpu: "1.5%",
+          cpu: "4.4%",
           media: { type: "video", src: "assets/media/nonagon/coin.mp4", poster: "assets/media/nonagon/coin.jpg", alt: "Coin's disk spinning on its mirror base as companion disks join" },
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/coin"
         },
@@ -198,7 +198,7 @@ window.SITE = {
           description: "A chain of masses on nonlinear springs. Energy in its first mode spreads into higher ones, then flows almost wholly back, so the tone slowly breathes. More energy and stiffer springs push it into chaos.",
           screen: "Screen: the chain on its stand, drawn back by energy, with a damping lever and a timing pendulum.",
           pages: [["energy", "masses", "springs", "time"], ["disperse", "mode", "damping", "seed"]],
-          cpu: "3.8%",
+          cpu: "6.4%",
           media: { type: "video", src: "assets/media/nonagon/fermi.mp4", poster: "assets/media/nonagon/fermi.jpg", alt: "Fermi's chain of masses swelling as energy is turned up" },
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/fermi"
         },
@@ -218,7 +218,7 @@ window.SITE = {
           description: "The fractal spectrum of an electron in a crystal under a magnetic field, played as a ringing chain. Flux reshapes the bands and gaps; coupling traps the ringing in place.",
           screen: "Screen: a butterfly whose wing edges are the spectrum and whose markings are the chain.",
           pages: [["flux", "coupling", "spread", "strike"], ["glow", "site", "tilt", "wingbeat"]],
-          cpu: "5.6%",
+          cpu: "8.0%",
           media: { type: "video", src: "assets/media/nonagon/butterfly.mp4", poster: "assets/media/nonagon/butterfly.jpg", alt: "Butterfly's wings reshaping as flux is turned" },
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/butterfly"
         },
@@ -228,7 +228,7 @@ window.SITE = {
           description: "A drop skating on a hot pan on its own vapour, quivering into a star whose lobes set the beat. Heat and liquid decide how it floats, sizzles and boils away.",
           screen: "Screen: a skillet at an angle, star-shaped drops floating with their steam.",
           pages: [["heat", "size", "liquid", "beat"], ["groove", "vapour", "life", "crackle"]],
-          cpu: "3.2%",
+          cpu: "6.2%",
           media: { type: "video", src: "assets/media/nonagon/drop.mp4", poster: "assets/media/nonagon/drop.jpg", alt: "Drop's skillet, star-shaped drops quivering as the heat rises" },
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/drop"
         }
@@ -314,6 +314,33 @@ window.SITE = {
           media: { type: "video", src: "assets/media/modfx/omnifilter.mp4", poster: "assets/media/modfx/omnifilter.jpg", alt: "Omnifilter's lens: the iris closing, sharpening into a star, its rings turning, then opening" },
           source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/omnifilter"
         }
+      ]
+    },
+
+    {
+      id: "conductor",
+      name: "Conductor",
+      kicker: "generative sequencer",
+      status: "lab",
+      version: "",
+      repo: "https://github.com/mmockett/OP-XY-Conductor",
+      links: [],
+      tagline: "A generative sequencer that plays eight parts on your tracks.",
+      description: [
+        "Conductor sits on aux track 12 and plays drums, bass, chords, pads, arps and leads live on instrument tracks 1–8 while the sequencer runs. One chord progression and one groove, set by key, scale and progression, keep the eight lanes in step.",
+        "The song changes a little each four-bar phrase, as far as evolve allows, and freezes when you like what you hear. Notes are not written into the tracks' steps. Presets: Pop, Night and Jazz."
+      ],
+      specs: [
+        [["lanes", "8"], ["pages", "4"], ["scales", "7"], ["presets", "3"]],
+        [["track", "12"], ["sdk", "1.8"], ["os", "1.2.1"], ["licence", "MIT"]]
+      ],
+      machines: [
+        { id: "conductor", name: "Conductor", kind: "sequencer", status: "lab",
+          description: "Generative sequencer for aux track 12. Eight lanes follow one song, with a role, density and route to a track for each. Shift and the first four encoders reroll, freeze, fill and vary.",
+          screen: "Screen: four pages, from the chord wheel and the phrase's groove to each lane's bar, the selected lane's notes and the routes.",
+          pages: [["key", "scale", "prog", "dens"], ["cmplx", "hrate", "swing", "evolve"]],
+          presets: ["Pop", "Night", "Jazz"],
+          source: "https://github.com/mmockett/OP-XY-Conductor" }
       ]
     },
 

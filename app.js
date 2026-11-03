@@ -6,7 +6,7 @@
   const RANK = { dev: 0, lab: 1, diy: 2, soon: 3, beta: 4, live: 5 };
   const ORDER = ["live", "beta", "soon", "diy", "lab", "dev"];
   const STEPS = ["#000000", "#323232", "#4B4B4B", "#646464", "#7D7D7D", "#969696", "#AFAFAF", "#CDCDCD"];
-  // Each catalog branch feeds a builder: staging the beta site, main open-xy.com.
+  // The catalog: main is what open-xy.com offers; staging, what its next release adds.
   const CATALOG = branch => `https://raw.githubusercontent.com/etcetc000/open-xy/${branch}/catalog/machines.json`;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const $ = (s, el = document) => el.querySelector(s);
@@ -154,7 +154,8 @@
   const all = () => SITE.projects.flatMap(p => p.machines);
   const count = st => all().filter(m => m.status === st).length;
   // The builder a status installs from, if any, and a machine's own page there.
-  const site = st => (st === "live" ? SITE.builder : st === "beta" ? SITE.beta : null);
+  // Only open-xy.com is sure to offer a machine: beta.open-xy.com lags the catalog.
+  const site = st => (st === "live" ? SITE.builder : null);
   const install = m => (m.catalog && site(m.status) ? `${site(m.status)}/#preview/machines/${m.catalog}` : null);
   // The versions a project's machines install at from the builder, read from the
   // catalog: one tag, or each tag when its machines are on different releases.
@@ -173,7 +174,7 @@
   const metaHtml = m => [
     m.cpu ? `<span>${icon("cpu")}${esc(m.cpu)} ${esc(m.cpuNote || "a voice")}</span>` : "",
     m.source ? `<a href="${esc(m.source)}">${icon("code")}source</a>` : "",
-    install(m) ? `<a href="${esc(install(m))}">${icon("download")}${m.status === "beta" ? "beta builder" : "builder"}${m.tag ? ` · ${esc(m.tag)}` : ""}</a>` : ""
+    install(m) ? `<a href="${esc(install(m))}">${icon("download")}builder${m.tag ? ` · ${esc(m.tag)}` : ""}</a>` : ""
   ].join("");
 
   // size: "feature" (the full width), "pair" (half) or "compact" (a third).
@@ -229,7 +230,7 @@
   const tallyOf = p => (p.machines.length === 1 ? p.machines[0].kind : ORDER.map(st => [st, p.machines.filter(m => m.status === st).length]).filter(([, n]) => n)
     .map(([st, n]) => `${n} ${SITE.statuses[st].label}`).join(" · "));
   const versionHtml = p => `<small${shipped(p) && shipped(p) !== p.version ? ` title="${esc(`In the builder; latest release ${p.version}`)}"` : ""}>${esc(shipped(p) || p.version)}</small>`;
-  const actionsHtml = p => ext(p.repo, "repository", "btn btn-ink", "github") + (projectStatus(p) === "beta" ? ext(SITE.beta, "beta builder") : ext(SITE.builder, "open-xy")) + p.links.map(l => ext(l.href, l.label)).join("");
+  const actionsHtml = p => ext(p.repo, "repository", "btn btn-ink", "github") + ext(SITE.builder, "open-xy") + p.links.map(l => ext(l.href, l.label)).join("");
 
   function project(p, i) {
     const sec = document.createElement("section");
@@ -477,13 +478,11 @@
     legend(); drawFilters(); applyFilter(); heroBuilder();
   }
 
-  // The hero's builder button: open-xy.com once any machine is live there, the
-  // beta builder while machines are only in beta.
+  // The hero's builder button: open-xy.com, which offers every live machine.
   function heroBuilder() {
-    const a = $("#hero-builder"), st = best(all());
-    const beta = st === "beta";
-    a.href = beta ? SITE.beta : SITE.builder;
-    a.firstChild.textContent = beta ? "beta builder" : "open-xy builder";
+    const a = $("#hero-builder");
+    a.href = SITE.builder;
+    a.firstChild.textContent = "open-xy builder";
   }
 
   // ---- live status ---------------------------------------------------------
@@ -493,7 +492,7 @@
     return r.json();
   }
 
-  // A machine published on the catalog's staging branch is in the beta builder;
+  // A machine published on the catalog's staging branch comes with the next release;
   // on main, in open-xy.com: live. Its tag there is the version it installs at.
   async function syncCatalog() {
     const [main, staging] = await Promise.allSettled(["main", "staging"].map(b => json(CATALOG(b))));

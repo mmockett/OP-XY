@@ -44,12 +44,15 @@ window.setup = async config => {
 };
 
 // The sample Grains' screen reads: a synthetic overview, as the device would hand it.
+// The SDK's SampleOverview (opxy/sample_overview.hpp): generation, assigned,
+// loaded, frames, rate, channels, begin, end, reverse, then 96 bins of low and high.
 function writeSample(api, s) {
   if (!api.opxy_display_sample) return;
   const at = api.opxy_display_sample();
-  const u32 = new Uint32Array(api.memory.buffer, at, 6);
-  u32.set([1, 1, s.frames, s.rate, 0, s.frames]);
-  new Uint8Array(api.memory.buffer, at + 24, 64).set(s.peaks);
+  new Uint32Array(api.memory.buffer, at, 9).set([1, 1, 1, s.frames, s.rate, 2, 0, s.frames, 0]);
+  const bins = s.levels.length;
+  const low = new Int16Array(api.memory.buffer, at + 36, bins), high = new Int16Array(api.memory.buffer, at + 36 + 2 * bins, bins);
+  s.levels.forEach((v, i) => { high[i] = Math.round(v * 32767); low[i] = -Math.round(v * 32767 * 0.94); });
 }
 
 const word = v => Math.round(Math.max(0, Math.min(1, v)) * Q31);
@@ -74,7 +77,7 @@ window.step = (events, elapsed) => {
   while (words.length < 8) words.push(0);
   const frame = t.display.tick(t.shownControls(words, t.shown), Math.round(elapsed * 1.024),
                                t.notes.note_on_serial >>> 0, 0, false, t.notes,
-                               ['aux', 'effects'].includes(t.config.sdk) ? t.shiftRow : t.model,
+                               ['aux', 'effects', 'pr3'].includes(t.config.sdk) ? t.shiftRow : t.model,
                                ...(t.config.sdk === 'drum' ? [Number(t.drumShift.shift), t.drumShift.choices] : []));
   t.scene.apply(frame);
   const p = t.definition.parameters;

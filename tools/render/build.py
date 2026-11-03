@@ -10,7 +10,8 @@ The machine repositories and SDK checkouts sit beside this one (../opxy-pads,
 ../opxy-nonagon, ../OP-XY-MNMD, ../opxy-grains, ../OP-XY-Macro (OP-XY-ModFX), ../open-xy-staging,
 ../open-xy, ../open-xy-pr3, ../open-xy-aux-machines-lfo (Omnifilter: #234 with #230,
 #182 and the LFO names, as the device firmware), ../open-xy-effects on
-sdk/effect-screens, ../open-xy-drum-device).
+sdk/effect-screens; the drum kits build on etcetc000/open-xy's staging,
+fetched into ../open-xy-staging and read with git archive).
 Each suite is read at its commit in SOURCES with git archive, so its checkouts
 are left alone. MD KIT and MD E12 build on the drum kind's SDK (open-xy #143).
 The screen font is the OP-XY's, Univers Next Pro Light: set XY_FONT to its file.
@@ -33,7 +34,7 @@ FONT = pathlib.Path(os.environ.get("XY_FONT", pathlib.Path.home() / "Downloads/u
 
 # Which SDK checkout each machine builds against, as each repository's README says.
 SDKS = {"staging": REPOS / "open-xy-staging", "fork": REPOS / "open-xy", "pr3": REPOS / "open-xy-pr3",
-        "aux": REPOS / "open-xy-aux-machines-lfo", "effects": REPOS / "open-xy-effects", "drum": REPOS / "open-xy-drum-device"}
+        "aux": REPOS / "open-xy-aux-machines-lfo", "effects": REPOS / "open-xy-effects", "drum": HERE / "src" / "open-xy-upstream"}
 # These draw the waves captured from the owner's ROM, which no repository holds:
 # from a checkout they are flat lines, so their screens stay as first rendered.
 ROM_SCREENS = ["mmbbox", "mmdens", "mmwave", "mmddrw"]
@@ -45,7 +46,7 @@ MDKIT_REPLACES = ["mdtrx", "mdefm", "mdpi"]
 MDKIT_GRID = ["mdkit-bd", "mdkit-cb", "mdkit-cp", "mdkit-xt", "mdkit-oh", "mdkit-ma", "mdkit-ml", "mdkit-sn", "mdkit-ns"]
 MODFX = REPOS / "OP-XY-Macro"
 # The commits the suites' screens are finalised at, read with git archive.
-SOURCES = {"opxy-pads": "v1.4.0", "opxy-nonagon": "v0.5.0", "OP-XY-Macro": "v1.7.0", "OP-XY-MNMD": "v1.1.9"}
+SOURCES = {"opxy-pads": "v1.5.0", "opxy-nonagon": "v0.7.0", "OP-XY-Macro": "v1.8.0", "OP-XY-MNMD": "v1.2.3", "opxy-grains": "v1.1.0"}
 # The hero at the top of the page: nine machines from three suites.
 HERO = ["moth", "hollow", "wane", "chroma", "ghost", "recur", "bloom", "orbit", "lint"]
 HEXAGON = ["wane", "bloom", "hollow", "orbit", "bend", "moth"]
@@ -102,7 +103,7 @@ def grains_wrap():
         run(python, SDKS["pr3"] / "sdk.py", "new", "--repository", "--kind", "synth", "--controls", "8",
             "--id", WRAP_ID, "--name", "Grains", "--out", pathlib.Path(scratch) / WRAP_ID, stdout=subprocess.DEVNULL)
         shutil.copytree(pathlib.Path(scratch) / WRAP_ID, wrap)
-    source = REPOS / "opxy-grains"
+    source = HERE / "src" / "opxy-grains"
     # Grains' own files, renamed into the stand-in's namespace and artwork prefix.
     rename = lambda text: re.sub(r"\bnamespace grains\b", f"namespace {WRAP_ID}", text).replace("grains::", f"{WRAP_ID}::")
     for name in ("display.cpp", "display.h", "tables.h"):
@@ -126,6 +127,17 @@ def grains_wrap():
     synth["resources"]["display"] = real["resources"]["display"]
     (wrap / "definition.json").write_text(json.dumps(synth, indent=1))
     return wrap
+
+
+def upstream():
+    """The drum kits' SDK: etcetc000/open-xy's staging, where drum kits are SDK 1.8,
+    fetched into open-xy-staging and read with git archive."""
+    out = SDKS["drum"]
+    run("git", "-C", REPOS / "open-xy-staging", "fetch", "-q", "origin", "staging")
+    shutil.rmtree(out, ignore_errors=True)
+    out.mkdir(parents=True)
+    archive = subprocess.run(["git", "-C", REPOS / "open-xy-staging", "archive", "origin/staging"], capture_output=True, check=True).stdout
+    subprocess.run(["tar", "-x", "-C", out], input=archive, check=True)
 
 
 def source(repo):
@@ -227,13 +239,14 @@ def kit_labels():
 def build():
     if not FONT.exists():
         sys.exit(f"No screen font at {FONT}; set XY_FONT to Univers Next Pro Light")
+    upstream()
     (HERE / "font").mkdir(exist_ok=True)
     shutil.copy(FONT, HERE / "font" / "UniversNextPro-Light.ttf")
     for name, checkout in SDKS.items():
         (HERE / "sdk" / name).mkdir(parents=True, exist_ok=True)
         for module in ("display.mjs", "controls.mjs"):
             shutil.copy(checkout / "sdk" / "browser" / module, HERE / "sdk" / name / module)
-    pads, nonagon, modfx = (source(repo) for repo in ("opxy-pads", "opxy-nonagon", "OP-XY-Macro"))
+    pads, nonagon, modfx, _ = (source(repo) for repo in ("opxy-pads", "opxy-nonagon", "OP-XY-Macro", "opxy-grains"))
     machines = mnmd_source()
     kit_labels()
     for mid in HEXAGON:
@@ -242,7 +255,7 @@ def build():
         if not (folder / "machine.json").exists() or folder.name in MDKIT + ROM_SCREENS:
             continue
         kind = json.loads((folder / "machine.json").read_text())["kind"]
-        preview("fork", "--machine" if kind == "drum" else "--source", folder, HERE / "m" / folder.name)
+        preview("pr3", "--machine", folder, HERE / "m" / folder.name)
     preview("pr3", "--source", grains_wrap(), HERE / "m" / "grains")
     for mid in NONAGON:
         if mid in NONAGON_SAMPLE:

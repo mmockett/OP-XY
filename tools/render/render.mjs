@@ -56,7 +56,7 @@ const S = {
     key(3.2, 4, [64, 110, 0, 0, 0, 0, 64, 64]), ...plucks(3.3, 4.7, 0.45, [41], 0.08), sweep(0, 0.85, 3.5, 4.5),    // CP: PTCH
     key(4.8, 8, [64, 110, 0, 0, 0, 0, 64, 64]), ...plucks(4.9, 6.3, 0.45, [45], 0.08), sweep(3, 0.9, 5.0, 6.0),     // OH: STOP
   ] },
-  mmbbox: { sdk: 'fork', events: plucks(0.3, 5.9, 0.4, [48, 50, 52, 55]) },
+  mmbbox: { sdk: 'pr3', events: plucks(0.3, 5.9, 0.4, [48, 50, 52, 55]) },
   // ModFX: Chroma's bench on Halo, its three modules turned up, then Shift held
   // to change each module's effect; Omnifilter's iris closed, sharpened, its
   // rings turned, then opened; Lint's bays turned up, then the shift row's order,
@@ -72,10 +72,10 @@ const S = {
 };
 // The Monomachine synths: a chord, then the first control turned
 for (const id of ['mmsid', 'mmvo6', 'mmstat', 'mmpulse', 'mmens', 'mmpar', 'mmdyn', 'mmsaw', 'mmdens', 'mmwave', 'mmddrw']) {
-  S[id] = { sdk: 'fork', events: [...held([0.3, 0.9, 1.5], [48, 55, 60], 5.7), sweep(0, '+0.35', 2.6, 4.6)] };
+  S[id] = { sdk: 'pr3', events: [...held([0.3, 0.9, 1.5], [48, 55, 60], 5.7), sweep(0, '+0.35', 2.6, 4.6)] };
 }
-S.mmnois = { sdk: 'fork', events: [...held([0.3], [60], 5.7), sweep(1, '+0.5', 2.0, 4.6)] };
-S.mmsin = { sdk: 'fork', events: [...held([0.3, 0.9, 1.5], [48, 55, 60], 5.7)] };
+S.mmnois = { sdk: 'pr3', events: [...held([0.3], [60], 5.7), sweep(1, '+0.5', 2.0, 4.6)] };
+S.mmsin = { sdk: 'pr3', events: [...held([0.3, 0.9, 1.5], [48, 55, 60], 5.7)] };
 
 // MD KIT (drum SDK): nine of its machines for its
 // grid, across its four families, each struck while one of its controls turns.
@@ -93,12 +93,12 @@ Object.assign(S, {
   'mdkit-ns': mdkit(31, [30, 0, 0, 0, 0, 0, 0, 0], 0, 0.9, 0.9),           // GND-NS: DEC
 });
 
-// Four decaying hits, as a drum loop's overview would look.
-const peaks = Array.from({ length: 64 }, (_, i) => {
-  const k = i % 16, hit = [255, 150, 230, 140][Math.floor(i / 16)];
-  return Math.round(hit * Math.exp(-k / 3.2) + 12);
+// Four decaying hits, as a drum loop's overview would look: 96 bins, 0..1.
+const levels = Array.from({ length: 96 }, (_, i) => {
+  const k = i % 24, hit = [1, .59, .9, .55][Math.floor(i / 24)];
+  return Math.min(1, hit * Math.exp(-k / 4.8) + .05);
 });
-const SAMPLE = { frames: 48000 * 2.4, rate: 48000, peaks };
+const SAMPLE = { frames: 48000 * 2.4, rate: 48000, levels };
 // Each kit machine's own control labels (kit.h), which the drum page's header shows.
 const KIT_LABELS = JSON.parse(readFileSync(join(ROOT, 'kit-labels.json')));
 

@@ -163,7 +163,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/cocoa"
         },
         {
-          id: "ghost", name: "Ghost", kind: "sample engine", catalog: "ghost", status: "beta",
+          id: "ghost", name: "Ghost", kind: "sample engine", catalog: "ghost", status: "live",
           after: "the Huggins pitch",
           description: "Binaural phantom pitches, for headphones: notes made of breath and hum whose pitch lives between the ears. Orbit walks the voice round your head. Load a sample and it becomes the bed; without one, Ghost breathes its own.",
           screen: "Screen: a Pepper's ghost stage. Split parts the apparition into twins; ring gives it halos.",
@@ -183,7 +183,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/coin"
         },
         {
-          id: "recur", name: "Recur", kind: "sample engine", catalog: "recur", status: "beta",
+          id: "recur", name: "Recur", kind: "sample engine", catalog: "recur", status: "live",
           after: "Arnold's cat map",
           description: "A sample cut into tiles and shuffled by a chaotic map that always comes home: step by step the loop scrambles, then returns exactly to the original. Map, grid and slice set the shuffle.",
           screen: "Screen: a sliding-tile puzzle tin; each map shuffles its own picture.",
@@ -240,7 +240,7 @@ window.SITE = {
       id: "grains",
       name: "Grains",
       kicker: "granular sampler",
-      status: "beta",
+      status: "live",
       version: "v1.1.0",
       repo: "https://github.com/mmockett/OP-XY-Grains",
       links: [],
@@ -254,7 +254,7 @@ window.SITE = {
         [["shortest", "10ms"], ["longest", "2s"], ["overlap", "1–20"], ["licence", "MIT"]]
       ],
       machines: [
-        { id: "grains", name: "Grains", kind: "sample engine", catalog: "grains", status: "beta",
+        { id: "grains", name: "Grains", kind: "sample engine", catalog: "grains", status: "live",
           description: "Sample engine for the OP–XY's sampler page.",
           cpu: "3.1%",
           pages: [["pos", "scan", "size", "dens"], ["spry", "chrd", "shpe", "mode"]],
@@ -267,7 +267,7 @@ window.SITE = {
       id: "modfx",
       name: "ModFX",
       kicker: "mod + effect",
-      status: "beta",
+      status: "live",
       version: "v1.9.0",
       repo: "https://github.com/mmockett/OP-XY-ModFX",
       links: [],
@@ -282,7 +282,7 @@ window.SITE = {
       ],
       machines: [
         {
-          id: "chroma", name: "Chroma", kind: "send effect", catalog: "chroma", status: "beta",
+          id: "chroma", name: "Chroma", kind: "send effect", catalog: "chroma", status: "live",
           after: "Hologram's Chroma Console",
           description: "Four stereo modules in a row: character, movement, diffuse and texture. Choose an effect for each, from warm saturation and swirling phasers to vast clouds, reversed delays and worn cassette, and even a mono voice leaves wide.",
           screen: "Screen: a Victorian optical bench. The magic lantern's flame burns as Character's effect does, the prism rocks and doubles with Movement, and its light fans out with Diffuse. Time slides the ground-glass screen along the rail.",
@@ -294,7 +294,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/chroma"
         },
         {
-          id: "lint", name: "Lint", kind: "send effect", catalog: "lint", status: "beta",
+          id: "lint", name: "Lint", kind: "send effect", catalog: "lint", status: "live",
           after: "Finegear's Dust Collector",
           description: "Two tape saturations, an optical phaser, a gritty echo and a three-spring tank, in any of six orders. One can be patched into the echo's feedback loop, and two LFOs move them. At full send a track runs wholly through the box.",
           screen: "Screen: an effects chassis with its lid off, seen from above. Its four modules sit in order on one patch cable, and each control moves a part of its module.",
@@ -417,21 +417,21 @@ window.SITE = {
           presets: ["Strike", "Zap", "Bass", "Reed"],
           media: { type: "video", src: "assets/media/mnmd/mmdyn.mp4", poster: "assets/media/mnmd/mmdyn.jpg", alt: "FM DYN's screen: two operators into a carrier, beside the output wave" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmdyn" },
-        { id: "mmsaw", group: 1, name: "SWAVE-SAW", kind: "synth", catalog: "mmsaw", status: "beta",
+        { id: "mmsaw", group: 1, name: "SWAVE-SAW", kind: "synth", catalog: "mmsaw", status: "live",
           cpu: "2.5%",
           description: "Detuned saw stack with sub-octaves, from a single saw to a supersaw.",
           pages: [["unil", "uniw", "unix", ""], ["subx", "sub1", "sub2", "tune"]],
           presets: ["Stack", "Super", "Wide", "Thin", "Sub"],
           media: { type: "video", src: "assets/media/mnmd/mmsaw.mp4", poster: "assets/media/mnmd/mmsaw.jpg", alt: "SWAVE-SAW's screen: the saw stack over its sub-octaves" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmsaw" },
-        { id: "mmsin", group: 1, name: "GND-SIN", kind: "synth", catalog: "mmsin", status: "beta",
+        { id: "mmsin", group: 1, name: "GND-SIN", kind: "synth", catalog: "mmsin", status: "live",
           cpu: "1.8%",
           description: "A sine wave.",
           pages: [["", "", "", "tune"]],
           presets: ["Sine"],
           media: { type: "video", src: "assets/media/mnmd/mmsin.mp4", poster: "assets/media/mnmd/mmsin.jpg", alt: "GND-SIN's screen: a sine" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmsin" },
-        { id: "mmnois", group: 1, name: "GND-NOIS", kind: "synth", catalog: "mmnois", status: "beta",
+        { id: "mmnois", group: 1, name: "GND-NOIS", kind: "synth", catalog: "mmnois", status: "live",
           cpu: "1.5%",
           description: "Noise, from white to red.",
           pages: [["st", "red", "ston", "tune"]],
@@ -463,7 +463,7 @@ window.SITE = {
           media: { type: "video", src: "assets/media/mnmd/mmbbox.mp4", poster: "assets/media/mnmd/mmbbox.jpg", alt: "DPRO-BBOX's screen as its samples are struck" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmbbox" },
 
-        { id: "mdkit", group: 0, name: "MD KIT", kind: "drum machine", catalog: "mdkit", status: "beta", flagship: true,
+        { id: "mdkit", group: 0, name: "MD KIT", kind: "drum machine", catalog: "mdkit", status: "live", flagship: true,
           description: "One drum machine for four of the Machinedrum's families: TRX, EFM, P-I and GND, 33 machines in all. Any of them goes on any of the 24 keys, and each key keeps its own controls. A key chokes its own last note, as on the Machinedrum.",
           screen: "Screen: the machine's sounding part in section, like a patent drawing: the drumhead's waves, the snare wires, the clap's echo chamber, GND's tuning fork. Each machine has its own drawing, and every control moves it.",
           cpu: "3.1%",

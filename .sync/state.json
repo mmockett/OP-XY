@@ -1,5 +1,5 @@
 {
-  "checked": "2026-11-04T00:00:00Z",
+  "checked": "2026-11-04T12:00:00Z",
   "note": "What the site last reflected. The daily sync routine compares against this and updates it.",
   "repos": {
     "mmockett/OP-XY-MNMD": {
@@ -28,7 +28,7 @@
     }
   },
   "catalog_blob": {
-    "main": "8a326c926b433f966704ae88a36484ee4369b453",
-    "staging": "a0518e42a63bb30b1a723f62dd70efdb8fbb2306"
+    "main": "c8cb29ab4266917d6c84a93f546ad2354341e51c",
+    "staging": "c8cb29ab4266917d6c84a93f546ad2354341e51c"
   }
 }

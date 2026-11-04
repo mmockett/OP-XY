@@ -20,6 +20,7 @@
   --ink-2: #cdcdcd;
   --ink-3: #afafaf;
   --rule: #646464;
+  --red: #f2402d;    /* the OP-XY's red: live, as its record light */
   --screen: #000;
 
   /* The screen header's eight steps, black to light grey. */
@@ -127,7 +128,7 @@ img, video, svg { display: block; max-width: 100%; }
   font-size: 12px; line-height: 1; white-space: nowrap; justify-self: start; border: 1px solid transparent; }
 .st i { width: 7px; height: 7px; border-radius: 50%; flex: none; }
 .st-live { background: var(--ink); color: var(--body); }
-.st-live i { background: var(--body); box-shadow: 0 0 0 2px rgba(50,50,50,.25); }
+.st-live i { background: var(--red); box-shadow: 0 0 0 2px rgba(242,64,45,.25); }
 .st-soon { border-color: var(--ink); color: var(--ink); }
 .st-soon i { border: 1px solid var(--ink); }
 .st-diy { border: 1px dashed var(--ink-3); color: var(--ink-2); }
@@ -140,7 +141,7 @@ img, video, svg { display: block; max-width: 100%; }
 
 /* a status as a dot alone, in the index */
 .dot { display: inline-block; flex: none; width: 7px; height: 7px; border-radius: 50%; border: 1px solid transparent; }
-.dot.st-live { background: var(--ink); box-shadow: none; }
+.dot.st-live { background: var(--red); box-shadow: none; }
 .dot.st-soon { border: 1px solid var(--ink); background: transparent; }
 .dot.st-diy { border: 1px dashed var(--ink-3); background: transparent; }
 .dot.st-lab { border: 1px dotted var(--ink-3); background: transparent; }

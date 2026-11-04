@@ -46,7 +46,7 @@ window.SITE = {
       name: "Hexagon Suite",
       kicker: "six synths",
       status: "live",
-      version: "v1.5.0",
+      version: "v1.6.0",
       repo: "https://github.com/mmockett/OP-XY-Hexagon",
       links: [],
       tagline: "Six synths, made to be played together.",
@@ -56,7 +56,7 @@ window.SITE = {
       ],
       specs: [
         [["synths", "6"], ["controls", "8"], ["cpu", "2–9%"], ["os", "1.2.1"]],
-        [["sdk", "1.4"], ["release", "v1.5.0"], ["screens", "6"], ["licence", "MIT"]]
+        [["sdk", "1.4"], ["release", "v1.6.0"], ["screens", "6"], ["licence", "MIT"]]
       ],
       machines: [
         {
@@ -128,7 +128,7 @@ window.SITE = {
       name: "Nonagon Suite",
       kicker: "nine experiments",
       status: "live",
-      version: "v0.6.0",
+      version: "v0.7.2",
       repo: "https://github.com/mmockett/OP-XY-Nonagon",
       links: [],
       tagline: "Nine experimental sounds, each grown from a piece of physics.",
@@ -138,7 +138,7 @@ window.SITE = {
       ],
       specs: [
         [["synths", "7"], ["sample", "2"], ["cpu", "1–8%"], ["os", "1.2.1"]],
-        [["sdk", "1.4"], ["release", "v0.6.0"], ["screens", "9"], ["licence", "MIT"]]
+        [["sdk", "1.8"], ["release", "v0.7.2"], ["screens", "9"], ["licence", "MIT"]]
       ],
       media: { type: "video", aspect: "1448 / 668", src: "assets/media/nonagon/nonagon.mp4", poster: "assets/media/nonagon/nonagon.jpg", alt: "Nonagon Suite's nine screens playing together: Sand, Cocoa and Ghost on top; Coin, Recur and Fermi in the middle; Mach, Butterfly and Drop below" },
       machines: [
@@ -188,6 +188,7 @@ window.SITE = {
           description: "A sample cut into tiles and shuffled by a chaotic map that always comes home: step by step the loop scrambles, then returns exactly to the original. Map, grid and slice set the shuffle.",
           screen: "Screen: a sliding-tile puzzle tin; each map shuffles its own picture.",
           pages: [["pos", "grid", "slice", "map"], ["step", "rate", "depth", "chrd"]],
+          presets: ["Recur", "Stutter", "Phrase", "Riffle", "Glitch", "Chorale", "Frozen", "Shred"],
           cpu: "1.2%",
           media: { type: "video", src: "assets/media/nonagon/recur.mp4", poster: "assets/media/nonagon/recur.jpg", alt: "Recur's puzzle tin, the picture's tiles scrambling and returning" },
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/recur"
@@ -267,17 +268,17 @@ window.SITE = {
       name: "ModFX",
       kicker: "mod + effect",
       status: "beta",
-      version: "v1.8.0",
+      version: "v1.9.0",
       repo: "https://github.com/mmockett/OP-XY-ModFX",
       links: [],
       tagline: "A filter for every track, and a 1970s effects box and an ethereal stereo console for the sends.",
       description: [
-        "Three machines that work across the whole OP–XY instead of on one track. Chroma and Lint are send effects, each with its own page on FX I or II. Omnifilter sits on an aux track, takes no instrument slot and steers all eight instrument tracks at once.",
+        "Three machines that work across the whole OP–XY instead of on one track. Chroma and Lint are send effects, each with its own page on FX I or II. Omnifilter sits on track 12, takes no instrument slot and steers all eight instrument tracks at once.",
         "Chroma's screen is a Victorian optical bench; Lint's is an effects chassis with its lid off; Omnifilter's is a rangefinder's lens."
       ],
       specs: [
         [["aux", "1"], ["send", "2"], ["presets", "19"], ["os", "1.2.1"]],
-        [["sdk", "1.8"], ["release", "v1.8.0"], ["screens", "3"], ["licence", "MIT"]]
+        [["sdk", "1.9"], ["release", "v1.9.0"], ["screens", "3"], ["licence", "MIT"]]
       ],
       machines: [
         {
@@ -305,8 +306,8 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/lint"
         },
         {
-          id: "omnifilter", name: "Omnifilter", kind: "aux module", catalog: "omnifilter", status: "soon",
-          description: "One filter and envelope for the whole OP–XY. Cutoff, reso, attack and release are set on all eight instrument tracks, as if each track's own encoder had turned. Lock them on steps and the whole mix opens and closes with the pattern.",
+          id: "omnifilter", name: "Omnifilter", kind: "global mod", catalog: "omnifilter", status: "soon",
+          description: "One filter and envelope for the whole OP–XY, on track 12. Cutoff, reso, attack and release scale all eight instrument tracks together, and each track keeps its own sound underneath. Lock them on steps and the whole mix opens and closes with the pattern.",
           screen: "Screen: a rangefinder camera's lens. Cutoff opens the eight-bladed iris, reso sharpens it into a star, attack and release turn its rings.",
           pages: [["cutoff", "reso", "attack", "release"]],
           presets: ["open", "warm", "dark", "acid", "pluck", "swell"],

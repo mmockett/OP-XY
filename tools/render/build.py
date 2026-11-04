@@ -10,7 +10,8 @@ The machine repositories and SDK checkouts sit beside this one (../opxy-pads,
 ../opxy-nonagon, ../OP-XY-MNMD, ../opxy-grains, ../OP-XY-Macro (OP-XY-ModFX), ../open-xy-staging,
 ../open-xy, ../open-xy-pr3, ../open-xy-aux-machines-lfo (Omnifilter: #234 with #230,
 #182 and the LFO names, as the device firmware), ../open-xy-effects on
-sdk/effect-screens; the drum kits build on etcetc000/open-xy's staging,
+sdk/effect-screens, ../open-xy-control-notes-2 on sdk/control-notes-2 (Conductor:
+staging's SDK 1.9 with #346's track-control notes); the drum kits build on etcetc000/open-xy's staging,
 fetched into ../open-xy-staging and read with git archive).
 Each suite is read at its commit in SOURCES with git archive, so its checkouts
 are left alone. MD KIT and MD E12 build on the drum kind's SDK (open-xy #143).
@@ -34,7 +35,8 @@ FONT = pathlib.Path(os.environ.get("XY_FONT", pathlib.Path.home() / "Downloads/u
 
 # Which SDK checkout each machine builds against, as each repository's README says.
 SDKS = {"staging": REPOS / "open-xy-staging", "fork": REPOS / "open-xy", "pr3": REPOS / "open-xy-pr3",
-        "aux": REPOS / "open-xy-aux-machines-lfo", "effects": REPOS / "open-xy-effects", "drum": HERE / "src" / "open-xy-upstream"}
+        "aux": REPOS / "open-xy-aux-machines-lfo", "effects": REPOS / "open-xy-effects", "drum": HERE / "src" / "open-xy-upstream",
+        "control": REPOS / "open-xy-control-notes-2"}
 # These draw the waves captured from the owner's ROM, which no repository holds:
 # from a checkout they are flat lines, so their screens stay as first rendered.
 ROM_SCREENS = ["mmbbox", "mmdens", "mmwave", "mmddrw"]
@@ -46,7 +48,9 @@ MDKIT_REPLACES = ["mdtrx", "mdefm", "mdpi"]
 MDKIT_GRID = ["mdkit-bd", "mdkit-cb", "mdkit-cp", "mdkit-xt", "mdkit-oh", "mdkit-ma", "mdkit-ml", "mdkit-sn", "mdkit-ns"]
 MODFX = REPOS / "OP-XY-Macro"
 # The commits the suites' screens are finalised at, read with git archive.
-SOURCES = {"opxy-pads": "v1.5.0", "opxy-nonagon": "v0.7.2", "OP-XY-Macro": "v1.8.0", "OP-XY-MNMD": "v1.2.3", "opxy-grains": "v1.1.0"}
+SOURCES = {"opxy-pads": "v1.5.0", "opxy-nonagon": "v0.7.2", "OP-XY-Macro": "v1.8.0", "OP-XY-MNMD": "v1.2.3", "opxy-grains": "v1.1.0",
+           # Conductor's SDK 1.9 port (port/sdk-1.9), with M3's own voices and notes and M4's track and midi columns.
+           "opxy-conductor": "a80dde4"}
 # The hero at the top of the page: nine machines from three suites.
 HERO = ["moth", "hollow", "wane", "chroma", "ghost", "recur", "bloom", "orbit", "lint"]
 HEXAGON = ["wane", "bloom", "hollow", "orbit", "bend", "moth"]
@@ -66,6 +70,7 @@ MEDIA = {
     "nonagon": {"ids": NONAGON, "grids": [("nonagon", NONAGON, 3)]},
     "grains": {"ids": ["grains"]},
     "modfx": {"ids": ["chroma", "lint", "omnifilter"]},
+    "conductor": {"ids": ["conductor"]},
     "mnmd": {"ids": None, "grids": [("mdkit", MDKIT_GRID, 3),
                                      ("overview", ["mdkit-bd", "mde12", "mmsid", "mmvo6", "mmstat", "mmpulse", "mmwave", "mmdens"], 4)]},
 }
@@ -214,6 +219,20 @@ def effect_wrap(mid, modfx):
     return wrap
 
 
+def conductor():
+    """Conductor plays other tracks from its control code, which the browser
+    preview doesn't run: its own control and display code are compiled on the
+    host into a harness (conductor.cpp) that render.mjs plays its scene through."""
+    src = source("opxy-conductor")
+    out = HERE / "m" / "conductor"
+    shutil.rmtree(out, ignore_errors=True)
+    out.mkdir(parents=True)
+    run(clang(), "-std=c++11", "-O2", "-I", SDKS["control"] / "sdk" / "include", "-I", src, HERE / "conductor.cpp", "-o", out / "conductor")
+    for name in ("panel.svg.fragment", "definition.json"):
+        shutil.copy(src / name, out / name)
+    print("built conductor")
+
+
 def mnmd_source():
     """OP-XY-MNMD at its commit. MD E12 gets the repository's silent stand-in for
     its samples, scoped as make_engine.py scopes an engine's headers: its screen
@@ -267,6 +286,7 @@ def build():
     preview("aux", "--machine", MODFX / "omnifilter", HERE / "m" / "omnifilter")
     for mid in ("chroma", "lint"):
         preview("effects", "--source", effect_wrap(mid, modfx), HERE / "m" / mid)
+    conductor()
 
 
 def grid(ids, columns, out):

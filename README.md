@@ -71,7 +71,9 @@ python3 tools/render/build.py --publish
 The first builds each machine's browser preview, the second plays notes and
 turns controls through each one (the scenes are in `render.mjs`; name
 machines to render only those), and the third copies the MP4s and posters
-into `assets/media` and rebuilds the grids and the small posters. The font is
+into `assets/media` and rebuilds the grids and the small posters. Conductor's screens come from its own control and display code too,
+compiled on the host into `tools/render/conductor.cpp`, since the browser preview
+doesn't run a machine's control code. The font is
 used for rendering only: it is never committed or served.
 
 ## The page

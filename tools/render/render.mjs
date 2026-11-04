@@ -70,6 +70,19 @@ const S = {
     { t: 3.3, shift: true }, { t: 3.7, choice: [0, 5] }, { t: 4.3, choice: [1, 1] }, { t: 4.9, choice: [2, 1] },
     { t: 5.7, shift: false }] },
 };
+// Conductor: its own control and display code, played on the host by the
+// harness build.py compiles (conductor.cpp), Pop playing at 120 bpm. M1's
+// phrase as dens turns up; M2's lanes, Shift held to reroll the drums; M3 on
+// the drum lane's voices, then (through M2's lane) on the arp's notes; M4 with
+// the arp rerouted from track 5 to 7.
+const page = (t, n) => ({ t, page: n }), turn = (t, slot, dir = 1) => ({ t, turn: [slot, dir] });
+S.conductor = { harness: true, preset: 'Pop', dur: 12.8, poster: 2.6, events: [
+  page(0, 1), sweep(3, 0.9, 1.0, 2.2),
+  page(3.2, 2), { t: 4.1, shift: true }, turn(4.5, 0), turn(5.0, 0), { t: 5.7, shift: false },
+  page(6.4, 3), page(7.9, 2), turn(8.0, 0), turn(8.07, 0), turn(8.13, 0), turn(8.2, 0), page(8.4, 3),
+  page(9.6, 4), turn(10.6, 1), turn(11.3, 1),
+] };
+
 // The Monomachine synths: a chord, then the first control turned
 for (const id of ['mmsid', 'mmvo6', 'mmstat', 'mmpulse', 'mmens', 'mmpar', 'mmdyn', 'mmsaw', 'mmdens', 'mmwave', 'mmddrw']) {
   S[id] = { sdk: 'pr3', events: [...held([0.3, 0.9, 1.5], [48, 55, 60], 5.7), sweep(0, '+0.35', 2.6, 4.6)] };
@@ -136,6 +149,64 @@ function timeline(id) {
            shift: existsSync(shift) ? JSON.parse(readFileSync(shift)) : null };
 }
 
+// A harness's frames (Conductor): the scene as its cues, one a line, then each
+// frame's nodes and texts applied to the artwork as the SDK's preview applies them.
+const Q31 = 0x7fffffff, q31 = v => Math.round(Math.max(0, Math.min(1, v)) * Q31);
+const dec = w => String(Math.round(w / 1024 * 1000) / 1000);
+const xml = text => text.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+function harnessFrames(id) {
+  const s = S[id], dir = join(ROOT, 'm', id);
+  const def = JSON.parse(readFileSync(join(dir, 'definition.json')));
+  const preset = def.presets[s.preset];
+  if (!preset) throw new Error(`${id}: no preset ${s.preset}`);
+  const frames = Math.round(s.dur * FPS), at = t => Math.min(frames - 1, Math.max(0, Math.round(t * FPS)));
+  const values = def.parameters.map(p => (p.id in preset ? preset[p.id] : p.default));
+  const cues = [`frames ${frames}`, ...values.map((v, i) => `0 global ${i} ${q31(v)}`)];
+  for (const e of s.events) {
+    if (e.sweep) {
+      const { set, to, t0, t1 } = e.sweep, from = values[set];
+      for (let f = at(t0); f <= at(t1); f++) cues.push(`${f} global ${set} ${q31(from + (to - from) * Math.min(1, (f / FPS - t0) / (t1 - t0)))}`);
+      values[set] = to;
+    }
+    if (e.page) cues.push(`${at(e.t)} page ${e.page}`);
+    if (e.turn) cues.push(`${at(e.t)} turn ${e.turn[0]} ${e.turn[1]}`);
+    if (e.shift !== undefined) cues.push(`${at(e.t)} shift ${Number(e.shift)}`);
+    if (e.row !== undefined) cues.push(`${at(e.t)} row ${e.row}`);
+  }
+  const dump = execFileSync(join(dir, id), { input: cues.join('\n') + '\n', maxBuffer: 1 << 28 }).toString();
+  const art = readFileSync(join(dir, 'panel.svg.fragment'), 'utf8');
+  const attr = (el, name) => (el.match(new RegExp(`\\s${name}="([^"]*)"`)) || [])[1];
+  const palette = {};
+  for (const [el, i] of art.matchAll(new RegExp(`<\\w+ id="${id}_palette_(\\d+)"[^>]*>`, 'g')))
+    palette[i] = { fill: attr(el, 'fill'), stroke: attr(el, 'stroke'), width: attr(el, 'stroke-width') };
+  const out = [];
+  for (const chunk of dump.split(/^f \d+\n/m).slice(1)) {
+    const nodes = {}, texts = {};
+    for (const line of chunk.split('\n')) {
+      if (line.startsWith('n ')) { const p = line.split(' ').map(Number); nodes[p[1]] = p.slice(2); }
+      else if (line.startsWith('t ')) { const p = line.split(' '); texts[p[1]] = [...p.slice(2, 5).map(Number), p.slice(5).join(' ')]; }
+    }
+    let svg = art.replace(new RegExp(`<(path|circle) id="${id}_node_(\\d+)"[^>]*/>`, 'g'), (el, _, i) => {
+      const [x, y, scale, cos, sin, shade, paint] = nodes[i];
+      const a = Math.floor(scale * cos / 1024), b = Math.floor(scale * sin / 1024);
+      el = el.replace(/transform="[^"]*"/, `transform="matrix(${dec(a)} ${dec(b)} ${dec(-b)} ${dec(a)} ${dec(x)} ${dec(y)})"`);
+      if (paint) {
+        const entry = palette[shade];
+        el = el.replace(/stroke="[^"]*"/, `stroke="${entry.stroke}"`).replace(/stroke-width="[^"]*"/, `stroke-width="${entry.width}"`);
+        if (paint === 2 && (attr(el, 'fill') || 'none') !== 'none') el = el.replace(/fill="[^"]*"/, `fill="${entry.fill}"`);
+      }
+      return el;
+    });
+    svg = svg.replace(new RegExp(`<text id="${id}_text_(\\d+)"([^>]*)>[^<]*</text>`, 'g'), (el, i, attrs) => {
+      const [x, y, scale, text] = texts[i];
+      return `<text id="${id}_text_${i}"${attrs.replace(/transform="[^"]*"/, `transform="matrix(${dec(scale)} 0 0 ${dec(scale)} ${dec(x)} ${dec(y)})"`)}>${xml(text)}</text>`;
+    });
+    out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220"><rect width="480" height="220" fill="#000"/>${svg}</svg>`);
+  }
+  if (out.length !== frames) throw new Error(`${id}: ${out.length} frames of ${frames}`);
+  return out;
+}
+
 // ---- server + browser ----------------------------------------------------------
 const TYPES = { '.html': 'text/html', '.mjs': 'text/javascript', '.json': 'application/json', '.wasm': 'application/wasm', '.svg': 'image/svg+xml', '.ttf': 'font/ttf' };
 const server = http.createServer((req, res) => {
@@ -172,10 +243,33 @@ const evaluate = async expression => {
 };
 await cdp('Emulation.setDeviceMetricsOverride', { width: 480, height: 220, deviceScaleFactor: 2, mobile: false });
 
+// A machine's frames as its MP4, and one of them as its poster.
+function encode(id, dir, poster) {
+  execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-framerate', String(FPS), '-i', join(dir, 'f%04d.png'),
+    '-movflags', '+faststart', '-pix_fmt', 'yuv420p', '-c:v', 'libx264', '-crf', '20', '-preset', 'slow', '-an', join(OUT, `${id}.mp4`)]);
+  execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-i', join(dir, `f${String(poster).padStart(4, '0')}.png`), '-q:v', '3', join(OUT, `${id}.jpg`)]);
+}
+
 const ids = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(S).filter(id => id !== 'grains-empty');
 mkdirSync(OUT, { recursive: true });
 try {
   for (const id of ids) {
+    if (S[id].harness) {
+      const svgs = harnessFrames(id);
+      await cdp('Page.navigate', { url: `${base}/render.html?${id}` });
+      for (let i = 0; i < 50 && !(await evaluate('window.ready === true').catch(() => false)); i++) await new Promise(r => setTimeout(r, 100));
+      const dir = join(OUT, id);
+      rmSync(dir, { recursive: true, force: true });
+      mkdirSync(dir, { recursive: true });
+      for (let f = 0; f < svgs.length; f++) {
+        await evaluate(`draw(${JSON.stringify(svgs[f])})`);
+        const shot = await cdp('Page.captureScreenshot', { format: 'png' });
+        writeFileSync(join(dir, `f${String(f).padStart(4, '0')}.png`), Buffer.from(shot.data, 'base64'));
+      }
+      encode(id, dir, Math.round(S[id].poster * FPS));
+      console.log(`${id}: ${svgs.length} frames from its harness`);
+      continue;
+    }
     const tl = timeline(id);
     await cdp('Page.navigate', { url: `${base}/render.html?${id}` });
     for (let i = 0; i < 50 && !(await evaluate('window.ready === true').catch(() => false)); i++) await new Promise(r => setTimeout(r, 100));
@@ -188,10 +282,7 @@ try {
       const shot = await cdp('Page.captureScreenshot', { format: 'png' });
       writeFileSync(join(dir, `f${String(f).padStart(4, '0')}.png`), Buffer.from(shot.data, 'base64'));
     }
-    const mp4 = join(OUT, `${id}.mp4`), poster = Math.round(tl.steps.length * 0.62);
-    execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-framerate', String(FPS), '-i', join(dir, 'f%04d.png'),
-      '-movflags', '+faststart', '-pix_fmt', 'yuv420p', '-c:v', 'libx264', '-crf', '20', '-preset', 'slow', '-an', mp4]);
-    execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-i', join(dir, `f${String(poster).padStart(4, '0')}.png`), '-q:v', '3', join(OUT, `${id}.jpg`)]);
+    encode(id, dir, Math.round(tl.steps.length * 0.62));
     console.log(`${id}: ${info.name}, ${tl.steps.length} frames`);
   }
 } finally {

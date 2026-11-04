@@ -326,18 +326,23 @@ window.SITE = {
       tagline: "A generative sequencer that plays eight parts on your tracks.",
       description: [
         "Conductor sits on aux track 12 and plays drums, bass, chords, pads, arps and leads live on instrument tracks 1–8 while the sequencer runs. One chord progression and one groove, set by key, scale and progression, keep the eight lanes in step.",
-        "The song changes a little each four-bar phrase, as far as evolve allows, and freezes when you like what you hear. Notes are not written into the tracks' steps. Presets: Pop, Night and Jazz."
+        "The song changes a little each four-bar phrase, as far as evolve allows, and freezes when you like what you hear. Notes are not written into the tracks' steps.",
+        "Four pages read left to right, every lane wired to the track it plays: the phrase's chords and groove, the bar playing, the selected lane alone (a drum lane's kick to low tom, or a synth lane's notes) and the routes. Four presets: init, Pop (bright and busy, in G major), Night (sparse and slow, in A minor) and Jazz (swung, rich chords, in F major)."
       ],
       specs: [
-        [["lanes", "8"], ["pages", "4"], ["scales", "7"], ["presets", "3"]],
-        [["track", "12"], ["sdk", "1.8"], ["os", "1.2.1"], ["licence", "MIT"]]
+        [["lanes", "8"], ["pages", "4"], ["scales", "7"], ["presets", "4"]],
+        [["track", "12"], ["sdk", "1.9"], ["os", "1.2.1"], ["licence", "MIT"]]
       ],
       machines: [
         { id: "conductor", name: "Conductor", kind: "sequencer", status: "lab",
-          description: "Generative sequencer for aux track 12. Eight lanes follow one song, with a role, density and route to a track for each. Shift and the first four encoders reroll, freeze, fill and vary.",
-          screen: "Screen: four pages, from the chord wheel and the phrase's groove to each lane's bar, the selected lane's notes and the routes.",
-          pages: [["key", "scale", "prog", "dens"], ["cmplx", "hrate", "swing", "evolve"]],
-          presets: ["Pop", "Night", "Jazz"],
+          description: "Generative sequencer for aux track 12. Eight lanes follow one song, each with a role, a density and a track to play. Shift and the first four encoders reroll, freeze, fill and vary: the whole song on M1, the selected lane on M2–M4.",
+          screen: "Screen: four pages that read left to right, every lane wired to the track it plays, and a track's box lights as its lane plays. M1 is the phrase: its chords and groove over every lane's beats. M2 is the bar playing, step by step. M3 is the selected lane alone, a drum lane's voices from kick to low tom or a synth lane's notes named in the key. M4 is the routes.",
+          pages: [["key", "scale", "prog", "dens"], ["cmplx", "hrate", "swing", "evolve"],
+                  ["lane", "role", "dens", "oct"], ["vel", "vary", "lock", "gate"],
+                  ["lane", "to", "xpose", "mute"], ["low", "high", "", ""]],
+          pageNames: ["m1", "", "m2", "", "m4", ""],
+          presets: ["init", "Pop", "Night", "Jazz"],
+          media: { type: "video", src: "assets/media/conductor/conductor.mp4", poster: "assets/media/conductor/conductor.jpg", alt: "Conductor's four pages with Pop playing: M1's phrase as density turns up, M2's lanes with Shift held to reroll the drums, M3 on the drum lane's voices and then the arp's notes, M4 rerouting the arp from track 5 to track 7" },
           source: "https://github.com/mmockett/OP-XY-Conductor" }
       ]
     },

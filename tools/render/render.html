@@ -95,5 +95,12 @@ window.step = (events, elapsed) => {
     <rect width="480" height="220" fill="#000"/>${t.headerSvg(titles, values)}${t.scene.svg()}</svg>`;
   return true;
 };
+// Conductor: a frame its own control and display code drew on the host (render.mjs).
+// It fails without the screen font, rather than drawing in a fallback.
+window.draw = async svg => {
+  if (!(await document.fonts.load('20px XYScreen')).length) throw new Error('No screen font');
+  document.getElementById('screen').innerHTML = svg;
+  return true;
+};
 window.ready = true;
 </script>

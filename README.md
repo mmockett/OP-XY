@@ -34,15 +34,14 @@ Open `index.html` straight from disk to check it first.
 | Status | Means |
 | --- | --- |
 | `live` | Published in the Open-XY catalog on `main`, so it is in the open-xy.com builder |
-| `beta` | Shown as "in the catalog": published on the catalog's `staging` branch, so it comes to open-xy.com with the builder's next release |
 | `soon` | Coming soon: runs on the OP–XY, not yet in the builder |
 | `diy` | Needs samples from your own ROM; built from source only |
 | `lab` | Experimental: runs on the OP–XY but still being refined; built from source only |
 | `dev` | In development: not yet installable or on the OP–XY |
 
 Each time the page loads, it reads etcetc000/open-xy's
-`catalog/machines.json` on `main` and `staging`, and shows a machine published
-on `main` as `live` and one published only on `staging` as `beta` (in the catalog). A catalog
+`catalog/machines.json` on `main`, and shows a machine published there as
+`live`. A catalog
 change reaches each builder with its next release, so a status can lead the
 builder by a few days. A machine in open-xy.com links to its own page there
 (`#preview/machines/<catalog id>`) and shows its catalog tag, the version that
@@ -78,9 +77,8 @@ used for rendering only: it is never committed or served.
 ## The page
 
 The hero's nine screens link to their machines, which `hero.machines` in
-`data.js` lists in the grid's order. Under it, every machine is a tile, and a
-tile with no small poster yet shows just its name. The filters, the tiles, the
-rail beside the suites and the phone's index all draw from `data.js`, so a new
+`data.js` lists in the grid's order. The filters, the rail beside the suites
+and the phone's index all draw from `data.js`, so a new
 machine needs nothing beyond its entry there. Every card has its machine's `id`
 as its anchor, so `#moth` and `#modfx` both link in.
 

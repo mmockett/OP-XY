@@ -3,8 +3,8 @@
 // (20 px), and page 2 in grey below (docs/ux.md, sdk/browser/display.mjs).
 (() => {
   const SITE = window.SITE;
-  const RANK = { dev: 0, lab: 1, diy: 2, soon: 3, beta: 4, live: 5 };
-  const ORDER = ["live", "beta", "soon", "diy", "lab", "dev"];
+  const RANK = { dev: 0, lab: 1, diy: 2, soon: 3, live: 4 };
+  const ORDER = ["live", "soon", "diy", "lab", "dev"];
   const STEPS = ["#000000", "#323232", "#4B4B4B", "#646464", "#7D7D7D", "#969696", "#AFAFAF", "#CDCDCD"];
   // The catalog: main is what open-xy.com offers; staging, what its next release adds.
   const CATALOG = branch => `https://raw.githubusercontent.com/etcetc000/open-xy/${branch}/catalog/machines.json`;
@@ -154,7 +154,6 @@
   const all = () => SITE.projects.flatMap(p => p.machines);
   const count = st => all().filter(m => m.status === st).length;
   // The builder a status installs from, if any, and a machine's own page there.
-  // Only open-xy.com is sure to offer a machine: beta.open-xy.com lags the catalog.
   const site = st => (st === "live" ? SITE.builder : null);
   const install = m => (m.catalog && site(m.status) ? `${site(m.status)}/#preview/machines/${m.catalog}` : null);
   // The versions a project's machines install at from the builder, read from the
@@ -297,11 +296,7 @@
       `<div class="hdr-narrow"><div class="screen">${header(pages, values, 0, 2, 4)}</div><div class="screen">${header(pages, values, 2, 4, 4)}</div></div></div>`;
   }
 
-  function legend() {
-    $("#legend").innerHTML = ORDER.map(st => `<li>${pill(st)}<span>${esc(SITE.statuses[st].note)}</span></li>`).join("");
-  }
-
-  // The filters: drawn in the wall, the rail and the sheet, one state between them.
+  // The filters: drawn in the rail and the sheet, one state between them.
   function filtersHtml() {
     const row = (facet, label, opts) => `<div class="f-row" role="group" aria-label="${label}"><span class="f-label">${label}</span>` + opts.map(([k, text, n]) =>
       `<button class="chip" type="button" data-facet="${facet}" data-value="${k}" aria-pressed="${filters[facet] === k}"${n === 0 && filters[facet] !== k ? " disabled" : ""}>${esc(text)}${n === null ? "" : ` <b>${n}</b>`}</button>`).join("") + `</div>`;
@@ -322,19 +317,7 @@
 
   // A project's machines in the order the page shows them: by group.
   const inOrder = p => (p.groups || [{}]).flatMap((_, gi) => p.machines.filter(m => (m.group ?? 0) === gi));
-  const anchor = m => (SITE.projects.find(p => p.machines.length === 1 && p.machines[0] === m)?.id ?? m.id);
   const dot = st => `<i class="dot st-${st}" title="${esc(SITE.statuses[st].label)}" aria-hidden="true"></i>`;
-
-  // Every machine at a glance: each tile a small poster, a click from its card.
-  function drawWall() {
-    $("#wall").innerHTML = SITE.projects.map(p => `<div class="wall-group" data-project="${p.id}">
-      <h3><a href="#${p.id}">${esc(p.name.toLowerCase())}</a></h3>
-      <div class="tiles">${inOrder(p).map(m => `<a class="tile" href="#${anchor(m)}" data-machine="${m.id}">
-        <span class="thumb">${m.media?.poster ? `<img src="${esc(m.media.poster.replace(/\.jpg$/, "-t.jpg"))}" alt="" loading="lazy" decoding="async">` : ""}</span>
-        <span class="tile-n">${dot(m.status)}${esc(m.name.toLowerCase())}</span></a>`).join("")}</div></div>`).join("");
-    // No thumbnail yet: a machine the routine has just added shows its name alone.
-    $("#wall").querySelectorAll("img").forEach(img => img.addEventListener("error", () => img.remove()));
-  }
 
   // The list of suites and machines: the rail on a wide screen, the sheet on a phone.
   function drawIndex() {
@@ -362,14 +345,13 @@
       });
       sec.hidden = !inSec;
     });
-    // The tiles and the index follow the filters too.
-    document.querySelectorAll(".tile, [data-index] li[data-machine]").forEach(el => { el.hidden = !on(el.dataset.machine); });
-    document.querySelectorAll(".wall-group, .ix-suite").forEach(el => {
+    // The index follows the filters too.
+    document.querySelectorAll("[data-index] li[data-machine]").forEach(el => { el.hidden = !on(el.dataset.machine); });
+    document.querySelectorAll(".ix-suite").forEach(el => {
       const p = SITE.projects.find(x => x.id === el.dataset.project);
       el.hidden = !p.machines.some(m => matches(m));
     });
     const shown = all().filter(m => matches(m)).length;
-    $("#shown").textContent = `${shown} machine${shown === 1 ? "" : "s"}`;
     let empty = $("#empty");
     if (!shown) {
       if (!empty) { empty = document.createElement("p"); empty.id = "empty"; empty.className = "lead"; $("#projects").append(empty); }
@@ -452,8 +434,8 @@
     });
     wireVideos(host);
     host.querySelectorAll(".project, .card").forEach(el => spy.observe(el));
-    drawWall(); drawIndex();
-    legend(); drawFilters(); applyFilter(); heroBuilder();
+    drawIndex();
+    drawFilters(); applyFilter(); heroBuilder();
     return Promise.all(clips);
   }
 
@@ -475,7 +457,7 @@
         document.querySelectorAll(`[data-machine="${m.id}"] .dot`).forEach(d => { d.className = `dot st-${m.status}`; d.title = SITE.statuses[m.status].label; });
       }
     }
-    legend(); drawFilters(); applyFilter(); heroBuilder();
+    drawFilters(); applyFilter(); heroBuilder();
   }
 
   // The hero's builder button: open-xy.com, which offers every live machine.
@@ -492,20 +474,16 @@
     return r.json();
   }
 
-  // A machine published on the catalog's staging branch comes with the next release;
-  // on main, in open-xy.com: live. Its tag there is the version it installs at.
+  // A machine published on the catalog's main branch is in open-xy.com: live.
+  // Its tag there is the version it installs at.
   async function syncCatalog() {
-    const [main, staging] = await Promise.allSettled(["main", "staging"].map(b => json(CATALOG(b))));
-    if (main.status === "rejected" && staging.status === "rejected") throw main.reason;
-    const published = r => new Map(r.status === "fulfilled"
-      ? r.value.machines.filter(m => m.status === "published").map(m => [m.id, m.tag]) : []);
-    const live = published(main), beta = published(staging);
+    const live = new Map((await json(CATALOG("main"))).machines
+      .filter(m => m.status === "published").map(m => [m.id, m.tag]));
     let changed = false;
     for (const m of all()) {
       if (!m.catalog) continue;
-      const st = live.has(m.catalog) ? "live" : beta.has(m.catalog) ? "beta" : null;
-      if (st && RANK[st] > RANK[m.status]) { m.status = st; changed = true; }
-      const tag = (m.status === "live" ? live : m.status === "beta" ? beta : new Map()).get(m.catalog);
+      if (live.has(m.catalog) && RANK.live > RANK[m.status]) { m.status = "live"; changed = true; }
+      const tag = m.status === "live" ? live.get(m.catalog) : null;
       if (tag && tag !== m.tag) { m.tag = tag; changed = true; }
     }
     return changed;

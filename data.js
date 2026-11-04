@@ -3,8 +3,7 @@
 //
 // status: one of the keys in `statuses`. Machines with a `catalog` id are
 // checked against the Open-XY catalog when the page loads: published on its
-// staging branch they become "beta" (beta.open-xy.com), on main "live"
-// (open-xy.com). A machine in a builder links to its page there, and shows
+// main branch they become "live" (open-xy.com). A machine in a builder links to its page there, and shows
 // the catalog's tag for it: the version that builder installs. A project's
 // `version` is its latest release, shown until the catalog says otherwise.
 //
@@ -23,7 +22,6 @@ window.SITE = {
   owner: "Max Mockett",
   github: "https://github.com/mmockett",
   builder: "https://open-xy.com",
-  beta: "https://beta.open-xy.com",
   sdkRepo: "https://github.com/etcetc000/open-xy",
   catalog: "https://github.com/etcetc000/open-xy/blob/main/catalog/machines.json",
 
@@ -32,7 +30,6 @@ window.SITE = {
 
   statuses: {
     live: { label: "live",        note: "In the open-xy.com builder." },
-    beta: { label: "in the catalog", note: "Accepted into the Open-XY catalog. Comes to the open-xy.com builder with its next release." },
     soon: { label: "coming soon", note: "Runs on the OP–XY. Coming to the open-xy.com builder." },
     diy:  { label: "diy",         note: "Needs samples from your own ROM. Build from source." },
     lab:  { label: "experimental", note: "Runs on the OP–XY. Build from source." },

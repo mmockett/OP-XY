@@ -408,6 +408,7 @@
   });
   function play(btn) {
     if (playing === btn) { player.pause(); setPlaying(null); return; }
+    $("#film video")?.pause();
     player.src = btn.dataset.src;
     player.play().then(() => setPlaying(btn)).catch(() => setPlaying(null));
   }
@@ -490,18 +491,24 @@
     return changed;
   }
 
-  // The hero: each of its nine screens is a link to that machine's card, and
-  // the caption lists them in the grid's order.
-  const hero = $("#hero-media");
-  const nine = SITE.hero.machines.map(id => all().find(m => m.id === id));
-  if (nine.every(Boolean)) {
-    hero.innerHTML = mediaHtml(SITE.hero) + `<div class="hot">${nine.map(m => `<a href="#${m.id}" aria-label="${esc(m.name)}"><span>${esc(m.name.toLowerCase())}</span></a>`).join("")}</div>`;
-    $("#hero-cap").innerHTML = nine.map(m => `<a href="#${m.id}">${esc(m.name)}</a>`).join(", ");
-  } else hero.innerHTML = mediaHtml(SITE.hero);
-  // The first thing on the page: its poster doesn't wait to be seen.
-  const heroVideo = $("video", hero);
-  if (heroVideo) heroVideo.poster = heroVideo.dataset.poster;
-  wireVideos(hero);
+  // The hero: the machines' film. It has a soundtrack, so it waits for a click and
+  // then plays with sound, with the browser's own controls for pausing, the volume
+  // and full screen. A preset clip and the film never play over each other.
+  const film = $("#film video"), filmPlay = $("#film-play");
+  // Until then the poster shows with one button on it, and the whole screen plays it.
+  if (film && filmPlay) {
+    const start = () => { film.muted = false; film.play().catch(() => {}); };
+    film.controls = false;
+    filmPlay.hidden = false;
+    filmPlay.addEventListener("click", start);
+    film.addEventListener("click", () => { if (!film.controls) start(); });
+    film.addEventListener("play", () => {
+      film.controls = true;
+      filmPlay.hidden = true;
+      if (playing) { player.pause(); setPlaying(null); }
+    });
+    film.addEventListener("ended", () => { film.controls = false; filmPlay.hidden = false; });
+  }
   nav();
   // The clips' rows and the catalog's versions move later cards as they arrive, so
   // a link into the page lands again after each, unless the reader has already moved.

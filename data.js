@@ -25,9 +25,6 @@ window.SITE = {
   sdkRepo: "https://github.com/etcetc000/open-xy",
   catalog: "https://github.com/etcetc000/open-xy/blob/main/catalog/machines.json",
 
-  // The hero screen at the top of the page.
-  hero: { type: "video", machines: ["moth", "hollow", "wane", "chroma", "ghost", "recur", "bloom", "orbit", "lint"], src: "assets/media/hero.mp4", poster: "assets/media/hero.jpg", small: { src: "assets/media/hero-s.mp4", poster: "assets/media/hero-s.jpg" }, alt: "Screens of Moth, Hollow and Wane on top; Chroma, Ghost and Recur in the middle; Bloom, Orbit and Lint below" },
-
   statuses: {
     live: { label: "live",        note: "In the open-xy.com builder." },
     soon: { label: "coming soon", note: "Runs on the OP–XY. Coming to the open-xy.com builder." },

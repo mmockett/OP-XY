@@ -81,8 +81,11 @@ used for rendering only: it is never committed or served.
 
 ## The page
 
-The hero's nine screens link to their machines, which `hero.machines` in
-`data.js` lists in the grid's order. The filters, the rail beside the suites
+The page opens on the machines' film, `assets/media/machines/machines.mp4`
+(16:9, with a soundtrack) and its poster `machines.jpg`, which is also the
+page's `og:image`. It waits for a click, then plays with sound and the
+browser's own controls; it loads nothing but the poster until then, and a
+preset clip pauses it. The filters, the rail beside the suites
 and the phone's index all draw from `data.js`, so a new
 machine needs nothing beyond its entry there. Every card has its machine's `id`
 as its anchor, so `#moth` and `#modfx` both link in.

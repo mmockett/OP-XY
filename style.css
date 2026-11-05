@@ -79,7 +79,7 @@ img, video, svg { display: block; max-width: 100%; }
 @media (min-width: 900px) { .nav { display: flex; } .index-btn { display: none; } }
 @media (max-width: 480px) { .mark span { display: none; } }
 
-/* hero: the title, then nine screens across the whole page */
+/* hero: the machines' film, then the title */
 .hero { padding-top: 32px; padding-bottom: 32px; }
 .hero-copy { display: grid; gap: 20px; margin-bottom: 28px; }
 .hero h1 { font-size: clamp(36px, 4.5vw, 64px); line-height: 1.02; font-weight: 300; letter-spacing: -.02em; margin: 12px 0 0; max-width: 12em; }
@@ -101,19 +101,30 @@ img, video, svg { display: block; max-width: 100%; }
 .screen { position: relative; background: var(--screen); border-radius: var(--r); overflow: hidden;
   box-shadow: 0 0 0 1px #000, 0 0 0 5px #1b1b1b, 0 0 0 6px #000, 0 18px 40px -18px rgba(0,0,0,.45); }
 .screen video, .screen img { width: 100%; height: 100%; object-fit: cover; }
-.screen-hero { aspect-ratio: 1448 / 668; margin: 6px; }
 .device .cap { margin-top: 18px; padding-left: 6px; }
 .cap a { text-decoration: none; }
 .cap a:hover { text-decoration: underline; }
 .zoom { cursor: zoom-in; }
 
-/* the hero's nine screens, each a link */
-.hot { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); }
-.hot a { position: relative; display: block; }
-.hot a span { position: absolute; left: 8px; bottom: 8px; padding: 3px 8px; border-radius: 999px; background: var(--ink); color: var(--body); font-size: 12px; opacity: 0; transition: opacity .12s; }
-.hot a:hover, .hot a:focus-visible { box-shadow: inset 0 0 0 1px var(--ink-3); }
-.hot a:hover span, .hot a:focus-visible span { opacity: 1; }
-.hot a:focus-visible { outline: none; }
+/* the hero's film: 16:9, the poster until it plays, then the browser's controls */
+.film { margin-bottom: 36px; }
+.screen-film { aspect-ratio: 16 / 9; margin: 6px; }
+.screen-film video { object-fit: contain; background: #000; }
+.screen-film video:not([controls]) { cursor: pointer; }
+/* Centred in the poster's gap between its title and its three screens. */
+.film-play { all: unset; box-sizing: border-box; position: absolute; left: 50%; top: 52.5%; transform: translate(-50%, -50%);
+  display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 22px 0 18px; border-radius: 999px;
+  background: var(--ink); color: var(--body); font-size: 15px; cursor: pointer; white-space: nowrap;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,.6); transition: background .15s; }
+.film-play:hover { background: var(--ink-2); }
+.film-play:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.film-play .i { width: 18px; height: 18px; fill: currentColor; stroke: none; }
+.film-play small { font-size: 12px; opacity: .65; }
+.film-play[hidden] { display: none; }
+/* A phone: smaller, at the foot of the screen, under the poster's title. */
+@media (max-width: 600px) { .film-play { top: auto; bottom: 8px; transform: translateX(-50%); height: 34px; padding: 0 14px 0 12px; font-size: 13px; gap: 7px; }
+  .film-play .i { width: 14px; height: 14px; } .film-play small { font-size: 11px; } }
+@media (min-width: 1000px) { .film { margin-bottom: 44px; } }
 
 /* the header bar, drawn as the SDK draws it */
 .xy { width: 100%; height: auto; font-family: var(--xy); }

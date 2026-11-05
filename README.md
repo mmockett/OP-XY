@@ -71,7 +71,10 @@ python3 tools/render/build.py --publish
 The first builds each machine's browser preview, the second plays notes and
 turns controls through each one (the scenes are in `render.mjs`; name
 machines to render only those), and the third copies the MP4s and posters
-into `assets/media` and rebuilds the grids and the small posters. Conductor's screens come from its own control and display code too,
+into `assets/media` and rebuilds the grids and the small posters. Name projects
+after either `build.py` command (`build.py tetragon`, `build.py --publish
+tetragon`) to build or publish only those. The Tetragon kits are read from a
+checkout of OP-XY-Tetragon beside this one, or wherever `XY_TETRAGON` points. Conductor's screens come from its own control and display code too,
 compiled on the host into `tools/render/conductor.cpp`, since the browser preview
 doesn't run a machine's control code. The font is
 used for rendering only: it is never committed or served.
@@ -128,3 +131,6 @@ rendered on a computer from each machine's own engine code, not recorded on an
 OP–XY, by the private OP-XY-Dev repository's `tools/audition`, which writes the
 `.m4a` files and `assets/audio/<project>.json`. Samples Ghost and Recur play are
 synthesised there too.
+
+Tetragon's cards play four bars of each kit's own demo grooves (the MP3s in
+each kit's `docs/`), cut and encoded as `.m4a` into `assets/audio/tetragon/`.

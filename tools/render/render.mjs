@@ -106,6 +106,39 @@ Object.assign(S, {
   'mdkit-ns': mdkit(31, [30, 0, 0, 0, 0, 0, 0, 0], 0, 0.9, 0.9),           // GND-NS: DEC
 });
 
+// The Tetragon kits (the per-key mixer channels' SDK): four keys of each default
+// kit (kit.h), each struck while one of its controls turns. Keys play 53..76.
+const pad = segments => ({ sdk: 'pad', events: segments.flatMap(([k, model, values, set, to, every], i) => {
+  const t = 1.6 * i;
+  return [key(t, model, values), ...plucks(t + 0.1, t + 1.55, every, [53 + k], 0.08), sweep(set, to, t + 0.3, t + 1.3)];
+}) });
+Object.assign(S, {
+  thunder: pad([
+    [0, 0, [52, 76, 18, 10, 110, 70, 58, 0], 0, 0.8, 0.5],       // BOOM: SIZE
+    [1, 1, [64, 84, 74, 40, 96, 80, 44, 40], 3, 0.85, 0.45],     // SLAP: SPOT
+    [11, 5, [50, 16, 96, 90, 10, 50, 30, 0], 5, 0.95, 0.7],      // CRASH: SWELL
+    [15, 11, [50, 50, 56, 60, 30, 20, 60, 64], 2, 0.9, 0.7],     // SHAKE: RUMBLE
+  ]),
+  curio: pad([
+    [0, 0, [70, 38, 53, 44, 19, 25, 0, 0], 1, 0.8, 0.7],         // BALL: BOUNCE
+    [6, 8, [25, 76, 76, 38, 22, 0, 0, 0], 6, 0.85, 0.4],         // CICADA: WING
+    [4, 6, [51, 51, 44, 13, 0, 25, 0, 0], 0, 0.9, 0.5],          // SPARK: CHARGE
+    [14, 12, [44, 57, 57, 64, 0, 25, 0, 0], 0, 0.9, 0.7],        // GLASS: WATER
+  ]),
+  galileo: pad([
+    [2, 1, [57, 76, 44, 64, 88, 0, 0, 0], 5, 0.5, 0.8],          // SNARE: FRETS
+    [0, 0, [44, 57, 44, 38, 88, 0, 0, 0], 6, 0.6, 0.8],          // KICK: BOUNCE
+    [12, 7, [57, 57, 44, 51, 88, 0, 0, 0], 4, 0.35, 0.8],        // RIDE: TILT
+    [10, 13, [64, 38, 44, 51, 88, 0, 0, 70], 7, 0.9, 0.8],       // SHAKER: BALLS
+  ]),
+  syahi: pad([
+    [0, 0, [46, 62, 52, 48, 40, 14, 56, 40], 4, 0.85, 0.5],      // BOOM: FORM
+    [14, 3, [74, 70, 104, 0, 44, 110, 8, 0], 3, 0.8, 0.45],      // TABLA: PRESS
+    [18, 4, [50, 70, 0, 50, 80, 30, 90, 10], 2, 0.7, 0.5],       // BAR: BEAT
+    [12, 5, [76, 106, 70, 110, 100, 40, 10, 30], 7, 0.9, 0.7],   // METAL: SIZZLE
+  ]),
+});
+
 // Four decaying hits, as a drum loop's overview would look: 96 bins, 0..1.
 const levels = Array.from({ length: 96 }, (_, i) => {
   const k = i % 24, hit = [1, .59, .9, .55][Math.floor(i / 24)];

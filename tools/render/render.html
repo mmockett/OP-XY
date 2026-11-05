@@ -78,7 +78,11 @@ window.step = (events, elapsed) => {
   const frame = t.display.tick(t.shownControls(words, t.shown), Math.round(elapsed * 1.024),
                                t.notes.note_on_serial >>> 0, 0, false, t.notes,
                                ['aux', 'effects', 'pr3'].includes(t.config.sdk) ? t.shiftRow : t.model,
-                               ...(t.config.sdk === 'drum' ? [Number(t.drumShift.shift), t.drumShift.choices] : []));
+                               ...(t.config.sdk === 'drum' ? [Number(t.drumShift.shift), t.drumShift.choices] : []),
+                               // A kit with per-key mixer channels (Tetragon): no amp envelope, the key
+                               // at its own pan and level, and the row the encoders are on.
+                               ...(t.config.sdk === 'pad' ? [Number(t.drumShift.shift), t.drumShift.choices, null,
+                                                             { pan: 0, level: 0 }, Number(t.shown[0] >= 4)] : []));
   t.scene.apply(frame);
   const p = t.definition.parameters;
   const kitLabels = t.config.labels && t.config.labels[t.model];

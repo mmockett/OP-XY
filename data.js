@@ -234,6 +234,77 @@ window.SITE = {
     },
 
     {
+      id: "tetragon",
+      audio: "assets/audio/tetragon.json",
+      name: "Tetragon Suite",
+      kicker: "four drum kits",
+      status: "dev",
+      version: "",
+      repo: "https://github.com/mmockett/OP-XY-Tetragon",
+      links: [],
+      tagline: "Four drum kits, each built from something odd in the physical world.",
+      description: [
+        "Thunder, Curio, Galileo and Syahi. Each starts from something odd in the physical world (a theatre thunder sheet, a Victorian cabinet of curiosities, Galileo's inclined plane and the loaded head of a tabla) and turns it into a full kit of kicks, snares, hats, toms and stranger things, all synthesised.",
+        "Every one of the 24 keys holds its own sound with eight controls on two rows, and Shift gives each key its own mixer channel: its sound, choke group, pan, level and FX sends. Each screen draws the object you are playing, and every hit sets it moving. Kit presets cover styles from dub and boom bap to techno, trap and gamelan."
+      ],
+      specs: [
+        [["kits", "4"], ["models", "51"], ["keys", "24"], ["controls", "8"]],
+        [["presets", "34"], ["screens", "4"], ["os", "1.2.1"], ["licence", "MIT"]]
+      ],
+      media: { type: "video", aspect: "964 / 444", src: "assets/media/tetragon/tetragon.mp4", poster: "assets/media/tetragon/tetragon.jpg", alt: "Tetragon Suite's four screens playing together: Thunder and Curio on top, Galileo and Syahi below" },
+      machines: [
+        {
+          id: "thunder", name: "Thunder", kind: "drum kit", status: "dev",
+          after: "the theatre thunder sheet",
+          description: "One iron thunder sheet, played every way a stagehand would: struck, flicked, snapped, poured on, bowed or shaken, with a chain across its face for a snare. Pulled tight it booms like a kick or a tom; hanging slack it washes like a crash.",
+          screen: "Screen: the sheet hung from its oak beam, with its felt damper, wire stays and chain. Each model brings its own implement, from a mallet to a cello bow, and a hit throws the sheet into its ringing shape.",
+          kit: ["12 models"],
+          pages: [["size", "damp", "beater", "spot"], ["tension", "camber", "glide", "chain"]],
+          pageNames: ["boom", ""],
+          shift: ["machine", "choke", "pan", "level"],
+          media: { type: "video", src: "assets/media/tetragon/thunder.mp4", poster: "assets/media/tetragon/thunder.jpg", alt: "Thunder's sheet struck as a kick, a snare and a crash, then shaken into a thunderclap" },
+          source: "https://github.com/mmockett/OP-XY-Tetragon/tree/main/thunder"
+        },
+        {
+          id: "curio", name: "Curio", kind: "drum kit", status: "dev",
+          after: "a cabinet of curiosities",
+          description: "A Victorian cabinet of sixteen sound specimens in four drawers: a ball dribbling to rest on a drum, lake ice singing as it cracks, a cicada's buckling ribs, a wine glass going flat as it fills. Each plays as a drum, with a small rhythm of its own inside the hit.",
+          screen: "Screen: the selected specimen alone on black, drawn as it is built and held. The ball drops and bounces on the skin, a spark jumps the gap, the cicada's wings flick.",
+          kit: ["THUMP 4", "CRACK 4", "TICK 4", "RING 4"],
+          pages: [["drop", "bounce", "skin", "ball"], ["decay", "floor", "spot", "grit"]],
+          pageNames: ["ball", ""],
+          shift: ["specimen", "choke", "pan", "level"],
+          media: { type: "video", src: "assets/media/tetragon/curio.mp4", poster: "assets/media/tetragon/curio.jpg", alt: "Curio's specimens: a ball bouncing on its drum, a cicada's wings opening, a spark across the gap, then a goblet filling" },
+          source: "https://github.com/mmockett/OP-XY-Tetragon/tree/main/curio"
+        },
+        {
+          id: "galileo", name: "Galileo", kind: "drum kit", status: "dev",
+          after: "Galileo's inclined plane",
+          description: "Every note rolls a ball down a grooved board, over bells hung across it, onto a drum, cymbal or bar, where it bounces to rest. One key plays a crisp hit, a flam, a drag, a ruff or a roll into its accent, and with the frets locked to the beat the run lands in time.",
+          screen: "Screen: an 18th-century demonstration plane. The ball rolls down the board, rings the frets and falls onto the key's drum, cymbal or bar, its path traced in dots.",
+          kit: ["SKIN 6", "METAL 5", "PERC 4"],
+          pages: [["tune", "punch", "decay", "beater"], ["tilt", "frets", "bounce", "balls"]],
+          pageNames: ["kick", ""],
+          shift: ["machine", "choke", "pan", "level"],
+          media: { type: "video", src: "assets/media/tetragon/galileo.mp4", poster: "assets/media/tetragon/galileo.jpg", alt: "Galileo's plane: a ball ringing the frets onto a snare, then rolling onto a kick and a ride, then a handful of shot onto a shaker" },
+          source: "https://github.com/mmockett/OP-XY-Tetragon/tree/main/galileo"
+        },
+        {
+          id: "syahi", name: "Syahi", kind: "drum kit", status: "dev",
+          after: "the tabla's loaded head",
+          description: "One struck head, loaded like a tabla's and shaped into any drum. Tune, decay, form and spot sit in the same place on every key, and form turns a kick into a slit drum, a marimba bar or a gong on one knob. Eight models, from boom and snare to tabla, metal and wire.",
+          screen: "Screen: an engraved plate showing the drum twice, in section and from above. A hit flexes the head and lights its nodal lines, and every control moves a part, from the tension rods to the snare wires.",
+          kit: ["8 models"],
+          pages: [["tune", "decay", "bend", "beater"], ["form", "spot", "shell", "air"]],
+          pageNames: ["boom", ""],
+          shift: ["machine", "choke", "pan", "level"],
+          media: { type: "video", src: "assets/media/tetragon/syahi.mp4", poster: "assets/media/tetragon/syahi.jpg", alt: "Syahi's drum in section and from above: a kick's head reshaping, a tabla stroke, a marimba bar and a cymbal" },
+          source: "https://github.com/mmockett/OP-XY-Tetragon/tree/main/syahi"
+        }
+      ]
+    },
+
+    {
       id: "grains",
       name: "Grains",
       kicker: "granular sampler",

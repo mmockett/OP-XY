@@ -25,6 +25,10 @@
     "mmockett/OP-XY-Conductor": {
       "head": "ecf6934253e77a2a7afc5c50b714f15fbfd86b73",
       "tags": ""
+    },
+    "mmockett/OP-XY-Tetragon": {
+      "head": "70771ca964f6d24b80becb01f1cd3e2b2bac7aa1",
+      "tags": ""
     }
   },
   "catalog_blob": {

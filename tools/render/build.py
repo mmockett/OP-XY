@@ -2,9 +2,12 @@
 """Builds every machine's browser preview for render.mjs, then (with --publish)
 copies the rendered screens into the site.
 
-    python3 tools/render/build.py            # previews, SDK modules, font, kit labels
-    node tools/render/render.mjs [id ...]    # render the screens to tools/render/out
-    python3 tools/render/build.py --publish  # copy them to assets/media, rebuild the grids
+    python3 tools/render/build.py [project ...]            # previews, SDK modules, font, kit labels
+    node tools/render/render.mjs [id ...]                  # render the screens to tools/render/out
+    python3 tools/render/build.py --publish [project ...]  # copy them to assets/media, rebuild the grids
+
+Name projects (hexagon, nonagon, grains, modfx, conductor, mnmd, tetragon) to
+build or publish only those; with none, every project, and the hero.
 
 The machine repositories and SDK checkouts sit beside this one (../opxy-pads,
 ../opxy-nonagon, ../OP-XY-MNMD, ../opxy-grains, ../OP-XY-Macro (OP-XY-ModFX), ../open-xy-staging,
@@ -12,7 +15,11 @@ The machine repositories and SDK checkouts sit beside this one (../opxy-pads,
 #182 and the LFO names, as the device firmware), ../open-xy-effects on
 sdk/effect-screens, ../open-xy-control-notes-2 on sdk/control-notes-2 (Conductor:
 staging's SDK 1.9 with #346's track-control notes); the drum kits build on etcetc000/open-xy's staging,
-fetched into ../open-xy-staging and read with git archive).
+fetched into ../open-xy-staging and read with git archive). The Tetragon kits
+build on the per-key mixer channels (open-xy #399, drum/pad-channel on the
+mmockett/open-xy fork, fetched into ../open-xy as "fork" and read with git
+archive); Tetragon itself is read from a checkout of mmockett/OP-XY-Tetragon at
+../OP-XY-Tetragon, or wherever XY_TETRAGON points.
 Each suite is read at its commit in SOURCES with git archive, so its checkouts
 are left alone. MD KIT and MD E12 build on the drum kind's SDK (open-xy #143).
 The screen font is the OP-XY's, Univers Next Pro Light: set XY_FONT to its file.
@@ -36,7 +43,9 @@ FONT = pathlib.Path(os.environ.get("XY_FONT", pathlib.Path.home() / "Downloads/u
 # Which SDK checkout each machine builds against, as each repository's README says.
 SDKS = {"staging": REPOS / "open-xy-staging", "fork": REPOS / "open-xy", "pr3": REPOS / "open-xy-pr3",
         "aux": REPOS / "open-xy-aux-machines-lfo", "effects": REPOS / "open-xy-effects", "drum": HERE / "src" / "open-xy-upstream",
-        "control": REPOS / "open-xy-control-notes-2"}
+        "control": REPOS / "open-xy-control-notes-2", "pad": HERE / "src" / "open-xy-pad-channel"}
+# The per-key mixer channels' SDK (open-xy #399), the Tetragon kits' (their README).
+PAD_SDK = ("fork", "drum/pad-channel")
 # These draw the waves captured from the owner's ROM, which no repository holds:
 # from a checkout they are flat lines, so their screens stay as first rendered.
 ROM_SCREENS = ["mmbbox", "mmdens", "mmwave", "mmddrw"]
@@ -50,7 +59,11 @@ MODFX = REPOS / "OP-XY-Macro"
 # The commits the suites' screens are finalised at, read with git archive.
 SOURCES = {"opxy-pads": "v1.5.0", "opxy-nonagon": "v0.7.2", "OP-XY-Macro": "v1.8.0", "OP-XY-MNMD": "v1.2.3", "opxy-grains": "v1.1.0",
            # Conductor's SDK 1.9 port (port/sdk-1.9), with M3's own voices and notes and M4's track and midi columns.
-           "opxy-conductor": "a80dde4"}
+           "opxy-conductor": "a80dde4",
+           # Tetragon's first public release, main at 70771ca.
+           "OP-XY-Tetragon": "70771ca"}
+# Where each suite is checked out, when not beside this repository under its own name.
+CHECKOUTS = {"OP-XY-Tetragon": pathlib.Path(os.environ.get("XY_TETRAGON", REPOS / "OP-XY-Tetragon"))}
 # The hero at the top of the page: nine machines from three suites.
 HERO = ["moth", "hollow", "wane", "chroma", "ghost", "recur", "bloom", "orbit", "lint"]
 HEXAGON = ["wane", "bloom", "hollow", "orbit", "bend", "moth"]
@@ -61,6 +74,8 @@ NONAGON_SAMPLE = {
     "recur": ["display.cpp", "display.h", "layout.h", "recur.h", "panel.svg.fragment"],
 }
 KITS = ["mde12"]
+# The Tetragon Suite: four drum kits on the per-key mixer channels' SDK.
+TETRAGON = ["thunder", "curio", "galileo", "syahi"]
 # The stand-in synth for Grains' screen: the catalog holds "grains" itself.
 WRAP_ID = "grainsview"
 
@@ -71,6 +86,7 @@ MEDIA = {
     "grains": {"ids": ["grains"]},
     "modfx": {"ids": ["chroma", "lint", "omnifilter"]},
     "conductor": {"ids": ["conductor"]},
+    "tetragon": {"ids": TETRAGON, "grids": [("tetragon", TETRAGON, 2)]},
     "mnmd": {"ids": None, "grids": [("mdkit", MDKIT_GRID, 3),
                                      ("overview", ["mdkit-bd", "mde12", "mmsid", "mmvo6", "mmstat", "mmpulse", "mmwave", "mmdens"], 4)]},
 }
@@ -145,12 +161,24 @@ def upstream():
     subprocess.run(["tar", "-x", "-C", out], input=archive, check=True)
 
 
+def pad_sdk():
+    """The Tetragon kits' SDK: the per-key mixer channels' branch, fetched into
+    ../open-xy and read with git archive, so no checkout of it changes."""
+    remote, branch = PAD_SDK
+    out = SDKS["pad"]
+    run("git", "-C", REPOS / "open-xy", "fetch", "-q", remote, branch)
+    shutil.rmtree(out, ignore_errors=True)
+    out.mkdir(parents=True)
+    archive = subprocess.run(["git", "-C", REPOS / "open-xy", "archive", f"{remote}/{branch}"], capture_output=True, check=True).stdout
+    subprocess.run(["tar", "-x", "-C", out], input=archive, check=True)
+
+
 def source(repo):
     """A suite at its finalised commit, as files: its checkouts are left alone."""
     out = HERE / "src" / repo
     shutil.rmtree(out, ignore_errors=True)
     out.mkdir(parents=True)
-    archive = subprocess.run(["git", "-C", REPOS / repo, "archive", SOURCES[repo]], capture_output=True, check=True).stdout
+    archive = subprocess.run(["git", "-C", CHECKOUTS.get(repo, REPOS / repo), "archive", SOURCES[repo]], capture_output=True, check=True).stdout
     subprocess.run(["tar", "-x", "-C", out], input=archive, check=True)
     return out
 
@@ -244,49 +272,76 @@ def mnmd_source():
     return out / "machines"
 
 
-def kit_labels():
-    labels = {}
-    for kit in KITS:
-        text = (HERE / "src" / "OP-XY-MNMD" / "machines" / kit / "kit.h").read_text()
-        body = text[text.index("const Model model[models]"):]
+def kit_labels(kits):
+    """Each kit model's control labels, from its kit.h, which the drum page's
+    header shows. Kits not named keep the labels they had."""
+    path = HERE / "kit-labels.json"
+    labels = json.loads(path.read_text()) if path.exists() else {}
+    for kit, folder in kits.items():
+        text = (folder / "kit.h").read_text()
+        body = text[re.search(r"const \w+ model\[models\] = \{", text).end():]
         body = body[:body.index("};")]
-        rows = re.findall(r'\{\s*"([^"]*)"\s*,.*?\{([^}]*)\}', body, re.S)
+        rows = re.findall(r'\{\s*"([^"]*)"\s*,[^{]*\{([^}]*)\}', body, re.S)
         labels[kit] = [re.findall(r'"([^"]*)"', row) for _, row in rows]
-    (HERE / "kit-labels.json").write_text(json.dumps(labels))
+    path.write_text(json.dumps(labels))
 
 
-def build():
+def tetragon():
+    """The Tetragon kits at their commit, previewed on the per-key mixer channels' SDK."""
+    kits = source("OP-XY-Tetragon")
+    kit_labels({kit: kits / kit for kit in TETRAGON})
+    for mid in TETRAGON:
+        preview("pad", "--machine", kits / mid, HERE / "m" / mid)
+
+
+def build(projects):
     if not FONT.exists():
         sys.exit(f"No screen font at {FONT}; set XY_FONT to Univers Next Pro Light")
-    upstream()
+    wanted = lambda project: not projects or project in projects
+    if wanted("mnmd"):
+        upstream()
+    if wanted("tetragon"):
+        pad_sdk()
     (HERE / "font").mkdir(exist_ok=True)
-    shutil.copy(FONT, HERE / "font" / "UniversNextPro-Light.ttf")
+    if FONT.resolve() != (HERE / "font" / "UniversNextPro-Light.ttf").resolve():
+        shutil.copy(FONT, HERE / "font" / "UniversNextPro-Light.ttf")
     for name, checkout in SDKS.items():
-        (HERE / "sdk" / name).mkdir(parents=True, exist_ok=True)
-        for module in ("display.mjs", "controls.mjs"):
-            shutil.copy(checkout / "sdk" / "browser" / module, HERE / "sdk" / name / module)
-    pads, nonagon, modfx, _ = (source(repo) for repo in ("opxy-pads", "opxy-nonagon", "OP-XY-Macro", "opxy-grains"))
-    machines = mnmd_source()
-    kit_labels()
-    for mid in HEXAGON:
-        preview("staging", "--machine", pads / mid, HERE / "m" / mid)
-    for folder in sorted(machines.iterdir()):
-        if not (folder / "machine.json").exists() or folder.name in MDKIT + ROM_SCREENS:
-            continue
-        kind = json.loads((folder / "machine.json").read_text())["kind"]
-        preview("pr3", "--machine", folder, HERE / "m" / folder.name)
-    preview("pr3", "--source", grains_wrap(), HERE / "m" / "grains")
-    for mid in NONAGON:
-        if mid in NONAGON_SAMPLE:
-            preview("pr3", "--source", sample_wrap(mid, nonagon), HERE / "m" / mid)
-        else:
-            preview("staging", "--machine", nonagon / mid, HERE / "m" / mid)
-    for mid in MDKIT:
-        preview("drum", "--machine", machines / mid, HERE / "m" / mid)
-    preview("aux", "--machine", MODFX / "omnifilter", HERE / "m" / "omnifilter")
-    for mid in ("chroma", "lint"):
-        preview("effects", "--source", effect_wrap(mid, modfx), HERE / "m" / mid)
-    conductor()
+        if (checkout / "sdk" / "browser").exists():
+            (HERE / "sdk" / name).mkdir(parents=True, exist_ok=True)
+            for module in ("display.mjs", "controls.mjs"):
+                shutil.copy(checkout / "sdk" / "browser" / module, HERE / "sdk" / name / module)
+    if wanted("hexagon"):
+        pads = source("opxy-pads")
+        for mid in HEXAGON:
+            preview("staging", "--machine", pads / mid, HERE / "m" / mid)
+    if wanted("mnmd"):
+        machines = mnmd_source()
+        kit_labels({kit: machines / kit for kit in KITS})
+        for folder in sorted(machines.iterdir()):
+            if not (folder / "machine.json").exists() or folder.name in MDKIT + ROM_SCREENS:
+                continue
+            preview("pr3", "--machine", folder, HERE / "m" / folder.name)
+        for mid in MDKIT:
+            preview("drum", "--machine", machines / mid, HERE / "m" / mid)
+    if wanted("grains"):
+        source("opxy-grains")
+        preview("pr3", "--source", grains_wrap(), HERE / "m" / "grains")
+    if wanted("nonagon"):
+        nonagon = source("opxy-nonagon")
+        for mid in NONAGON:
+            if mid in NONAGON_SAMPLE:
+                preview("pr3", "--source", sample_wrap(mid, nonagon), HERE / "m" / mid)
+            else:
+                preview("staging", "--machine", nonagon / mid, HERE / "m" / mid)
+    if wanted("modfx"):
+        modfx = source("OP-XY-Macro")
+        preview("aux", "--machine", MODFX / "omnifilter", HERE / "m" / "omnifilter")
+        for mid in ("chroma", "lint"):
+            preview("effects", "--source", effect_wrap(mid, modfx), HERE / "m" / mid)
+    if wanted("conductor"):
+        conductor()
+    if wanted("tetragon"):
+        tetragon()
 
 
 def grid(ids, columns, out):
@@ -301,20 +356,25 @@ def grid(ids, columns, out):
     run("ffmpeg", "-loglevel", "error", "-y", "-ss", "4", "-i", f"{out}.mp4", "-frames:v", "1", "-q:v", "3", f"{out}.jpg")
 
 
-def thumbnails():
+def thumbnails(projects):
     """The small poster each machine's tile shows: about 10 KB, against 40 KB for the full one."""
     for poster in (SITE / "assets" / "media").glob("*/*.jpg"):
-        if not poster.stem.endswith("-t") and poster.stem not in ("hexagon", "nonagon", "overview"):
+        if projects and poster.parent.name not in projects:
+            continue
+        if not poster.stem.endswith("-t") and poster.stem not in ("hexagon", "nonagon", "tetragon", "overview"):
             run("ffmpeg", "-loglevel", "error", "-y", "-i", poster, "-vf", "scale=360:-2", "-q:v", "4", poster.with_name(f"{poster.stem}-t.jpg"))
 
 
-def publish():
-    grid(HERO, 3, SITE / "assets" / "media" / "hero")
-    # A phone's hero: half the size, for a screen that can't show more.
-    run("ffmpeg", "-loglevel", "error", "-y", "-i", SITE / "assets" / "media" / "hero.mp4", "-vf", "scale=724:-2", "-movflags", "+faststart",
-        "-pix_fmt", "yuv420p", "-c:v", "libx264", "-crf", "24", "-preset", "slow", "-an", SITE / "assets" / "media" / "hero-s.mp4")
-    run("ffmpeg", "-loglevel", "error", "-y", "-i", SITE / "assets" / "media" / "hero.jpg", "-vf", "scale=724:-2", "-q:v", "4", SITE / "assets" / "media" / "hero-s.jpg")
+def publish(projects):
+    if not projects:
+        grid(HERO, 3, SITE / "assets" / "media" / "hero")
+        # A phone's hero: half the size, for a screen that can't show more.
+        run("ffmpeg", "-loglevel", "error", "-y", "-i", SITE / "assets" / "media" / "hero.mp4", "-vf", "scale=724:-2", "-movflags", "+faststart",
+            "-pix_fmt", "yuv420p", "-c:v", "libx264", "-crf", "24", "-preset", "slow", "-an", SITE / "assets" / "media" / "hero-s.mp4")
+        run("ffmpeg", "-loglevel", "error", "-y", "-i", SITE / "assets" / "media" / "hero.jpg", "-vf", "scale=724:-2", "-q:v", "4", SITE / "assets" / "media" / "hero-s.jpg")
     for project, spec in MEDIA.items():
+        if projects and project not in projects:
+            continue
         target = SITE / "assets" / "media" / project
         target.mkdir(parents=True, exist_ok=True)
         ids = spec["ids"] or [p.name for p in sorted((HERE / "src" / "OP-XY-MNMD" / "machines").iterdir())
@@ -325,11 +385,15 @@ def publish():
         for name, members, columns in spec.get("grids", []):
             grid(members, columns, target / name)
         print(f"published {project}")
-    thumbnails()
+    thumbnails(projects)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--publish", action="store_true", help="copy rendered screens into assets/media")
+    parser.add_argument("projects", nargs="*", help=f"only these projects: {', '.join(MEDIA)} (default: all)")
     args = parser.parse_args()
-    publish() if args.publish else build()
+    unknown = set(args.projects) - set(MEDIA)
+    if unknown:
+        parser.error(f"unknown project: {', '.join(sorted(unknown))}")
+    publish(args.projects) if args.publish else build(args.projects)

@@ -1,0 +1,74 @@
+{
+  "thunder": [
+    {
+      "preset": "Kingston",
+      "slug": "kingston",
+      "src": "assets/audio/tetragon/thunder/kingston.m4a",
+      "role": "dub steppers",
+      "phrase": "dub steppers, four bars at 112 BPM",
+      "seconds": 9.0
+    },
+    {
+      "preset": "Foundry",
+      "slug": "foundry",
+      "src": "assets/audio/tetragon/thunder/foundry.m4a",
+      "role": "industrial techno",
+      "phrase": "industrial techno, four bars at 124 BPM",
+      "seconds": 8.1
+    }
+  ],
+  "curio": [
+    {
+      "preset": "Cellar",
+      "slug": "cellar",
+      "src": "assets/audio/tetragon/curio/cellar.m4a",
+      "role": "dusty boom bap",
+      "phrase": "dusty boom bap, four bars at 98 BPM",
+      "seconds": 10.2
+    },
+    {
+      "preset": "Foundry",
+      "slug": "foundry",
+      "src": "assets/audio/tetragon/curio/foundry.m4a",
+      "role": "industrial techno",
+      "phrase": "industrial techno, four bars at 124 BPM",
+      "seconds": 8.1
+    }
+  ],
+  "galileo": [
+    {
+      "preset": "Clockwork",
+      "slug": "clockwork",
+      "src": "assets/audio/tetragon/galileo/clockwork.m4a",
+      "role": "trap and hip hop",
+      "phrase": "trap and hip hop, four bars at 120 BPM",
+      "seconds": 8.4
+    },
+    {
+      "preset": "Workshop",
+      "slug": "workshop",
+      "src": "assets/audio/tetragon/galileo/workshop.m4a",
+      "role": "broken beat and acoustic funk",
+      "phrase": "broken beat and acoustic funk, four bars at 104 BPM",
+      "seconds": 9.6
+    }
+  ],
+  "syahi": [
+    {
+      "preset": "Volt",
+      "slug": "volt",
+      "src": "assets/audio/tetragon/syahi/volt.m4a",
+      "role": "808 and 909",
+      "phrase": "808 and 909, four bars at 124 BPM",
+      "seconds": 8.1
+    },
+    {
+      "preset": "Raman",
+      "slug": "raman",
+      "src": "assets/audio/tetragon/syahi/raman.m4a",
+      "role": "tabla, djembe and gamelan",
+      "phrase": "tabla, djembe and gamelan, four bars at 96 BPM",
+      "seconds": 10.4
+    }
+  ]
+}

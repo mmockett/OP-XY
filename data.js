@@ -122,7 +122,7 @@ window.SITE = {
       name: "Nonagon Suite",
       kicker: "nine experiments",
       status: "live",
-      version: "v0.7.2",
+      version: "v0.8.0",
       repo: "https://github.com/mmockett/OP-XY-Nonagon",
       links: [],
       tagline: "Nine experimental sounds, each grown from a piece of physics.",
@@ -132,7 +132,7 @@ window.SITE = {
       ],
       specs: [
         [["synths", "7"], ["sample", "2"], ["cpu", "1–8%"], ["os", "1.2.1"]],
-        [["sdk", "1.8"], ["release", "v0.7.2"], ["screens", "9"], ["licence", "MIT"]]
+        [["sdk", "1.10"], ["release", "v0.8.0"], ["screens", "9"], ["licence", "MIT"]]
       ],
       media: { type: "video", aspect: "1448 / 668", src: "assets/media/nonagon/nonagon.mp4", poster: "assets/media/nonagon/nonagon.jpg", alt: "Nonagon Suite's nine screens playing together: Sand, Cocoa and Ghost on top; Coin, Recur and Fermi in the middle; Mach, Butterfly and Drop below" },
       machines: [
@@ -159,10 +159,10 @@ window.SITE = {
         {
           id: "ghost", name: "Ghost", kind: "sample engine", catalog: "ghost", status: "live",
           after: "the Huggins pitch",
-          description: "Binaural phantom pitches, for headphones: notes made of breath and hum whose pitch lives between the ears. Orbit walks the voice round your head. Load a sample and it becomes the bed; without one, Ghost breathes its own.",
+          description: "Binaural phantom pitches, for headphones: notes made of breath and hum whose pitch lives between the ears. Orbit walks the voice round your head. Load a sample and it becomes the bed; without one, Ghost breathes its own. Shift trims the stretch the bed plays.",
           screen: "Screen: a Pepper's ghost stage. Split parts the apparition into twins; ring gives it halos.",
           pages: [["ring", "voice", "split", "trade"], ["beat", "orbit", "near", "bed"]],
-          cpu: "3.1%",
+          cpu: "3.0%",
           media: { type: "video", src: "assets/media/nonagon/ghost.mp4", poster: "assets/media/nonagon/ghost.jpg", alt: "Ghost's stage, the apparition parting into twins as split rises" },
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/ghost"
         },
@@ -179,9 +179,9 @@ window.SITE = {
         {
           id: "recur", name: "Recur", kind: "sample engine", catalog: "recur", status: "live",
           after: "Arnold's cat map",
-          description: "A sample cut into tiles and shuffled by a chaotic map that always comes home: step by step the loop scrambles, then returns exactly to the original. Map, grid and slice set the shuffle.",
+          description: "A sample cut into tiles and shuffled by a chaotic map that always comes home: step by step the loop scrambles, then returns exactly to the original. Map, grid and slice set the shuffle. It opens with a four-bar break of its own, and Shift trims the loop it slices.",
           screen: "Screen: a sliding-tile puzzle tin; each map shuffles its own picture.",
-          pages: [["pos", "grid", "slice", "map"], ["step", "rate", "depth", "chrd"]],
+          pages: [["fit", "grid", "slice", "map"], ["step", "rate", "depth", "chrd"]],
           presets: ["Recur", "Stutter", "Phrase", "Riffle", "Glitch", "Chorale", "Frozen", "Shred"],
           cpu: "1.2%",
           media: { type: "video", src: "assets/media/nonagon/recur.mp4", poster: "assets/media/nonagon/recur.jpg", alt: "Recur's puzzle tin, the picture's tiles scrambling and returning" },
@@ -306,13 +306,13 @@ window.SITE = {
       name: "Grains",
       kicker: "granular sampler",
       status: "live",
-      version: "v1.1.0",
+      version: "v1.2.0",
       repo: "https://github.com/mmockett/OP-XY-Grains",
       links: [],
       tagline: "A granular sample synth.",
       description: [
-        "Load a sample on the sampler page and play it chromatically. Grains read around a position that can scan, reverse or freeze, stack into chords and spread in stereo. Three modes: cloud (random), sync (tempo divisions) and osc (even overlap).",
-        "The screen shows each grain's position and pitch above the sample's overview. All notes share a pool of 64 grains. Six presets: still, drift, choir, stutter, reed and undertow."
+        "It opens with a sample of its own on the sampler page; load yours over it and play it chromatically. Grains read around a position that can scan, reverse or freeze, stack into chords and spread in stereo. Three modes: cloud (random), sync (tempo divisions) and osc (even overlap).",
+        "The screen shows each grain's position and pitch above the sample's overview, and follows the amp envelope. Shift trims the sample and sets its gain. All notes share a pool of 64 grains. Six presets: still, drift, choir, stutter, reed and undertow."
       ],
       specs: [
         [["engines", "1"], ["grains", "64"], ["modes", "3"], ["os", "1.2.1"]],

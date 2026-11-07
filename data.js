@@ -40,7 +40,7 @@ window.SITE = {
       name: "Hexagon Suite",
       kicker: "six synths",
       status: "live",
-      version: "v1.6.0",
+      version: "v1.7.0",
       repo: "https://github.com/mmockett/OP-XY-Hexagon",
       links: [],
       tagline: "Six synths, made to be played together.",
@@ -50,7 +50,7 @@ window.SITE = {
       ],
       specs: [
         [["synths", "6"], ["controls", "8"], ["cpu", "2–9%"], ["os", "1.2.1"]],
-        [["sdk", "1.4"], ["release", "v1.6.0"], ["screens", "6"], ["licence", "MIT"]]
+        [["sdk", "1.10"], ["release", "v1.7.0"], ["screens", "6"], ["licence", "MIT"]]
       ],
       machines: [
         {
@@ -59,7 +59,7 @@ window.SITE = {
           description: "Polysynth through a worn cassette. Two detuned oscillators, a sub and noise per note. Wow, flutter and sag move the whole chord; age dulls the top and adds hiss.",
           screen: "Screen: a C60 cassette. The reels turn and the tape wobbles with the wow and flutter.",
           pages: [["shape", "detune", "drift", "warmth"], ["wow", "flutter", "sag", "age"]],
-          cpu: "4.1%",
+          cpu: "3.8%",
           media: { type: "video", src: "assets/media/hexagon/wane.mp4", poster: "assets/media/hexagon/wane.jpg", alt: "Wane's cassette screen, reels turning as four notes start" },
           source: "https://github.com/mmockett/OP-XY-Hexagon/tree/main/wane"
         },
@@ -79,7 +79,7 @@ window.SITE = {
           description: "Blown and bowed resonator. Eight tuned resonances shaped like a voice, violin, organ pipe or wine glass. Held notes resonate together; spread adds drifting detuned copies.",
           screen: "Screen: an engraved acoustics plate, with flames that rise with each resonance.",
           pages: [["breath", "body", "bright", "ring"], ["air", "vowel", "spread", "sympathy"]],
-          cpu: "4.5%",
+          cpu: "4.8%",
           media: { type: "video", src: "assets/media/hexagon/hollow.mp4", poster: "assets/media/hexagon/hollow.jpg", alt: "Hollow's engraved acoustics plate, the body changing from a voice to wine glasses" },
           source: "https://github.com/mmockett/OP-XY-Hexagon/tree/main/hollow"
         },
@@ -122,7 +122,7 @@ window.SITE = {
       name: "Nonagon Suite",
       kicker: "nine experiments",
       status: "live",
-      version: "v0.8.0",
+      version: "v0.9.0",
       repo: "https://github.com/mmockett/OP-XY-Nonagon",
       links: [],
       tagline: "Nine experimental sounds, each grown from a piece of physics.",
@@ -132,7 +132,7 @@ window.SITE = {
       ],
       specs: [
         [["synths", "7"], ["sample", "2"], ["cpu", "1–8%"], ["os", "1.2.1"]],
-        [["sdk", "1.10"], ["release", "v0.8.0"], ["screens", "9"], ["licence", "MIT"]]
+        [["sdk", "1.10"], ["release", "v0.9.0"], ["screens", "9"], ["licence", "MIT"]]
       ],
       media: { type: "video", aspect: "1448 / 668", src: "assets/media/nonagon/nonagon.mp4", poster: "assets/media/nonagon/nonagon.jpg", alt: "Nonagon Suite's nine screens playing together: Sand, Cocoa and Ghost on top; Coin, Recur and Fermi in the middle; Mach, Butterfly and Drop below" },
       machines: [
@@ -306,7 +306,7 @@ window.SITE = {
       name: "Grains",
       kicker: "granular sampler",
       status: "live",
-      version: "v1.2.0",
+      version: "v1.2.1",
       repo: "https://github.com/mmockett/OP-XY-Grains",
       links: [],
       tagline: "A granular sample synth.",
@@ -321,7 +321,7 @@ window.SITE = {
       machines: [
         { id: "grains", name: "Grains", kind: "sample engine", catalog: "grains", status: "live",
           description: "Sample engine for the OP–XY's sampler page.",
-          cpu: "3.1%",
+          cpu: "1.9%",
           pages: [["pos", "scan", "size", "dens"], ["spry", "chrd", "shpe", "mode"]],
           media: { type: "video", src: "assets/media/grains/grains.mp4", poster: "assets/media/grains/grains.jpg", alt: "Grains' screen: a note held, pos scanned, then a minor chord" },
           source: "https://github.com/mmockett/OP-XY-Grains" }
@@ -333,7 +333,7 @@ window.SITE = {
       name: "ModFX",
       kicker: "mod + effect",
       status: "live",
-      version: "v1.9.0",
+      version: "v1.9.1",
       repo: "https://github.com/mmockett/OP-XY-ModFX",
       links: [],
       tagline: "A filter for every track, and a 1970s effects box and an ethereal stereo console for the sends.",
@@ -343,7 +343,7 @@ window.SITE = {
       ],
       specs: [
         [["aux", "1"], ["send", "2"], ["presets", "19"], ["os", "1.2.1"]],
-        [["sdk", "1.9"], ["release", "v1.9.0"], ["screens", "3"], ["licence", "MIT"]]
+        [["sdk", "1.9"], ["release", "v1.9.1"], ["screens", "3"], ["licence", "MIT"]]
       ],
       machines: [
         {
@@ -354,7 +354,7 @@ window.SITE = {
           pages: [["charactr", "movement", "diffuse", "texture"], ["tilt", "rate", "time", "drift"]],
           shift: ["charactr", "movement", "diffuse", "texture"],
           presets: ["Halo", "Aurora", "Mirage", "Tide", "Postcard", "Mosaic", "Static"],
-          cpu: "7.3–10.9%", cpuNote: "of the audio",
+          cpu: "7.2–10.9%", cpuNote: "of the audio",
           media: { type: "video", src: "assets/media/modfx/chroma.mp4", poster: "assets/media/modfx/chroma.jpg", alt: "Chroma's optical bench: the light fanning wider as its modules turn up, then Shift held to change its effects to howl, swirl, slice and radio" },
           source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/chroma"
         },
@@ -366,7 +366,7 @@ window.SITE = {
           pages: [["dust", "phase", "echo", "spring"], ["tape 2", "rate", "time", "tone"]],
           shift: ["order", "shape", "loop", "wobble"],
           presets: ["Dusty", "Tank", "Slapback", "Swoosh", "Runaway", "Crushed"],
-          cpu: "5.4%", cpuNote: "of the audio",
+          cpu: "5.3%", cpuNote: "of the audio",
           media: { type: "video", src: "assets/media/modfx/lint.mp4", poster: "assets/media/modfx/lint.jpg", alt: "Lint's chassis: dust, phase and echo turned up, then Shift held to reorder the modules and patch tape 2 into the echo's loop" },
           source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/lint"
         },
@@ -420,7 +420,7 @@ window.SITE = {
       name: "MNMD",
       kicker: "machinedrum + monomachine",
       status: "live",
-      version: "v1.2.3",
+      version: "v1.3.0",
       repo: "https://github.com/mmockett/OP-XY-MNMD",
       links: [],
       tagline: "Elektron's Machinedrum and Monomachine, rebuilt for the OP–XY.",
@@ -430,7 +430,7 @@ window.SITE = {
       ],
       specs: [
         [["kits", "2"], ["synths", "14"], ["keys", "24"], ["os", "1.2.1"]],
-        [["drums", "49"], ["release", "v1.2.3"], ["screens", "16"], ["licence", "MIT"]]
+        [["drums", "49"], ["release", "v1.3.0"], ["screens", "16"], ["licence", "MIT"]]
       ],
       media: { type: "video", src: "assets/media/mnmd/overview.mp4", poster: "assets/media/mnmd/overview.jpg", alt: "Eight MNMD screens: MD KIT, MD E12, SID-6581, VO-6, FM STAT, SWAVE-PULSE, DPRO-WAVE and DPRO-DENS" },
       groups: [
@@ -503,9 +503,9 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmsin" },
         { id: "mmnois", group: 1, name: "GND-NOIS", kind: "synth", catalog: "mmnois", status: "live",
           cpu: "1.5%",
-          description: "Noise, from white to red.",
-          pages: [["st", "red", "ston", "tune"]],
-          presets: ["White", "Pink", "Red", "Loud"],
+          description: "Noise, from white to red, or pitched to the key you play: tuned wind, a whistle, a noise bass.",
+          pages: [["st", "red", "ston", "tune"], ["", "res", "", ""]],
+          presets: ["White", "Pink", "Red", "Loud", "Wind", "Whistle", "Bass"],
           media: { type: "video", src: "assets/media/mnmd/mmnois.mp4", poster: "assets/media/mnmd/mmnois.jpg", alt: "GND-NOIS's screen as the noise turns red" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmnois" },
         { id: "mmdens", group: 1, name: "DPRO-DENS", kind: "synth", catalog: "mmdens", status: "diy",
@@ -536,7 +536,7 @@ window.SITE = {
         { id: "mdkit", group: 0, name: "MD KIT", kind: "drum machine", catalog: "mdkit", status: "live", flagship: true,
           description: "One drum machine for four of the Machinedrum's families: TRX, EFM, P-I and GND, 33 machines in all. Any of them goes on any of the 24 keys, and each key keeps its own controls. A key chokes its own last note, as on the Machinedrum.",
           screen: "Screen: the machine's sounding part in section, like a patent drawing: the drumhead's waves, the snare wires, the clap's echo chamber, GND's tuning fork. Each machine has its own drawing, and every control moves it.",
-          cpu: "3.1%",
+          cpu: "2.7%",
           kit: ["TRX 13", "EFM 8", "P-I 9", "GND 3"],
           pages: [["ptch", "dec", "ramp", "rdec"], ["strt", "nois", "harm", "clip"]],
           shift: ["kit", "machine", "choke", ""],

@@ -1,38 +1,38 @@
 {
-  "checked": "2026-11-06T12:00:00Z",
+  "checked": "2026-11-07T12:00:00Z",
   "note": "What the site last reflected. The daily sync routine compares against this and updates it.",
   "repos": {
     "mmockett/OP-XY-MNMD": {
-      "head": "aa969707c92a1554f54e99ba535eb8480081fbf1",
-      "tags": "v1.2.3,v1.2.2,v1.2.1,v1.2.0,v1.1.9,v1.1.8,v1.1.7,v1.1.6,v1.1.5,v1.1.4,v1.1.3,v1.1.2,v1.1.1,v1.1.0,v1.0.1,v1.0.0"
+      "head": "66dd58ba0c45bb21acd034a0ed121638f0706b2b",
+      "tags": "v1.3.0,v1.2.3,v1.2.2,v1.2.1,v1.2.0,v1.1.9,v1.1.8,v1.1.7,v1.1.6,v1.1.5,v1.1.4,v1.1.3,v1.1.2,v1.1.1,v1.1.0,v1.0.1,v1.0.0"
     },
     "mmockett/OP-XY-Hexagon": {
-      "head": "d294932a5b653e1aa2db288cb190dab012717416",
-      "tags": "v1.6.0,v1.5.0,v1.4.0,v1.3.0,v1.2.0,v1.1.0,v1.0.0"
+      "head": "86afa31793caddb162269daea8dbe21b0edc7496",
+      "tags": "v1.7.0,v1.6.0,v1.5.0,v1.4.0,v1.3.0,v1.2.0,v1.1.0,v1.0.0"
     },
     "mmockett/OP-XY-Grains": {
-      "head": "17738ec725e0f71c73d356f0a80b01fce1b95be0",
-      "tags": "v1.2.0,v1.1.0,v1.0.0"
+      "head": "7122f945944ff346bc82092bf4a3ec0a9acda05a",
+      "tags": "v1.2.1,v1.2.0,v1.1.0,v1.0.0"
     },
     "mmockett/OP-XY-ModFX": {
-      "head": "c6adf1428db4fd94fac0785da5d82ee5f9ed19ce",
-      "tags": "v1.9.0,v1.8.0,v1.7.0,v1.6.0,v1.5.0,v1.4.1,v1.4.0,v1.3.0,v1.2.0,v1.1.0,v1.0.0"
+      "head": "ee9ce1c2b13c26524dac29f8561393ca539d80ed",
+      "tags": "v1.9.1,v1.9.0,v1.8.0,v1.7.0,v1.6.0,v1.5.0,v1.4.1,v1.4.0,v1.3.0,v1.2.0,v1.1.0,v1.0.0"
     },
     "mmockett/OP-XY-Nonagon": {
-      "head": "115bcf88bdb2c14b942ec5f9defcc64c92e3d520",
-      "tags": "v0.8.0,v0.7.2,v0.7.1,v0.7.0,v0.6.0,v0.5.0,v0.4.0,v0.3.0,v0.2.0,v0.1.0"
+      "head": "80cbf13fd3b5fb5db127a69d2b1e885463c1aaef",
+      "tags": "v0.9.0,v0.8.0,v0.7.2,v0.7.1,v0.7.0,v0.6.0,v0.5.0,v0.4.0,v0.3.0,v0.2.0,v0.1.0"
     },
     "mmockett/OP-XY-Conductor": {
       "head": "ecf6934253e77a2a7afc5c50b714f15fbfd86b73",
       "tags": ""
     },
     "mmockett/OP-XY-Tetragon": {
-      "head": "70771ca964f6d24b80becb01f1cd3e2b2bac7aa1",
-      "tags": ""
+      "head": "714b31db5033c6da307bfc29035a286f2cc4ad83",
+      "tags": "v1.0.0"
     }
   },
   "catalog_blob": {
     "main": "02c5517e3c607f099548aba2d30e3e9dd3af8847",
-    "staging": "b0a8a0f821a9b5062852929cb7aa3c5f47489e61"
+    "staging": "43f4ac087dfeddb7a8e5257ec0618b4feb67c6f4"
   }
 }

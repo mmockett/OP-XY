@@ -40,7 +40,7 @@ window.SITE = {
       name: "Hexagon Suite",
       kicker: "six synths",
       status: "live",
-      version: "v1.7.0",
+      version: "v1.7.1",
       repo: "https://github.com/mmockett/OP-XY-Hexagon",
       links: [],
       tagline: "Six synths, made to be played together.",
@@ -50,7 +50,7 @@ window.SITE = {
       ],
       specs: [
         [["synths", "6"], ["controls", "8"], ["cpu", "2–9%"], ["os", "1.2.1"]],
-        [["sdk", "1.10"], ["release", "v1.7.0"], ["screens", "6"], ["licence", "MIT"]]
+        [["sdk", "1.10"], ["release", "v1.7.1"], ["screens", "6"], ["licence", "MIT"]]
       ],
       machines: [
         {
@@ -67,7 +67,7 @@ window.SITE = {
           id: "bloom", name: "Bloom", kind: "synth", catalog: "bloom", status: "live",
           after: "additive synthesis",
           description: "Additive synth with up to 24 sine partials. Shape sets the waveform, vowel adds formants from oo to ee. Breath, blur and haze add drift, noise and beating.",
-          screen: "Screen: partials as stems under a low sun, formants as hills behind.",
+          screen: "Screen: partials as stems in front of a low sun, formants as mounds rising out of the ground.",
           pages: [["tilt", "shape", "stretch", "vowel"], ["breath", "blur", "haze", "time"]],
           cpu: "8.5%",
           media: { type: "video", src: "assets/media/hexagon/bloom.mp4", poster: "assets/media/hexagon/bloom.jpg", alt: "Bloom's screen: partials as stems, formant hills sliding as the vowel sweeps" },
@@ -122,7 +122,7 @@ window.SITE = {
       name: "Nonagon Suite",
       kicker: "nine experiments",
       status: "live",
-      version: "v0.9.0",
+      version: "v0.9.1",
       repo: "https://github.com/mmockett/OP-XY-Nonagon",
       links: [],
       tagline: "Nine experimental sounds, each grown from a piece of physics.",
@@ -132,7 +132,7 @@ window.SITE = {
       ],
       specs: [
         [["synths", "7"], ["sample", "2"], ["cpu", "1–8%"], ["os", "1.2.1"]],
-        [["sdk", "1.10"], ["release", "v0.9.0"], ["screens", "9"], ["licence", "MIT"]]
+        [["sdk", "1.10"], ["release", "v0.9.1"], ["screens", "9"], ["licence", "MIT"]]
       ],
       media: { type: "video", aspect: "1448 / 668", src: "assets/media/nonagon/nonagon.mp4", poster: "assets/media/nonagon/nonagon.jpg", alt: "Nonagon Suite's nine screens playing together: Sand, Cocoa and Ghost on top; Coin, Recur and Fermi in the middle; Mach, Butterfly and Drop below" },
       machines: [
@@ -226,6 +226,63 @@ window.SITE = {
           cpu: "6.2%",
           media: { type: "video", src: "assets/media/nonagon/drop.mp4", poster: "assets/media/nonagon/drop.jpg", alt: "Drop's skillet, star-shaped drops quivering as the heat rises" },
           source: "https://github.com/mmockett/OP-XY-Nonagon/tree/main/drop"
+        }
+      ]
+    },
+
+    {
+      id: "trigon",
+      name: "Trigon Suite",
+      kicker: "three drum kits",
+      status: "live",
+      version: "v1.1.0",
+      repo: "https://github.com/mmockett/OP-XY-Trigon",
+      links: [],
+      tagline: "Three drum kits, each starting from a way rhythm was made by hand.",
+      description: [
+        "Felt, Flicker and Dust: a prepared piano, sound drawn onto film and a soul 45 on a record player, each turned into a full synthesised kit. They are the drum kits to go with Hexagon: worn, warm and soft, and tight in a groove.",
+        "Every one of the 24 keys holds its own sound with eight controls on two rows, and Shift gives each key its own mixer channel: its sound, choke group, pan, level and FX sends. Each screen draws the object you are playing. Every kit comes with eight kit presets for different styles."
+      ],
+      specs: [
+        [["kits", "3"], ["models", "39"], ["keys", "24"], ["controls", "8"]],
+        [["presets", "24"], ["screens", "3"], ["os", "1.2.1"], ["licence", "MIT"]]
+      ],
+      machines: [
+        {
+          id: "felt", name: "Felt", kind: "drum kit", catalog: "felt", status: "live",
+          after: "John Cage's prepared piano",
+          description: "An upright piano prepared with bolts, screws, rubber and paper between the strings, played as a drum kit. Rubber at a string's end is a deep, round kick, paper is a snare, a bolt is a gong and a brush along the strings is a hi-hat. The pedal lifts every damper, and the strings above the note ring in sympathy.",
+          screen: "Screen: three piano strings over an iron plate in isometric, with the bridge, the damper, the hammer rising from beneath and whatever is wedged between the strings.",
+          kit: ["12 models"],
+          pages: [["tune", "decay", "hammer", "rubber"], ["glide", "knock", "pedal", "age"]],
+          pageNames: ["thud", ""],
+          shift: ["machine", "choke", "pan", "level"],
+          cpu: "3.4%",
+          source: "https://github.com/mmockett/OP-XY-Trigon/tree/main/felt"
+        },
+        {
+          id: "flicker", name: "Flicker", kind: "drum kit", catalog: "flicker", status: "live",
+          after: "Norman McLaren and Daphne Oram's drawn sound",
+          description: "A kit drawn on film, as McLaren and Oram drew sound onto an optical soundtrack. Round drawn sines are kicks and toms, inked dots are rims, scratches through the emulsion are snares and ruled lines are hats. Every sound passes through the same projector, with its slit, its valve amplifier's warmth and, when you ask for them, flutter and dust.",
+          screen: "Screen: four frames of 16 mm film lying on a slat, the key's sound drawn on the soundtrack, and a gate with the slit's light across the middle. Each hit pulls the film one frame along.",
+          kit: ["12 models"],
+          pages: [["pitch", "decay", "bend", "shape"], ["click", "ink", "flutter", "dust"]],
+          pageNames: ["sweep", ""],
+          shift: ["machine", "choke", "pan", "level"],
+          cpu: "3.0%",
+          source: "https://github.com/mmockett/OP-XY-Trigon/tree/main/flicker"
+        },
+        {
+          id: "dust", name: "Dust", kind: "drum kit", catalog: "dust", status: "live",
+          after: "a soul 45 on a portable record player",
+          description: "A soul 45 on a portable record player, played the way a beatmaker plays a break. Every key is a hit from the record: a felt-beaten kick, a snare cracking in a small room, hats with the ride bleeding in, congas, a tambourine, the bass player's note. The same eight controls sit on every key, and they are the record player's.",
+          screen: "Screen: a record deck in isometric. The record's size follows the speed, the arm sits on the bar you pick, the grooves wander as the copy wears and the dust brush drops onto the record as it drags.",
+          kit: ["15 models"],
+          pages: [["speed", "pick", "lift", "weight"], ["cue", "wear", "warp", "drag"]],
+          pageNames: ["kick", ""],
+          shift: ["machine", "choke", "pan", "level"],
+          cpu: "4.2%",
+          source: "https://github.com/mmockett/OP-XY-Trigon/tree/main/dust"
         }
       ]
     },
@@ -333,7 +390,7 @@ window.SITE = {
       name: "ModFX",
       kicker: "mod + effect",
       status: "live",
-      version: "v1.9.1",
+      version: "v1.9.2",
       repo: "https://github.com/mmockett/OP-XY-ModFX",
       links: [],
       tagline: "A filter for every track, and a 1970s effects box and an ethereal stereo console for the sends.",
@@ -343,7 +400,7 @@ window.SITE = {
       ],
       specs: [
         [["aux", "1"], ["send", "2"], ["presets", "19"], ["os", "1.2.1"]],
-        [["sdk", "1.9"], ["release", "v1.9.1"], ["screens", "3"], ["licence", "MIT"]]
+        [["sdk", "1.9"], ["release", "v1.9.2"], ["screens", "3"], ["licence", "MIT"]]
       ],
       machines: [
         {
@@ -371,7 +428,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-ModFX/tree/main/lint"
         },
         {
-          id: "omnifilter", name: "Omnifilter", kind: "global mod", catalog: "omnifilter", status: "soon",
+          id: "omnifilter", name: "Omnifilter", kind: "global mod", catalog: "omnifilter", status: "live",
           description: "One filter and envelope for the whole OP–XY, on track 12. Cutoff, reso, attack and release scale all eight instrument tracks together, and each track keeps its own sound underneath. Lock them on steps and the whole mix opens and closes with the pattern.",
           screen: "Screen: a rangefinder camera's lens. Cutoff opens the eight-bladed iris, reso sharpens it into a star, attack and release turn its rings.",
           pages: [["cutoff", "reso", "attack", "release"]],
@@ -420,7 +477,7 @@ window.SITE = {
       name: "MNMD",
       kicker: "machinedrum + monomachine",
       status: "live",
-      version: "v1.3.0",
+      version: "v1.3.1",
       repo: "https://github.com/mmockett/OP-XY-MNMD",
       links: [],
       tagline: "Elektron's Machinedrum and Monomachine, rebuilt for the OP–XY.",
@@ -430,7 +487,7 @@ window.SITE = {
       ],
       specs: [
         [["kits", "2"], ["synths", "14"], ["keys", "24"], ["os", "1.2.1"]],
-        [["drums", "49"], ["release", "v1.3.0"], ["screens", "16"], ["licence", "MIT"]]
+        [["drums", "49"], ["release", "v1.3.1"], ["screens", "16"], ["licence", "MIT"]]
       ],
       media: { type: "video", src: "assets/media/mnmd/overview.mp4", poster: "assets/media/mnmd/overview.jpg", alt: "Eight MNMD screens: MD KIT, MD E12, SID-6581, VO-6, FM STAT, SWAVE-PULSE, DPRO-WAVE and DPRO-DENS" },
       groups: [

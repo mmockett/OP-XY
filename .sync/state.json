@@ -1,5 +1,5 @@
 {
-  "checked": "2026-11-10T12:00:00Z",
+  "checked": "2026-11-11T12:00:00Z",
   "note": "What the site last reflected. The daily sync routine compares against this and updates it.",
   "repos": {
     "mmockett/OP-XY-MNMD": {
@@ -23,7 +23,7 @@
       "tags": "v0.9.1,v0.9.0,v0.8.0,v0.7.2,v0.7.1,v0.7.0,v0.6.0,v0.5.0,v0.4.0,v0.3.0,v0.2.0,v0.1.0"
     },
     "mmockett/OP-XY-Conductor": {
-      "head": "ecf6934253e77a2a7afc5c50b714f15fbfd86b73",
+      "head": "4506e6bca6d43b431d76d2ce875ef8ab5b61d8f8",
       "tags": ""
     },
     "mmockett/OP-XY-Tetragon": {
@@ -33,10 +33,18 @@
     "mmockett/OP-XY-Trigon": {
       "head": "16a2e2709e8c981a180a67b5340cbee6db8786f9",
       "tags": "v1.1.0,v1.0.0"
+    },
+    "mmockett/OP-XY-Extensions": {
+      "head": "797fd0ec6a04e6d0acf75ac8623e049597a9ce11",
+      "tags": "v1.0.0"
+    },
+    "mmockett/OP-XY-Nexus": {
+      "head": "c66ca4c4228e51d869d7ac69e319c49357ddd2a7",
+      "tags": ""
     }
   },
   "catalog_blob": {
     "main": "304b7aa619b9275dabe3b83e9958b5ff8cd17b8c",
-    "staging": "585018fc21d6b641c818faaef4cd1a471303e93c"
+    "staging": "8093797018e82bad87c9f344860e458e8e9123ad"
   }
 }

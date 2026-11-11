@@ -456,7 +456,7 @@ window.SITE = {
       ],
       specs: [
         [["lanes", "8"], ["pages", "4"], ["scales", "7"], ["presets", "4"]],
-        [["track", "12"], ["sdk", "1.9"], ["os", "1.2.1"], ["licence", "MIT"]]
+        [["track", "12"], ["sdk", "1.11"], ["os", "1.2.1"], ["licence", "MIT"]]
       ],
       machines: [
         { id: "conductor", name: "Conductor", kind: "sequencer", status: "lab",
@@ -469,6 +469,57 @@ window.SITE = {
           presets: ["init", "Pop", "Night", "Jazz"],
           media: { type: "video", src: "assets/media/conductor/conductor.mp4", poster: "assets/media/conductor/conductor.jpg", alt: "Conductor's four pages with Pop playing: M1's phrase as density turns up, M2's lanes with Shift held to reroll the drums, M3 on the drum lane's voices and then the arp's notes, M4 rerouting the arp from track 5 to track 7" },
           source: "https://github.com/mmockett/OP-XY-Conductor" }
+      ]
+    },
+
+    {
+      id: "nexus",
+      name: "Nexus",
+      kicker: "two-layer polysynth",
+      status: "soon",
+      version: "",
+      repo: "https://github.com/mmockett/OP-XY-Nexus",
+      links: [],
+      tagline: "A two-layer polysynth after the Yamaha CS-80.",
+      description: [
+        "Every note is two synths played together a few cents apart, each with its own resonant filter. Touch makes a held note swell like brass, ribbon slides each note in, ring modulation turns it to bells, and chorus moves it across the stereo field.",
+        "The screen is an isometric night city with a flying car that crosses it while a note is held. Shift adds a second row: balance, octave, lowcut and noise, then spread, ratio, drift and slide. Six presets: Tyrell, Long Strings, Glass Choir, Toy Bells, Sixteen Feet and Rise Lead."
+      ],
+      specs: [
+        [["layers", "2"], ["pages", "2"], ["shift", "8"], ["presets", "6"]],
+        [["filter", "12dB"], ["footage", "4"], ["sdk", "1.13"], ["licence", "MIT"]]
+      ],
+      machines: [
+        { id: "nexus", name: "Nexus", kind: "synth", status: "soon",
+          description: "Two-layer polysynth after the CS-80. Brass that swells under a held note, a ribbon slide, ring modulation and a stereo chorus.",
+          pages: [["shape", "detune", "bright", "reso"], ["chorus", "ring", "touch", "ribbon"]],
+          presets: ["Tyrell", "Long Strings", "Glass Choir", "Toy Bells", "Sixteen Feet", "Rise Lead"],
+          source: "https://github.com/mmockett/OP-XY-Nexus" }
+      ]
+    },
+
+    {
+      id: "extensions",
+      name: "Extensions",
+      kicker: "firmware extensions",
+      status: "soon",
+      version: "v1.0.0",
+      repo: "https://github.com/mmockett/OP-XY-Extensions",
+      links: [],
+      tagline: "Extensions change how the OP–XY itself behaves.",
+      description: [
+        "Drumline page 2 gives every Drumline key a second page, with its own filter, sample rate and effect sends. One Drumline track can hold a dark, crunchy kick, a bright open hat and a snare drowned in reverb.",
+        "Press any encoder on a Drumline track's engine page to switch pages. Hold a step and turn a page 2 encoder to lock that setting for that key. With every key at its default, Drumline sounds as stock."
+      ],
+      specs: [
+        [["pages", "2"], ["controls", "4"], ["filter", "L/H"], ["locks", "step"]],
+        [["release", "v1.0.0"], ["tracks", "all"], ["keys", "each"], ["licence", "MIT"]]
+      ],
+      machines: [
+        { id: "drumline_page", name: "Drumline page 2", kind: "extension", status: "soon",
+          description: "A second page for every Drumline key: filter, sample rate and the two effect sends, with step locks.",
+          pages: [["filter", "srr", "fx i", "fx ii"]],
+          source: "https://github.com/mmockett/OP-XY-Extensions" }
       ]
     },
 

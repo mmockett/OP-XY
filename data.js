@@ -235,7 +235,7 @@ window.SITE = {
       name: "Trigon Suite",
       kicker: "three drum kits",
       status: "live",
-      version: "v1.1.0",
+      version: "v1.1.1",
       repo: "https://github.com/mmockett/OP-XY-Trigon",
       links: [],
       tagline: "Three drum kits, each starting from a way rhythm was made by hand.",
@@ -528,7 +528,7 @@ window.SITE = {
       name: "MNMD",
       kicker: "machinedrum + monomachine",
       status: "live",
-      version: "v1.3.1",
+      version: "v1.3.2",
       repo: "https://github.com/mmockett/OP-XY-MNMD",
       links: [],
       tagline: "Elektron's Machinedrum and Monomachine, rebuilt for the OP–XY.",
@@ -538,7 +538,7 @@ window.SITE = {
       ],
       specs: [
         [["kits", "2"], ["synths", "14"], ["keys", "24"], ["os", "1.2.1"]],
-        [["drums", "49"], ["release", "v1.3.1"], ["screens", "16"], ["licence", "MIT"]]
+        [["drums", "49"], ["release", "v1.3.2"], ["screens", "16"], ["licence", "MIT"]]
       ],
       media: { type: "video", src: "assets/media/mnmd/overview.mp4", poster: "assets/media/mnmd/overview.jpg", alt: "Eight MNMD screens: MD KIT, MD E12, SID-6581, VO-6, FM STAT, SWAVE-PULSE, DPRO-WAVE and DPRO-DENS" },
       groups: [
@@ -642,7 +642,7 @@ window.SITE = {
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mmbbox" },
 
         { id: "mdkit", group: 0, name: "MD KIT", kind: "drum machine", catalog: "mdkit", status: "live", flagship: true,
-          description: "One drum machine for four of the Machinedrum's families: TRX, EFM, P-I and GND, 33 machines in all. Any of them goes on any of the 24 keys, and each key keeps its own controls. A key chokes its own last note, as on the Machinedrum.",
+          description: "One drum machine for four of the Machinedrum's families: TRX, EFM, P-I and GND, 33 machines in all. Any of them goes on any of the 24 keys, and each key keeps its own controls, its own filter and sample-rate reduction, and its own sends to FX I and FX II. A key chokes its own last note, as on the Machinedrum.",
           screen: "Screen: the machine's sounding part in section, like a patent drawing: the drumhead's waves, the snare wires, the clap's echo chamber, GND's tuning fork. Each machine has its own drawing, and every control moves it.",
           cpu: "2.7%",
           kit: ["TRX 13", "EFM 8", "P-I 9", "GND 3"],

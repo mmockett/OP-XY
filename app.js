@@ -290,8 +290,7 @@
   // The machines' film: a soundtrack made from their own sounds, so it waits for
   // a click. Until then its poster shows with one button on it.
   function filmHtml(f) {
-    return `<section class="shelf wrap" id="film" aria-labelledby="film-h">
-      <div class="shelf-h"><h2 id="film-h">${esc(f.title)}</h2><p>${txt(f.note)}</p></div>
+    return `<section class="shelf wrap film-shelf" id="film" aria-label="${esc(f.title)}">
       <figure class="device film">
         <div class="screen screen-film">
           <video playsinline preload="none" poster="${esc(f.poster)}" aria-label="${esc(f.alt)}"><source src="${esc(f.src)}" type="video/mp4"></video>

@@ -121,6 +121,7 @@ img, video, svg { display: block; max-width: 100%; }
 
 /* the machines' film: 16:9, the poster until it plays, then the browser's controls */
 .screen-film { aspect-ratio: 16 / 9; margin: 6px; }
+.film-shelf { padding-top: 40px; }
 .screen-film video { object-fit: contain; background: #000; }
 .screen-film video:not([controls]) { cursor: pointer; }
 /* Centred in the poster's gap between its title and its three screens. */

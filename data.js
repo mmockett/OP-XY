@@ -51,7 +51,6 @@ window.SITE = {
   // The machines' film, on the home after the flagship.
   film: {
     title: "the machines on film",
-    note: "Nexus, the suites, ModFX and MNMD playing a track made from their own sounds, each on its own screen.",
     src: "assets/media/machines/machines.mp4",
     poster: "assets/media/machines/machines.jpg",
     length: "1:43",

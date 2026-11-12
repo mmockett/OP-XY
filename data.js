@@ -14,9 +14,13 @@
 //        or machine's video may give its own `aspect` ("w / h") when its grid isn't
 //        4 x 2. A machine with `flagship` takes two columns.
 //
+// A project with `flagship` is the site's flagship: list it first. It gets a
+// flagship label, its screen at the full width and a button in the hero.
+//
 // A project's `audio` names its preset clips, assets/audio/<project>.json:
 // machine id -> [{preset, slug, src, role, phrase, seconds}]. Each card then
-// gets a row of buttons that play them.
+// gets a row of buttons that play them; a project of one machine shows them
+// under its controls.
 
 window.SITE = {
   owner: "Max Mockett",
@@ -34,6 +38,40 @@ window.SITE = {
   },
 
   projects: [
+    {
+      id: "nexus",
+      flagship: true,
+      audio: "assets/audio/nexus.json",
+      name: "Nexus",
+      kicker: "two-layer polysynth",
+      status: "soon",
+      version: "",
+      repo: "https://github.com/mmockett/OP-XY-Nexus",
+      links: [],
+      tagline: "A two-layer polysynth after the CS-80, with brass that swells under your fingers.",
+      description: [
+        "Nexus plays two complete synths on each note, a few cents apart, each with its own resonant high-pass and low-pass filters. Swell makes a held note bloom like brass, bite opens it with a bright blip, ring modulation turns it to bells, and a stereo chorus moves it across the field.",
+        "Eight controls on two pages and eight more under Shift: sine, octave, lowcut and noise; balance, ratio, spread and drift. Sixteen presets cover brass, pads, choirs, glass, leads and basses, with Tyrell, a slow swelling brass, as the default.",
+        "The screen is an isometric city at night. While you play, a monorail train runs through it, windows glow with the envelope, fans turn and traffic moves along the viaduct. Bright brings the fog in over the far towers, and each of the sixteen controls changes a part of the city."
+      ],
+      specs: [
+        [["layers", "2"], ["filters", "4"], ["controls", "16"], ["presets", "16"]],
+        [["output", "stereo"], ["footage", "16–2'"], ["sdk", "1.13"], ["licence", "MIT"]]
+      ],
+      machines: [
+        { id: "nexus", name: "Nexus", kind: "synth", catalog: "nexus", status: "soon",
+          after: "the CS-80",
+          description: "Two-layer polysynth: brass that swells under a held note, a bright bite at its start, ring-modulated bells and a stereo chorus.",
+          screen: "Screen: an isometric city at night. A train runs on the monorail while you play, windows glow with the envelope and the fog rolls in with bright.",
+          pages: [["shape", "detune", "bright", "reso"], ["chorus", "ring", "swell", "bite"]],
+          shift: ["sine", "octave", "lowcut", "noise", "balance", "ratio", "spread", "drift"],
+          presets: ["Tyrell", "Afterglow", "Long Strings", "Glass Choir", "Toy Bells", "Sixteen Feet", "Searchlight", "Neon Rain",
+                    "Sodium Haze", "High Rise", "Vowels", "Ember", "Vapor Choir", "Ice Tower", "Undercity", "Blip Brass"],
+          media: { type: "video", src: "assets/media/nexus/nexus.mp4", poster: "assets/media/nexus/nexus.jpg", alt: "Nexus's city with Tyrell playing: the train crossing on its monorail, windows glowing with each chord and the fans turning, as bright rises and the fog rolls in over the far towers" },
+          source: "https://github.com/mmockett/OP-XY-Nexus" }
+      ]
+    },
+
     {
       id: "hexagon",
       audio: "assets/audio/hexagon.json",
@@ -469,32 +507,6 @@ window.SITE = {
           presets: ["init", "Pop", "Night", "Jazz"],
           media: { type: "video", src: "assets/media/conductor/conductor.mp4", poster: "assets/media/conductor/conductor.jpg", alt: "Conductor's four pages with Pop playing: M1's phrase as density turns up, M2's lanes with Shift held to reroll the drums, M3 on the drum lane's voices and then the arp's notes, M4 rerouting the arp from track 5 to track 7" },
           source: "https://github.com/mmockett/OP-XY-Conductor" }
-      ]
-    },
-
-    {
-      id: "nexus",
-      name: "Nexus",
-      kicker: "two-layer polysynth",
-      status: "soon",
-      version: "",
-      repo: "https://github.com/mmockett/OP-XY-Nexus",
-      links: [],
-      tagline: "A two-layer polysynth after the Yamaha CS-80.",
-      description: [
-        "Every note is two synths played together a few cents apart, each with its own resonant filter. Touch makes a held note swell like brass, ribbon slides each note in, ring modulation turns it to bells, and chorus moves it across the stereo field.",
-        "The screen is an isometric night city with a flying car that crosses it while a note is held. Shift adds a second row: balance, octave, lowcut and noise, then spread, ratio, drift and slide. Six presets: Tyrell, Long Strings, Glass Choir, Toy Bells, Sixteen Feet and Rise Lead."
-      ],
-      specs: [
-        [["layers", "2"], ["pages", "2"], ["shift", "8"], ["presets", "6"]],
-        [["filter", "12dB"], ["footage", "4"], ["sdk", "1.13"], ["licence", "MIT"]]
-      ],
-      machines: [
-        { id: "nexus", name: "Nexus", kind: "synth", status: "soon",
-          description: "Two-layer polysynth after the CS-80. Brass that swells under a held note, a ribbon slide, ring modulation and a stereo chorus.",
-          pages: [["shape", "detune", "bright", "reso"], ["chorus", "ring", "touch", "ribbon"]],
-          presets: ["Tyrell", "Long Strings", "Glass Choir", "Toy Bells", "Sixteen Feet", "Rise Lead"],
-          source: "https://github.com/mmockett/OP-XY-Nexus" }
       ]
     },
 

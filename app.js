@@ -27,6 +27,7 @@
     download: '<path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/>',
     list: '<path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/>',
     x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    star: '<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>',
     cpu: '<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/>',
   };
   const icon = name => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
@@ -167,8 +168,8 @@
   function ctrlRows(m) {
     return m.pages.map((row, i) => `<span>${m.pageNames ? esc(m.pageNames[i] || "") : m.kit ? (i ? "" : "bd") : m.pages.length > 1 ? `page ${i + 1}` : "controls"}</span>` +
       row.map(c => (c ? `<b style="font-weight:400">${esc(c)}</b>` : `<em>–</em>`)).join("")).join("") +
-      // An effect's shift row: the controls held Shift gives the encoders.
-      (m.shift ? `<span>shift</span>` + m.shift.map(c => `<b style="font-weight:400">${esc(c)}</b>`).join("") : "");
+      // The Shift row: the controls held Shift gives the encoders, four to a line.
+      (m.shift ? m.shift.map((c, i) => (i % 4 ? "" : `<span>${i ? "" : "shift"}</span>`) + `<b style="font-weight:400">${esc(c)}</b>`).join("") : "");
   }
 
   const metaHtml = m => [
@@ -196,7 +197,7 @@
           ${m.kit ? `<div class="keys" aria-label="Machines in the kit">${m.kit.map(k => `<span>${esc(k)}</span>`).join("")}</div>` : ""}
         </div>
         <div class="card-side">
-          ${p.audio ? `<div class="sounds" aria-label="${esc(m.name)}'s presets" hidden></div>` : ""}
+          ${p.audio ? `<div class="sounds" data-clips="${esc(m.id)}" aria-label="${esc(m.name)}'s presets" hidden></div>` : ""}
           <details class="more"${size === "feature" ? " open" : ""}><summary>controls</summary><div class="ctrls">${ctrlRows(m)}</div></details>
           <div class="meta">${metaHtml(m)}</div>
         </div>
@@ -234,7 +235,7 @@
 
   function project(p, i) {
     const sec = document.createElement("section");
-    sec.className = "project";
+    sec.className = p.flagship ? "project flagship" : "project";
     sec.id = p.id;
     sec.dataset.project = p.id;
     sec.setAttribute("aria-labelledby", `${p.id}-h`);
@@ -247,13 +248,14 @@
         <span class="num">${String(i + 1).padStart(2, "0")} · ${esc(p.kicker)}</span>
         <h2 id="${p.id}-h">${esc(p.name)} <span class="ver">${versionHtml(p)}</span></h2>
         <p class="sub">${esc(p.tagline)}</p>
-        <div class="sec-tools"><span class="pill">${pill(projectStatus(p))}</span><span class="tally">${esc(tallyOf(p))}</span></div>
+        <div class="sec-tools">${p.flagship ? `<span class="flag">${icon("star")}flagship</span>` : ""}<span class="pill">${pill(projectStatus(p))}</span><span class="tally">${esc(tallyOf(p))}</span></div>
       </div>
       ${p.media ? `<figure class="device p-media"><div class="screen"${p.media.aspect ? ` style="aspect-ratio: ${esc(p.media.aspect)}"` : ""}></div></figure>` : ""}
       ${solo ? `<figure class="device p-media solo"><div class="screen">${solo.media ? mediaHtml(solo.media) : blankScreen(solo, p)}</div></figure>` : ""}
       <div class="p-body">
         <div class="p-desc">${p.description.map(t => `<p>${esc(t)}</p>`).join("")}
           ${solo ? `<div class="ctrls">${ctrlRows(solo)}</div>` : ""}
+          ${solo && p.audio ? `<div class="sounds" data-clips="${esc(solo.id)}" aria-label="${esc(solo.name)}'s presets" hidden></div>` : ""}
           <p class="actions">${actionsHtml(p)}</p>
         </div>
         ${p.specs ? specStrip(p.specs) : ""}
@@ -415,10 +417,9 @@
   async function loadClips(p, sec) {
     let clips;
     try { clips = await json(p.audio); } catch { return; }
-    sec.querySelectorAll(".card").forEach(card => {
-      const list = clips[card.dataset.machine];
-      const box = $(".sounds", card);
-      if (!box || !list || !list.length) return;
+    sec.querySelectorAll(".sounds[data-clips]").forEach(box => {
+      const list = clips[box.dataset.clips];
+      if (!list || !list.length) return;
       box.innerHTML = `<span class="label">listen</span>` + list.map(c =>
         `<button type="button" class="snd" aria-pressed="false" data-src="${esc(c.src)}" title="${esc(c.phrase || "")}" aria-label="Play ${esc(c.preset)}${c.phrase ? `: ${esc(c.phrase)}` : ""}">${icon("play")}${esc(c.preset)}</button>`).join("");
       box.hidden = false;
@@ -460,6 +461,13 @@
       }
     }
     drawFilters(); applyFilter(); heroBuilder();
+  }
+
+  // The hero's button to the flagship project, beside the builder and GitHub.
+  function heroFlagship() {
+    const p = SITE.projects.find(x => x.flagship), at = $(".hero .actions");
+    if (!p || !at || $(".btn-flag", at)) return;
+    at.insertAdjacentHTML("beforeend", `<a class="btn btn-flag" href="#${esc(p.id)}">${icon("star")}${esc(p.name.toLowerCase())} · flagship synth</a>`);
   }
 
   // The hero's builder button: open-xy.com, which offers every live machine.
@@ -510,6 +518,7 @@
     film.addEventListener("ended", () => { film.controls = false; filmPlay.hidden = false; });
   }
   nav();
+  heroFlagship();
   // The clips' rows and the catalog's versions move later cards as they arrive, so
   // a link into the page lands again after each, unless the reader has already moved.
   // Scrolling turns smooth only after all that, so no animation races a landing.

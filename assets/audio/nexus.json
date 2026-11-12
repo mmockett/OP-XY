@@ -1,0 +1,12 @@
+{
+  "nexus": [
+    {
+      "preset": "Tyrell",
+      "slug": "tyrell",
+      "src": "assets/audio/nexus/tyrell.m4a",
+      "role": "brass, the default",
+      "phrase": "slow brass chords in D minor (Dm9–B♭maj7♯11–Gm9–Asus4–A–Dm), a lead joining halfway, in stereo",
+      "seconds": 24.1
+    }
+  ]
+}

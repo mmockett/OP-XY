@@ -149,6 +149,11 @@ img, video, svg { display: block; max-width: 100%; }
 .st-dev { border: 1px dotted var(--rule); color: var(--ink-3); }
 .st-dev i { border: 1px dotted var(--ink-3); }
 .pill { display: inline-flex; }
+/* the flagship's label, beside its status */
+.flag { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px 0 8px; border-radius: 999px;
+  font-size: 12px; line-height: 1; white-space: nowrap; color: var(--ink);
+  background: rgba(228, 228, 225, .1); border: 1px solid rgba(228, 228, 225, .35); }
+.flag .i { width: 12px; height: 12px; }
 
 /* a status as a dot alone, in the index */
 .dot { display: inline-block; flex: none; width: 7px; height: 7px; border-radius: 50%; border: 1px solid transparent; }
@@ -229,11 +234,14 @@ img, video, svg { display: block; max-width: 100%; }
 .p-media .screen { aspect-ratio: 1932 / 444; }
 .p-media.solo { max-width: 860px; }
 .p-media.solo .screen { aspect-ratio: 480 / 220; }
+/* the flagship's screen runs the full width */
+.flagship .p-media.solo { max-width: none; }
 .p-body { display: grid; gap: 28px; margin-top: 32px; }
 @media (min-width: 900px) { .p-body { grid-template-columns: minmax(0, 1fr) minmax(320px, 440px); gap: 48px; align-items: start; } }
 .p-desc p { font-size: 16px; line-height: 1.6; max-width: 38em; }
 .p-desc p + p { margin-top: 12px; color: var(--ink-2); }
 .p-desc .ctrls { max-width: 600px; margin-top: 24px; }
+.p-desc .sounds { max-width: 600px; margin-top: 16px; }
 
 .group-h { display: flex; align-items: baseline; gap: 12px; margin: 56px 0 18px; padding-top: 12px; border-top: 1px solid var(--rule); }
 .group-h[hidden] { display: none; }

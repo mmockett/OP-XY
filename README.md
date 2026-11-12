@@ -25,6 +25,8 @@ A static page with no build step. GitHub Pages serves it from `main`.
    `media` the page draws a blank OP–XY screen with its real control labels.
    A project with one machine shows its screen and controls directly,
    without a card.
+   A project with `flagship: true` is listed first and gets a flagship
+   label, its screen at the full width and a button in the hero.
 3. Commit and push. Pages republishes in about a minute.
 
 Open `index.html` straight from disk to check it first.

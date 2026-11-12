@@ -144,7 +144,14 @@ img, video, svg { display: block; max-width: 100%; }
 .shelf-h p { font-size: 15px; color: var(--ink-2); max-width: 44em; }
 @media (min-width: 900px) { .shelf-h { grid-template-columns: 220px minmax(0, 1fr); align-items: baseline; gap: 24px; } }
 .tiles { display: grid; gap: 36px 24px; grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 640px) { .tiles.two, .tiles.four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 640px) { .tiles.four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* The suites: a row each, the grid of screens beside the words. */
+.tiles.rows { gap: 40px; }
+@media (min-width: 900px) {
+  .tiles.rows { gap: 0; }
+  .tile.row { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 40px; align-items: center; padding: 28px 0; border-top: 1px solid rgba(100, 100, 100, .45); }
+  .tile.row:first-child { border-top: 0; padding-top: 0; }
+}
 @media (min-width: 1100px) { .tiles.four { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .tile { display: grid; gap: 14px; align-content: start; text-decoration: none; color: inherit; border-radius: var(--r); }
 .tile-screen { display: block; aspect-ratio: 480 / 220; margin: 6px; }
@@ -154,6 +161,7 @@ img, video, svg { display: block; max-width: 100%; }
 .tile-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .tile-h h3 { font-size: 26px; font-weight: 300; letter-spacing: -.01em; }
 .tile.small .tile-h h3 { font-size: 20px; font-weight: 400; }
+.tile.row .tile-h h3 { font-size: clamp(26px, 2.6vw, 34px); }
 .tile-kicker { font-size: 12px; color: var(--ink-3); text-transform: lowercase; }
 .tile-tag { font-size: 15px; line-height: 1.5; color: var(--ink-2); max-width: 36em; }
 .tile.small .tile-tag { font-size: 14px; }

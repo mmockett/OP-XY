@@ -90,13 +90,13 @@ WRAP_ID = "grainsview"
 
 # The site's media: each project's folder, its machines, and its grid of screens.
 MEDIA = {
-    "hexagon": {"ids": HEXAGON},
+    "hexagon": {"ids": HEXAGON, "grids": [("hexagon", HEXAGON, 3)]},
     "nonagon": {"ids": NONAGON, "grids": [("nonagon", NONAGON, 3)]},
     "grains": {"ids": ["grains"]},
     "modfx": {"ids": ["chroma", "lint", "omnifilter"]},
     "conductor": {"ids": ["conductor"]},
     "tetragon": {"ids": TETRAGON, "grids": [("tetragon", TETRAGON, 2)]},
-    "trigon": {"ids": TRIGON},
+    "trigon": {"ids": TRIGON, "grids": [("trigon", TRIGON, 3)]},
     "mnmd": {"ids": None, "grids": [("mdkit", MDKIT_GRID, 3),
                                      ("overview", ["mdkit-bd", "mde12", "mmsid", "mmvo6", "mmstat", "mmpulse", "mmwave", "mmdens"], 4)]},
 }
@@ -384,7 +384,7 @@ def thumbnails(projects):
     for poster in (SITE / "assets" / "media").glob("*/*.jpg"):
         if projects and poster.parent.name not in projects:
             continue
-        if not poster.stem.endswith("-t") and poster.stem not in ("hexagon", "nonagon", "tetragon", "overview"):
+        if not poster.stem.endswith("-t") and poster.stem not in ("hexagon", "nonagon", "tetragon", "trigon", "overview"):
             run("ffmpeg", "-loglevel", "error", "-y", "-i", poster, "-vf", "scale=360:-2", "-q:v", "4", poster.with_name(f"{poster.stem}-t.jpg"))
 
 

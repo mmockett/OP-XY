@@ -249,12 +249,14 @@
   }
 
   const coverHtml = p => (p.cover ? `<img src="${esc(p.cover)}" alt="" loading="lazy" decoding="async">` : blankScreen(p.machines[0]));
+  // A cover keeps its own shape: a suite's is its grid of screens.
+  const coverStyle = p => (p.coverAspect ? ` style="aspect-ratio: ${esc(p.coverAspect)}"` : "");
 
   // A project as a tile: its cover, its name and kicker, its line, and its machines' names.
   function tileHtml(p, size) {
     const names = p.machines.length > 1 ? `<p class="tile-names">${inOrder(p).map(m => esc(m.name.toLowerCase())).join(" · ")}</p>` : "";
     return `<a class="tile ${size}" href="#${esc(p.id)}" data-project="${esc(p.id)}">
-      <div class="screen tile-screen">${coverHtml(p)}</div>
+      <div class="screen tile-screen"${coverStyle(p)}>${coverHtml(p)}</div>
       <div class="tile-body">
         <div class="tile-h"><h3>${esc(p.name)}</h3><span data-pill-p="${esc(p.id)}">${pill(projectStatus(p))}</span></div>
         <p class="tile-kicker">${esc(p.kicker)}</p>
@@ -318,10 +320,10 @@
       const list = s.projects.map(project).filter(Boolean);
       if (s.id === "flagship") return list.map(p => flagshipHtml(p, s)).join("") + (SITE.film ? filmHtml(SITE.film) : "");
       if (list.length === 1 && list[0].groups) return wideHtml(list[0], s);
-      const big = list.length <= 4 && s.id === "suites";
+      const rows = s.id === "suites";
       return `<section class="shelf wrap" id="${esc(s.id)}" aria-labelledby="${esc(s.id)}-h">
         <div class="shelf-h"><h2 id="${esc(s.id)}-h">${esc(s.title)}</h2>${s.note ? `<p>${txt(s.note)}</p>` : ""}</div>
-        <div class="tiles ${big ? "two" : "four"}">${list.map(p => tileHtml(p, big ? "big" : "small")).join("")}</div>
+        <div class="tiles ${rows ? "rows" : "four"}">${list.map(p => tileHtml(p, rows ? "row" : "small")).join("")}</div>
       </section>`;
     }).join("");
   }

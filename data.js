@@ -96,7 +96,8 @@ window.SITE = {
 
     {
       id: "hexagon",
-      cover: "assets/media/hexagon/wane.jpg",
+      cover: "assets/media/hexagon/hexagon.jpg",
+      coverAspect: "1448 / 444",
       audio: "assets/audio/hexagon.json",
       name: "Hexagon Suite",
       kicker: "six synths",
@@ -105,6 +106,7 @@ window.SITE = {
       repo: "https://github.com/mmockett/OP-XY-Hexagon",
       links: [],
       tagline: "Six synths, made to be played together.",
+      media: { type: "video", aspect: "1448 / 444", src: "assets/media/hexagon/hexagon.mp4", poster: "assets/media/hexagon/hexagon.jpg", alt: "Hexagon Suite's six screens playing together: Wane, Bloom and Hollow on top; Orbit, Bend and Moth below" },
       description: [
         "Wane, Bloom, Hollow, Orbit, Bend and Moth: tape, additive, resonators, vector, phase distortion and a west-coast lowpass gate. Eight controls on two pages, with the OP–XY's envelopes, filter, LFOs and effects on top.",
         "Levels are matched and layouts shared, so they layer and swap within a project. Each has an animated screen that follows the sound."
@@ -179,7 +181,8 @@ window.SITE = {
 
     {
       id: "nonagon",
-      cover: "assets/media/nonagon/butterfly.jpg",
+      cover: "assets/media/nonagon/nonagon.jpg",
+      coverAspect: "1448 / 668",
       audio: "assets/audio/nonagon.json",
       name: "Nonagon Suite",
       kicker: "nine experiments",
@@ -294,7 +297,8 @@ window.SITE = {
 
     {
       id: "trigon",
-      cover: "assets/media/trigon/dust.jpg",
+      cover: "assets/media/trigon/trigon.jpg",
+      coverAspect: "1448 / 220",
       name: "Trigon Suite",
       kicker: "three drum kits",
       status: "live",
@@ -302,6 +306,7 @@ window.SITE = {
       repo: "https://github.com/mmockett/OP-XY-Trigon",
       links: [],
       tagline: "Three drum kits, each starting from a way rhythm was made by hand.",
+      media: { type: "video", aspect: "1448 / 220", src: "assets/media/trigon/trigon.mp4", poster: "assets/media/trigon/trigon.jpg", alt: "Trigon Suite's three screens playing together: Felt, Flicker and Dust" },
       description: [
         "Felt, Flicker and Dust: a prepared piano, sound drawn onto film and a soul 45 on a record player, each turned into a full synthesised kit. They are the drum kits to go with Hexagon: worn, warm and soft, and tight in a groove.",
         "Every one of the 24 keys holds its own sound with eight controls on two rows, and Shift gives each key its own mixer channel: its sound, choke group, pan, level and FX sends. Each screen draws the object you are playing. Every kit comes with eight kit presets for different styles."
@@ -355,7 +360,8 @@ window.SITE = {
 
     {
       id: "tetragon",
-      cover: "assets/media/tetragon/thunder.jpg",
+      cover: "assets/media/tetragon/tetragon.jpg",
+      coverAspect: "964 / 444",
       audio: "assets/audio/tetragon.json",
       name: "Tetragon Suite",
       kicker: "four drum kits",

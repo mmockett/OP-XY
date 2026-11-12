@@ -6,7 +6,7 @@ copies the rendered screens into the site.
     node tools/render/render.mjs [id ...]                  # render the screens to tools/render/out
     python3 tools/render/build.py --publish [project ...]  # copy them to assets/media, rebuild the grids
 
-Name projects (hexagon, nonagon, grains, modfx, conductor, mnmd, tetragon) to
+Name projects (hexagon, nonagon, grains, modfx, conductor, mnmd, tetragon, trigon) to
 build or publish only those; with none, every project, and the hero.
 
 The machine repositories and SDK checkouts sit beside this one (../opxy-pads,
@@ -19,7 +19,11 @@ fetched into ../open-xy-staging and read with git archive). The Tetragon kits
 build on the per-key mixer channels (open-xy #399, drum/pad-channel on the
 mmockett/open-xy fork, fetched into ../open-xy as "fork" and read with git
 archive); Tetragon itself is read from a checkout of mmockett/OP-XY-Tetragon at
-../OP-XY-Tetragon, or wherever XY_TETRAGON points.
+../OP-XY-Tetragon, or wherever XY_TETRAGON points. The Trigon kits build on the
+same branch, read at their release from ../opxy-trigon, or wherever XY_TRIGON points.
+Building a preview compiles with clang: where host compiles can't run, build the
+previews in CI (sdk.py preview --cxx clang++ --machine <kit> --out m/<kit>), put them
+in m/, write kit-labels.json and render here.
 Each suite is read at its commit in SOURCES with git archive, so its checkouts
 are left alone. MD KIT and MD E12 build on the drum kind's SDK (open-xy #143).
 The screen font is the OP-XY's, Univers Next Pro Light: set XY_FONT to its file.
@@ -61,9 +65,12 @@ SOURCES = {"opxy-pads": "v1.5.0", "opxy-nonagon": "v0.7.2", "OP-XY-Macro": "v1.8
            # Conductor's SDK 1.9 port (port/sdk-1.9), with M3's own voices and notes and M4's track and midi columns.
            "opxy-conductor": "a80dde4",
            # Tetragon's first public release, main at 70771ca.
-           "OP-XY-Tetragon": "70771ca"}
+           "OP-XY-Tetragon": "70771ca",
+           # Trigon's release with Scramble's ranges.
+           "OP-XY-Trigon": "v1.1.1"}
 # Where each suite is checked out, when not beside this repository under its own name.
-CHECKOUTS = {"OP-XY-Tetragon": pathlib.Path(os.environ.get("XY_TETRAGON", REPOS / "OP-XY-Tetragon"))}
+CHECKOUTS = {"OP-XY-Tetragon": pathlib.Path(os.environ.get("XY_TETRAGON", REPOS / "OP-XY-Tetragon")),
+             "OP-XY-Trigon": pathlib.Path(os.environ.get("XY_TRIGON", REPOS / "opxy-trigon"))}
 # The hero at the top of the page: nine machines from three suites.
 HERO = ["moth", "hollow", "wane", "chroma", "ghost", "recur", "bloom", "orbit", "lint"]
 HEXAGON = ["wane", "bloom", "hollow", "orbit", "bend", "moth"]
@@ -76,6 +83,8 @@ NONAGON_SAMPLE = {
 KITS = ["mde12"]
 # The Tetragon Suite: four drum kits on the per-key mixer channels' SDK.
 TETRAGON = ["thunder", "curio", "galileo", "syahi"]
+# The Trigon Suite: three drum kits on the same SDK.
+TRIGON = ["felt", "flicker", "dust"]
 # The stand-in synth for Grains' screen: the catalog holds "grains" itself.
 WRAP_ID = "grainsview"
 
@@ -87,6 +96,7 @@ MEDIA = {
     "modfx": {"ids": ["chroma", "lint", "omnifilter"]},
     "conductor": {"ids": ["conductor"]},
     "tetragon": {"ids": TETRAGON, "grids": [("tetragon", TETRAGON, 2)]},
+    "trigon": {"ids": TRIGON},
     "mnmd": {"ids": None, "grids": [("mdkit", MDKIT_GRID, 3),
                                      ("overview", ["mdkit-bd", "mde12", "mmsid", "mmvo6", "mmstat", "mmpulse", "mmwave", "mmdens"], 4)]},
 }
@@ -279,6 +289,9 @@ def kit_labels(kits):
     labels = json.loads(path.read_text()) if path.exists() else {}
     for kit, folder in kits.items():
         text = (folder / "kit.h").read_text()
+        # A row may name its labels with a macro (Dust's DUST_LABELS): spell it out.
+        for name, value in re.findall(r"#define (\w+) (\{[^}]*\})", text):
+            text = text.replace(f", {name},", f", {value},")
         body = text[re.search(r"const \w+ model\[models\] = \{", text).end():]
         body = body[:body.index("};")]
         rows = re.findall(r'\{\s*"([^"]*)"\s*,[^{]*\{([^}]*)\}', body, re.S)
@@ -294,13 +307,21 @@ def tetragon():
         preview("pad", "--machine", kits / mid, HERE / "m" / mid)
 
 
+def trigon():
+    """The Trigon kits at their release, previewed on the per-key mixer channels' SDK."""
+    kits = source("OP-XY-Trigon")
+    kit_labels({kit: kits / kit for kit in TRIGON})
+    for mid in TRIGON:
+        preview("pad", "--machine", kits / mid, HERE / "m" / mid)
+
+
 def build(projects):
     if not FONT.exists():
         sys.exit(f"No screen font at {FONT}; set XY_FONT to Univers Next Pro Light")
     wanted = lambda project: not projects or project in projects
     if wanted("mnmd"):
         upstream()
-    if wanted("tetragon"):
+    if wanted("tetragon") or wanted("trigon"):
         pad_sdk()
     (HERE / "font").mkdir(exist_ok=True)
     if FONT.resolve() != (HERE / "font" / "UniversNextPro-Light.ttf").resolve():
@@ -342,6 +363,8 @@ def build(projects):
         conductor()
     if wanted("tetragon"):
         tetragon()
+    if wanted("trigon"):
+        trigon()
 
 
 def grid(ids, columns, out):

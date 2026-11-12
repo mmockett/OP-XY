@@ -284,7 +284,7 @@ window.SITE = {
 
     {
       id: "trigon",
-      cover: "assets/media/trigon/dust.png",
+      cover: "assets/media/trigon/dust.jpg",
       name: "Trigon Suite",
       kicker: "three drum kits",
       status: "live",
@@ -311,7 +311,7 @@ window.SITE = {
           pageNames: ["thud", ""],
           shift: ["machine", "choke", "pan", "level"],
           cpu: "3.4%",
-          media: { type: "image", src: "assets/media/trigon/felt.png", alt: "Felt's screen: three piano strings over an iron plate, with the hammer beneath and rubber wedged between the strings" },
+          media: { type: "video", src: "assets/media/trigon/felt.mp4", poster: "assets/media/trigon/felt.jpg", alt: "Felt's screen: three piano strings over an iron plate, with the hammer beneath and rubber wedged between the strings" },
           source: "https://github.com/mmockett/OP-XY-Trigon/tree/main/felt"
         },
         {
@@ -324,7 +324,7 @@ window.SITE = {
           pageNames: ["sweep", ""],
           shift: ["machine", "choke", "pan", "level"],
           cpu: "3.0%",
-          media: { type: "image", src: "assets/media/trigon/flicker.png", alt: "Flicker's screen: frames of 16 mm film on a slat, a sound drawn on the soundtrack and the gate's slit across the middle" },
+          media: { type: "video", src: "assets/media/trigon/flicker.mp4", poster: "assets/media/trigon/flicker.jpg", alt: "Flicker's screen: frames of 16 mm film on a slat, a sound drawn on the soundtrack and the gate's slit across the middle" },
           source: "https://github.com/mmockett/OP-XY-Trigon/tree/main/flicker"
         },
         {
@@ -337,7 +337,7 @@ window.SITE = {
           pageNames: ["kick", ""],
           shift: ["machine", "choke", "pan", "level"],
           cpu: "4.2%",
-          media: { type: "image", src: "assets/media/trigon/dust.png", alt: "Dust's screen: a record deck in isometric, a 7-inch single on its platter and the tonearm across it" },
+          media: { type: "video", src: "assets/media/trigon/dust.mp4", poster: "assets/media/trigon/dust.jpg", alt: "Dust's screen: a record deck in isometric, a 7-inch single on its platter and the tonearm across it" },
           source: "https://github.com/mmockett/OP-XY-Trigon/tree/main/dust"
         }
       ]

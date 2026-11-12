@@ -104,7 +104,7 @@ to the shelves, and "all machines" opens an index of every project and
 machine. Everything draws from `data.js`, so a new machine needs nothing
 beyond its entry there.
 
-The machines' film (`assets/media/machines/`) isn't on the page for now.
+The machines' film, `assets/media/machines/machines.mp4` (16:9, with a soundtrack), sits on the home after the flagship, from `film` in `data.js`. Its poster `machines.jpg` shows until a click; then it plays with sound and the browser's own controls, and a preset clip pauses it. It loads nothing but the poster until then.
 
 A video gets its poster when it nears the view, and its file only once it has
 stayed in view. Up to six play at once, two on a phone, and a reader saving

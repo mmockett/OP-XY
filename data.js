@@ -48,6 +48,16 @@ window.SITE = {
     { id: "more", title: "more machines", note: "Effects, a granular sampler, a generative sequencer and an extension for the OP–XY's own Drumline.", projects: ["modfx", "grains", "conductor", "extensions"] }
   ],
 
+  // The machines' film, on the home after the flagship.
+  film: {
+    title: "the machines on film",
+    note: "Nexus, the suites, ModFX and MNMD playing a track made from their own sounds, each on its own screen.",
+    src: "assets/media/machines/machines.mp4",
+    poster: "assets/media/machines/machines.jpg",
+    length: "1:43",
+    alt: "OP–XY machines: a film of Max Mockett's machines playing, with their screens and a soundtrack made from their sounds"
+  },
+
   projects: [
     {
       id: "nexus",

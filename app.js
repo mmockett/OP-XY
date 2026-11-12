@@ -165,7 +165,8 @@
     settle = setTimeout(playVisible, 200);
   }, { threshold: 0.35 });
   function wireVideos(root) {
-    $$("video", root).forEach(v => { nearby.observe(v); visible.observe(v); });
+    // Only the muted screen loops play themselves; the film waits for a click.
+    $$("video[data-src]", root).forEach(v => { nearby.observe(v); visible.observe(v); });
   }
   // Leaving a view: its videos stop and are forgotten.
   function unwireVideos(root) {
@@ -284,10 +285,38 @@
     </section>`;
   }
 
+  // The machines' film: a soundtrack made from their own sounds, so it waits for
+  // a click. Until then its poster shows with one button on it.
+  function filmHtml(f) {
+    return `<section class="shelf wrap" id="film" aria-labelledby="film-h">
+      <div class="shelf-h"><h2 id="film-h">${esc(f.title)}</h2><p>${txt(f.note)}</p></div>
+      <figure class="device film">
+        <div class="screen screen-film">
+          <video playsinline preload="none" poster="${esc(f.poster)}" aria-label="${esc(f.alt)}"><source src="${esc(f.src)}" type="video/mp4"></video>
+          <button class="film-play" type="button">${icon("play")}<span>play the film</span><small>${esc(f.length)} · sound on</small></button>
+        </div>
+      </figure>
+    </section>`;
+  }
+  // It plays with sound and the browser's own controls; a preset clip and the film never play over each other.
+  function wireFilm(root) {
+    const film = $(".screen-film video", root), button = $(".film-play", root);
+    if (!film) return;
+    const start = () => { film.muted = false; film.play().catch(() => {}); };
+    button.addEventListener("click", start);
+    film.addEventListener("click", () => { if (!film.controls) start(); });
+    film.addEventListener("play", () => {
+      film.controls = true;
+      button.hidden = true;
+      if (playing) { player.pause(); setPlaying(null); }
+    });
+    film.addEventListener("ended", () => { film.controls = false; button.hidden = false; });
+  }
+
   function homeHtml() {
     return SITE.shelves.map(s => {
       const list = s.projects.map(project).filter(Boolean);
-      if (s.id === "flagship") return list.map(p => flagshipHtml(p, s)).join("");
+      if (s.id === "flagship") return list.map(p => flagshipHtml(p, s)).join("") + (SITE.film ? filmHtml(SITE.film) : "");
       if (list.length === 1 && list[0].groups) return wideHtml(list[0], s);
       const big = list.length <= 4 && s.id === "suites";
       return `<section class="shelf wrap" id="${esc(s.id)}" aria-labelledby="${esc(s.id)}-h">
@@ -401,6 +430,7 @@
   });
   function play(btn) {
     if (playing === btn) { player.pause(); setPlaying(null); return; }
+    $(".screen-film video")?.pause();
     player.src = btn.dataset.src;
     player.play().then(() => setPlaying(btn)).catch(() => setPlaying(null));
   }
@@ -448,12 +478,14 @@
     const want = p ? p.id : "home";
     if (want !== current) {
       unwireVideos(view);
+      $(".screen-film video", view)?.pause();
       if (playing) { player.pause(); setPlaying(null); }
       shelfSpy?.disconnect();
       view.textContent = "";
       if (p) view.append(projectView(p));
       else view.innerHTML = `<div class="home">${homeHtml()}</div>`;
       $$("[data-zoom]", view).forEach(el => zoomable(el, all().find(x => x.id === el.dataset.zoom)?.media));
+      if (!p) wireFilm(view);
       wireVideos(view);
       current = want;
       $(".intro").hidden = !!p;

@@ -1,36 +1,77 @@
-// Renders data.js. The screens' header is drawn with the SDK's own geometry:
-// eight 60 x 20 steps, titles at 5 + 120 i (10 px), values at 65 + 120 i
-// (20 px), and page 2 in grey below (docs/ux.md, sdk/browser/display.mjs).
+// Renders data.js as two kinds of view, chosen by the address's hash:
+//   the home (no hash, or a shelf's id): the flagship, then a tile per project,
+//     shelf by shelf (SITE.shelves);
+//   a project (#<project id>), with its machines; #<machine id> opens the
+//     machine's project at that machine, with its details open.
+// The screens' header is drawn with the SDK's own geometry: eight 60 x 20 steps,
+// titles at 5 + 120 i (10 px), values at 65 + 120 i (20 px), and page 2 in grey
+// below (docs/ux.md, sdk/browser/display.mjs).
 (() => {
   const SITE = window.SITE;
   const RANK = { dev: 0, lab: 1, diy: 2, soon: 3, live: 4 };
   const ORDER = ["live", "soon", "diy", "lab", "dev"];
   const STEPS = ["#000000", "#323232", "#4B4B4B", "#646464", "#7D7D7D", "#969696", "#AFAFAF", "#CDCDCD"];
-  // The catalog: main is what open-xy.com offers; staging, what its next release adds.
+  // The catalog: main is what open-xy.com offers.
   const CATALOG = branch => `https://raw.githubusercontent.com/etcetc000/open-xy/${branch}/catalog/machines.json`;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
-  // What the filters show: a machine's kind and its status.
-  const filters = { kind: "all", status: "all" };
-  const KINDS = ["synth", "drum", "effect", "sample"];
-  const kindOf = m => (/drum/.test(m.kind) ? "drum" : /effect|aux/.test(m.kind) ? "effect" : /sample/.test(m.kind) ? "sample" : "synth");
-  const matches = (m, f = filters) => (f.kind === "all" || kindOf(m) === f.kind) && (f.status === "all" || m.status === f.status);
+  // Text that names the OP–XY, kept from breaking at its dash.
+  const txt = s => esc(s).replace(/OP–XY/g, '<span class="nb">OP–XY</span>');
 
   // Lucide icons (lucide.dev, ISC licence), inlined so the page needs no library.
   const ICONS = {
     "arrow-up-right": '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>',
+    "arrow-right": '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+    "arrow-left": '<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+    "chevron-down": '<path d="m6 9 6 6 6-6"/>',
     github: '<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/>',
     code: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
     play: '<polygon points="6 3 20 12 6 21 6 3"/>',
     pause: '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
     download: '<path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/>',
-    list: '<path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/>',
-    x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
     star: '<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>',
     cpu: '<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/>',
   };
   const icon = name => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
+
+  // ---- data ------------------------------------------------------------------
+  // A project on no shelf joins the last one, so a new entry always shows.
+  for (const p of SITE.projects) if (!SITE.shelves.some(s => s.projects.includes(p.id))) SITE.shelves.at(-1).projects.push(p.id);
+  const project = id => SITE.projects.find(p => p.id === id);
+  const all = () => SITE.projects.flatMap(p => p.machines);
+  const ownerOf = id => SITE.projects.find(p => p.machines.some(m => m.id === id));
+  const shelfOf = p => SITE.shelves.find(s => s.projects.includes(p.id));
+  // Projects in the home's order, shelf by shelf.
+  const ordered = () => SITE.shelves.flatMap(s => s.projects.map(project)).filter(Boolean);
+  // A project's machines in the order its page shows them: by group.
+  const inOrder = p => (p.groups || [{}]).flatMap((_, gi) => p.machines.filter(m => (m.group ?? 0) === gi));
+  const best = list => list.reduce((a, m) => (RANK[m.status] > RANK[a] ? m.status : a), "dev");
+  const projectStatus = p => (p.machines.length === 1 ? p.machines[0].status : RANK[p.status] > RANK[best(p.machines)] ? p.status : best(p.machines));
+  const tallyOf = p => (p.machines.length === 1 ? p.machines[0].kind : ORDER.map(st => [st, p.machines.filter(m => m.status === st).length]).filter(([, n]) => n)
+    .map(([st, n]) => `${n} ${SITE.statuses[st].label}`).join(" · "));
+  // A machine's own page in the builder, when it's live there.
+  const install = m => (m.catalog && m.status === "live" ? `${SITE.builder}/#preview/machines/${m.catalog}` : null);
+  // The versions a project's machines install at from the builder, read from the
+  // catalog: one tag, or each tag when its machines are on different releases.
+  const shipped = p => [...new Set(p.machines.filter(install).map(m => m.tag).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, "en", { numeric: true })).join(" · ");
+  const version = p => shipped(p) || p.version;
+  // A description's opening, for a summary: its first sentence, or two when the
+  // first is only a few words.
+  const firstSentence = t => {
+    const parts = t.match(/[^.!?]+[.!?]+(?=\s|$)/g) || [t];
+    let out = "";
+    for (const s of parts) { out += s; if (out.trim().length >= 70) break; }
+    return out.trim();
+  };
+
+  // ---- pieces ------------------------------------------------------------------
+  const pill = st => `<span class="st st-${st}"><i aria-hidden="true"></i>${esc(SITE.statuses[st].label)}</span>`;
+  const dot = st => `<i class="dot st-${st}" title="${esc(SITE.statuses[st].label)}" aria-hidden="true"></i>`;
+  const ext = (href, label, cls = "btn", lead = "") => `<a class="${cls}" href="${esc(href)}">${lead ? icon(lead) : ""}${esc(label)}${icon("arrow-up-right")}</a>`;
+  const flag = `<span class="flag">${icon("star")}flagship</span>`;
 
   // ---- the OP–XY screen header ------------------------------------------
   function header(pages, values = [[], []], from = 0, to = 4, pad = 0) {
@@ -51,10 +92,10 @@
     return s + "</svg>";
   }
 
-  // A machine with no capture yet: its real header over a quiet stage.
-  function blankScreen(m, project) {
+  // A machine with no capture: its real header over a quiet stage.
+  function blankScreen(m) {
     const [p1, p2] = m.pages;
-    let s = `<svg class="xy blank" viewBox="0 0 480 220" role="img" aria-label="${esc(m.name)}: no screen capture yet">`;
+    let s = `<svg class="xy blank" viewBox="0 0 480 220" role="img" aria-label="${esc(m.name)}: its controls">`;
     s += `<rect width="480" height="220" fill="#000"/>`;
     for (let i = 0; i < 8; i++) s += `<rect x="${i * 60}" width="60" height="20" fill="${STEPS[i]}"/>`;
     for (let i = 0; i < 4; i++) {
@@ -74,7 +115,6 @@
     } else if (m.presets) {
       s += `<text x="240" y="152" text-anchor="middle" fill="#707070" font-size="11">${esc(m.presets.map(p => p.toLowerCase()).join("  ·  "))}</text>`;
     }
-    s += `<text x="240" y="204" text-anchor="middle" fill="#323232" font-size="9">${esc(project.name.toLowerCase())} · screen capture to come</text>`;
     return s + "</svg>";
   }
 
@@ -89,9 +129,6 @@
       return eager
         ? `<video muted loop playsinline ${reduced ? "controls" : ""} preload="auto" poster="${esc(md.poster)}" src="${esc(md.src)}" aria-label="${esc(md.alt)}"></video>`
         : `<video muted loop playsinline ${reduced ? "controls" : ""} preload="none" data-poster="${esc(md.poster)}" data-src="${esc(md.src)}" aria-label="${esc(md.alt)}"></video>`;
-    }
-    if (md.type === "youtube") {
-      return `<iframe src="https://www.youtube-nocookie.com/embed/${esc(md.id)}?rel=0" title="${esc(md.alt || "video")}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width:100%;aspect-ratio:16/9;border:0;display:block"></iframe>`;
     }
     return `<img src="${esc(md.src)}" alt="${esc(md.alt)}" loading="${eager ? "eager" : "lazy"}" decoding="async">`;
   }
@@ -128,11 +165,15 @@
     settle = setTimeout(playVisible, 200);
   }, { threshold: 0.35 });
   function wireVideos(root) {
-    root.querySelectorAll("video").forEach(v => { nearby.observe(v); visible.observe(v); });
+    $$("video", root).forEach(v => { nearby.observe(v); visible.observe(v); });
+  }
+  // Leaving a view: its videos stop and are forgotten.
+  function unwireVideos(root) {
+    $$("video", root).forEach(v => { v.pause(); nearby.unobserve(v); visible.unobserve(v); inView.delete(v); });
   }
 
   function zoomable(el, md) {
-    if (!md || md.type === "youtube") return;
+    if (!el || !md) return;
     el.classList.add("zoom");
     el.tabIndex = 0;
     el.setAttribute("role", "button");
@@ -149,27 +190,13 @@
     el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
   }
 
-  // ---- pieces --------------------------------------------------------------
-  const pill = st => `<span class="st st-${st}"><i aria-hidden="true"></i>${esc(SITE.statuses[st].label)}</span>`;
-  const best = list => list.reduce((a, m) => (RANK[m.status] > RANK[a] ? m.status : a), "dev");
-  const all = () => SITE.projects.flatMap(p => p.machines);
-  const count = st => all().filter(m => m.status === st).length;
-  // The builder a status installs from, if any, and a machine's own page there.
-  const site = st => (st === "live" ? SITE.builder : null);
-  const install = m => (m.catalog && site(m.status) ? `${site(m.status)}/#preview/machines/${m.catalog}` : null);
-  // The versions a project's machines install at from the builder, read from the
-  // catalog: one tag, or each tag when its machines are on different releases.
-  const shipped = p => [...new Set(p.machines.filter(install).map(m => m.tag).filter(Boolean))]
-    .sort((a, b) => a.localeCompare(b, "en", { numeric: true })).join(" · ");
-  const ext = (href, label, cls = "btn", lead = "") => `<a class="${cls}" href="${esc(href)}">${lead ? icon(lead) : ""}${esc(label)}${icon("arrow-up-right")}</a>`;
-
-  // A kit's controls are its first key's machine (bd); each key's machine has its own.
+  // A kit's controls are its first key's machine; each key's machine has its own.
   // pageNames names the rows where a machine has pages of its own (Conductor's M1–M4).
   function ctrlRows(m) {
     return m.pages.map((row, i) => `<span>${m.pageNames ? esc(m.pageNames[i] || "") : m.kit ? (i ? "" : "bd") : m.pages.length > 1 ? `page ${i + 1}` : "controls"}</span>` +
-      row.map(c => (c ? `<b style="font-weight:400">${esc(c)}</b>` : `<em>–</em>`)).join("")).join("") +
+      row.map(c => (c ? `<b>${esc(c)}</b>` : `<em>–</em>`)).join("")).join("") +
       // The Shift row: the controls held Shift gives the encoders, four to a line.
-      (m.shift ? m.shift.map((c, i) => (i % 4 ? "" : `<span>${i ? "" : "shift"}</span>`) + `<b style="font-weight:400">${esc(c)}</b>`).join("") : "");
+      (m.shift ? m.shift.map((c, i) => (i % 4 ? "" : `<span>${i ? "" : "shift"}</span>`) + (c ? `<b>${esc(c)}</b>` : `<em>–</em>`)).join("") : "");
   }
 
   const metaHtml = m => [
@@ -177,117 +204,6 @@
     m.source ? `<a href="${esc(m.source)}">${icon("code")}source</a>` : "",
     install(m) ? `<a href="${esc(install(m))}">${icon("download")}builder${m.tag ? ` · ${esc(m.tag)}` : ""}</a>` : ""
   ].join("");
-
-  // size: "feature" (the full width), "pair" (half) or "compact" (a third).
-  function card(m, p, size) {
-    const el = document.createElement("article");
-    el.className = `card ${size}`;
-    el.id = m.id;
-    el.dataset.status = m.status;
-    el.dataset.machine = m.id;
-    const gallery = m.gallery ? [m.media, ...m.gallery] : null;
-    el.innerHTML = `
-      <div class="screen"${m.media?.aspect ? ` style="aspect-ratio: ${esc(m.media.aspect)}"` : ""}>${m.media ? mediaHtml(m.media) : blankScreen(m, p)}</div>
-      ${gallery ? `<div class="thumbs">${gallery.map((g, i) => `<button type="button" aria-label="Show ${esc(g.alt)}" aria-current="${i === 0}"><img src="${esc(g.src)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}
-      <div class="card-body">
-        <div class="card-main">
-          <div class="card-h"><h3>${esc(m.name)}<small>${esc(m.kind)}${m.after ? ` · after ${esc(m.after)}` : ""}</small></h3><span class="pill">${pill(m.status)}</span></div>
-          <p>${esc(m.description)}</p>
-          ${m.screen ? `<p class="scr">${esc(m.screen)}</p>` : ""}
-          ${m.kit ? `<div class="keys" aria-label="Machines in the kit">${m.kit.map(k => `<span>${esc(k)}</span>`).join("")}</div>` : ""}
-        </div>
-        <div class="card-side">
-          ${p.audio ? `<div class="sounds" data-clips="${esc(m.id)}" aria-label="${esc(m.name)}'s presets" hidden></div>` : ""}
-          <details class="more"${size === "feature" ? " open" : ""}><summary>controls</summary><div class="ctrls">${ctrlRows(m)}</div></details>
-          <div class="meta">${metaHtml(m)}</div>
-        </div>
-      </div>`;
-    if (m.media) zoomable($(".screen", el), m.media);
-    if (gallery) el.querySelectorAll(".thumbs button").forEach((b, i) => b.addEventListener("click", () => {
-      const fresh = document.createElement("div");
-      fresh.className = "screen";
-      fresh.innerHTML = mediaHtml(gallery[i], true);
-      $(".screen", el).replaceWith(fresh);
-      zoomable(fresh, gallery[i]);
-      el.querySelectorAll(".thumbs button").forEach((x, j) => x.setAttribute("aria-current", String(i === j)));
-    }));
-    return el;
-  }
-
-  // The page's rhythm: a machine with its own screen story runs wide, then two
-  // side by side; a flagship always runs wide; the rest sit three to a row.
-  function sizes(list) {
-    let beat = 0;
-    return list.map((m, i) => {
-      if (m.flagship) { beat = 0; return "feature"; }
-      if (!m.screen) return "compact";
-      const size = beat % 3 === 0 || (beat % 3 === 1 && !list[i + 1]?.screen) ? "feature" : "pair";
-      beat = size === "feature" ? 1 : beat + 1;
-      return size;
-    });
-  }
-
-  const projectStatus = p => (p.machines.length === 1 ? p.machines[0].status : RANK[p.status] > RANK[best(p.machines)] ? p.status : best(p.machines));
-  const tallyOf = p => (p.machines.length === 1 ? p.machines[0].kind : ORDER.map(st => [st, p.machines.filter(m => m.status === st).length]).filter(([, n]) => n)
-    .map(([st, n]) => `${n} ${SITE.statuses[st].label}`).join(" · "));
-  const versionHtml = p => `<small${shipped(p) && shipped(p) !== p.version ? ` title="${esc(`In the builder; latest release ${p.version}`)}"` : ""}>${esc(shipped(p) || p.version)}</small>`;
-  const actionsHtml = p => ext(p.repo, "repository", "btn btn-ink", "github") + ext(SITE.builder, "open-xy") + p.links.map(l => ext(l.href, l.label)).join("");
-
-  function project(p, i) {
-    const sec = document.createElement("section");
-    sec.className = p.flagship ? "project flagship" : "project";
-    sec.id = p.id;
-    sec.dataset.project = p.id;
-    sec.setAttribute("aria-labelledby", `${p.id}-h`);
-    // A project of one machine shows that machine's screen and controls itself, with no cards.
-    const solo = p.machines.length === 1 ? p.machines[0] : null;
-    if (solo) sec.dataset.solo = solo.id;
-    sec.innerHTML = `
-      <div class="steps" aria-hidden="true"></div>
-      <div class="sec-head">
-        <span class="num">${String(i + 1).padStart(2, "0")} · ${esc(p.kicker)}</span>
-        <h2 id="${p.id}-h">${esc(p.name)} <span class="ver">${versionHtml(p)}</span></h2>
-        <p class="sub">${esc(p.tagline)}</p>
-        <div class="sec-tools">${p.flagship ? `<span class="flag">${icon("star")}flagship</span>` : ""}<span class="pill">${pill(projectStatus(p))}</span><span class="tally">${esc(tallyOf(p))}</span></div>
-      </div>
-      ${p.media ? `<figure class="device p-media"><div class="screen"${p.media.aspect ? ` style="aspect-ratio: ${esc(p.media.aspect)}"` : ""}></div></figure>` : ""}
-      ${solo ? `<figure class="device p-media solo"><div class="screen">${solo.media ? mediaHtml(solo.media) : blankScreen(solo, p)}</div></figure>` : ""}
-      <div class="p-body">
-        <div class="p-desc">${p.description.map(t => `<p>${esc(t)}</p>`).join("")}
-          ${solo ? `<div class="ctrls">${ctrlRows(solo)}</div>` : ""}
-          ${solo && p.audio ? `<div class="sounds" data-clips="${esc(solo.id)}" aria-label="${esc(solo.name)}'s presets" hidden></div>` : ""}
-          <p class="actions">${actionsHtml(p)}</p>
-        </div>
-        ${p.specs ? specStrip(p.specs) : ""}
-      </div>`;
-    if (p.media) {
-      const ms = $(".p-media:not(.solo) .screen", sec);
-      ms.innerHTML = mediaHtml(p.media);
-      zoomable(ms, p.media);
-    }
-    if (solo) {
-      if (solo.media) zoomable($(".p-media.solo .screen", sec), solo.media);
-      return sec;
-    }
-
-    const groups = p.groups || [{ title: "" }];
-    groups.forEach((g, gi) => {
-      const list = p.machines.filter(m => (m.group ?? 0) === gi);
-      if (g.title) {
-        const h = document.createElement("div");
-        h.className = "group-h";
-        h.dataset.group = "";
-        h.innerHTML = `<h3>${esc(g.title)}</h3><span>${esc(g.note || "")}</span>`;
-        sec.append(h);
-      }
-      const grid = document.createElement("div");
-      grid.className = "cards";
-      const size = sizes(list);
-      list.forEach((m, k) => grid.append(card(m, p, size[k])));
-      sec.append(grid);
-    });
-    return sec;
-  }
 
   // A project's specs as an OP–XY header: page 1 on the bar, page 2 in grey.
   // Phones get it as two halves, so the type stays readable.
@@ -299,103 +215,178 @@
       `<div class="hdr-narrow"><div class="screen">${header(pages, values, 0, 2, 4)}</div><div class="screen">${header(pages, values, 2, 4, 4)}</div></div></div>`;
   }
 
-  // The filters: drawn in the rail and the sheet, one state between them.
-  function filtersHtml() {
-    const row = (facet, label, opts) => `<div class="f-row" role="group" aria-label="${label}"><span class="f-label">${label}</span>` + opts.map(([k, text, n]) =>
-      `<button class="chip" type="button" data-facet="${facet}" data-value="${k}" aria-pressed="${filters[facet] === k}"${n === 0 && filters[facet] !== k ? " disabled" : ""}>${esc(text)}${n === null ? "" : ` <b>${n}</b>`}</button>`).join("") + `</div>`;
-    const tally = (facet, value) => all().filter(m => matches(m, { ...filters, [facet]: value })).length;
-    return row("kind", "kind", [["all", "all", tally("kind", "all")], ...KINDS.map(k => [k, k, tally("kind", k)])]) +
-      row("status", "status", [["all", "all", tally("status", "all")], ...ORDER.map(st => [st, SITE.statuses[st].label, tally("status", st)])]);
-  }
-  function drawFilters() {
-    document.querySelectorAll("[data-filters]").forEach(el => { el.innerHTML = filtersHtml(); });
-  }
-  document.addEventListener("click", e => {
-    const b = e.target.closest("[data-facet]");
-    if (!b) return;
-    filters[b.dataset.facet] = filters[b.dataset.facet] === b.dataset.value ? "all" : b.dataset.value;
-    drawFilters();
-    applyFilter();
-  });
+  // A project's links: the builder (its own page there, for a machine of its
+  // own that's live), then its repository.
+  const actionsHtml = (p, ink = true) => {
+    const solo = p.machines.length === 1 ? p.machines[0] : null;
+    const cls = ink ? "btn btn-ink" : "btn";
+    const builder = solo && install(solo) ? ext(install(solo), "open-xy builder", cls, "download") : ext(SITE.builder, "open-xy builder", cls);
+    return builder + ext(p.repo, "repository", "btn", "github") + p.links.map(l => ext(l.href, l.label)).join("");
+  };
+  const verTag = p => `<small data-ver="${esc(p.id)}">${esc(version(p))}</small>`;
+  const sounds = (p, m) => (p.audio ? `<div class="sounds" data-clips="${esc(m.id)}" data-audio="${esc(p.audio)}" aria-label="${esc(m.name)}'s presets" hidden></div>` : "");
 
-  // A project's machines in the order the page shows them: by group.
-  const inOrder = p => (p.groups || [{}]).flatMap((_, gi) => p.machines.filter(m => (m.group ?? 0) === gi));
-  const dot = st => `<i class="dot st-${st}" title="${esc(SITE.statuses[st].label)}" aria-hidden="true"></i>`;
-
-  // The list of suites and machines: the rail on a wide screen, the sheet on a phone.
-  function drawIndex() {
-    document.querySelectorAll("[data-index]").forEach(el => {
-      el.innerHTML = SITE.projects.map(p => `<li class="ix-suite" data-project="${p.id}">
-        <a class="ix-head" href="#${p.id}">${esc(p.name.toLowerCase())}<span>${p.machines.length}</span></a>
-        ${p.machines.length > 1 ? `<ul>${inOrder(p).map(m => `<li data-machine="${m.id}"><a href="#${m.id}">${dot(m.status)}${esc(m.name.toLowerCase())}</a></li>`).join("")}</ul>` : ""}
-      </li>`).join("");
-    });
+  // ---- the home -----------------------------------------------------------------
+  // The flagship: its screen at the full width, with its sound and a way in.
+  function flagshipHtml(p, s) {
+    const m = p.machines[0];
+    return `<section class="showcase wrap" id="${esc(s.id)}" aria-labelledby="show-h">
+      <figure class="device show-media"><div class="screen" data-zoom="${esc(m.id)}">${m.media ? mediaHtml(m.media) : blankScreen(m)}</div></figure>
+      <div class="show-copy">
+        <div>
+          <p class="show-tags">${flag}<span data-pill-p="${esc(p.id)}">${pill(projectStatus(p))}</span></p>
+          <h2 id="show-h">${esc(p.name)} <span class="ver">${verTag(p)}</span></h2>
+          <p class="show-tag">${txt(p.tagline)}</p>
+        </div>
+        <div>
+          <p class="show-desc">${txt(firstSentence(p.description[0]))}</p>
+          ${sounds(p, m)}
+          <p class="actions"><a class="btn btn-ink" href="#${esc(p.id)}">explore ${esc(p.name.toLowerCase())}${icon("arrow-right")}</a><span class="actions-in" data-actions="${esc(p.id)}" data-ink="0">${actionsHtml(p, false)}</span></p>
+        </div>
+      </div>
+    </section>`;
   }
 
-  function applyFilter() {
-    const byId = new Map(all().map(m => [m.id, m]));
-    const on = id => matches(byId.get(id));
-    document.querySelectorAll(".project").forEach(sec => {
-      if (sec.dataset.solo) { sec.hidden = !on(sec.dataset.solo); return; }
-      let inSec = 0;
-      sec.querySelectorAll(".cards").forEach(grid => {
-        let inGrid = 0;
-        grid.querySelectorAll(".card").forEach(c => { c.hidden = !on(c.dataset.machine); inGrid += !c.hidden; });
-        const h = grid.previousElementSibling;
-        if (h && h.dataset.group !== undefined) h.hidden = !inGrid;
-        grid.hidden = !inGrid;
-        inSec += inGrid;
+  const coverHtml = p => (p.cover ? `<img src="${esc(p.cover)}" alt="" loading="lazy" decoding="async">` : blankScreen(p.machines[0]));
+
+  // A project as a tile: its cover, its name and kicker, its line, and its machines' names.
+  function tileHtml(p, size) {
+    const names = p.machines.length > 1 ? `<p class="tile-names">${inOrder(p).map(m => esc(m.name.toLowerCase())).join(" · ")}</p>` : "";
+    return `<a class="tile ${size}" href="#${esc(p.id)}" data-project="${esc(p.id)}">
+      <div class="screen tile-screen">${coverHtml(p)}</div>
+      <div class="tile-body">
+        <div class="tile-h"><h3>${esc(p.name)}</h3><span data-pill-p="${esc(p.id)}">${pill(projectStatus(p))}</span></div>
+        <p class="tile-kicker">${esc(p.kicker)}</p>
+        <p class="tile-tag">${txt(p.tagline)}</p>
+        ${names}
+        <span class="tile-go">${p.machines.length > 1 ? `see all ${p.machines.length}` : `see ${esc(p.name.toLowerCase())}`}${icon("arrow-right")}</span>
+      </div>
+    </a>`;
+  }
+
+  // A project with families of machines (MNMD) runs wide, each family a way into its page.
+  function wideHtml(p, s) {
+    const fam = (p.groups || []).map((g, gi) => {
+      const list = p.machines.filter(m => (m.group ?? 0) === gi);
+      return `<a class="fam" href="#${esc(list[0].id)}"><b>${list.length} ${esc(g.title)}${icon("arrow-right")}</b><span>${list.map(m => esc(m.name)).join(" · ")}</span></a>`;
+    }).join("");
+    return `<section class="shelf wrap" id="${esc(s.id)}" aria-labelledby="${esc(s.id)}-h">
+      <div class="shelf-h"><h2 id="${esc(s.id)}-h">${esc(s.title)}</h2><p>${esc(p.kicker)}</p></div>
+      <div class="wide-tile">
+        <a class="screen tile-screen" href="#${esc(p.id)}" aria-label="${esc(p.name)}">${coverHtml(p)}</a>
+        <div class="tile-body">
+          <div class="tile-h"><h3>${txt(p.tagline)}</h3><span data-pill-p="${esc(p.id)}">${pill(projectStatus(p))}</span></div>
+          <p class="tile-tag">${txt(p.description[0])}</p>
+          <div class="fams">${fam}</div>
+          <p class="actions"><a class="btn btn-ink" href="#${esc(p.id)}">see all ${p.machines.length}${icon("arrow-right")}</a></p>
+        </div>
+      </div>
+    </section>`;
+  }
+
+  function homeHtml() {
+    return SITE.shelves.map(s => {
+      const list = s.projects.map(project).filter(Boolean);
+      if (s.id === "flagship") return list.map(p => flagshipHtml(p, s)).join("");
+      if (list.length === 1 && list[0].groups) return wideHtml(list[0], s);
+      const big = list.length <= 4 && s.id === "suites";
+      return `<section class="shelf wrap" id="${esc(s.id)}" aria-labelledby="${esc(s.id)}-h">
+        <div class="shelf-h"><h2 id="${esc(s.id)}-h">${esc(s.title)}</h2>${s.note ? `<p>${txt(s.note)}</p>` : ""}</div>
+        <div class="tiles ${big ? "two" : "four"}">${list.map(p => tileHtml(p, big ? "big" : "small")).join("")}</div>
+      </section>`;
+    }).join("");
+  }
+
+  // ---- a project's page -----------------------------------------------------------
+  // A machine: its screen and a one-line summary; the rest opens beneath it.
+  function card(m, p) {
+    const el = document.createElement("article");
+    el.className = "card";
+    el.id = m.id;
+    el.dataset.machine = m.id;
+    const sum = firstSentence(m.description);
+    const rest = m.description.slice(m.description.indexOf(sum) + sum.length).trim();
+    el.innerHTML = `
+      <div class="screen"${m.media?.aspect ? ` style="aspect-ratio: ${esc(m.media.aspect)}"` : ""}>${m.media ? mediaHtml(m.media) : blankScreen(m)}</div>
+      <div class="card-h"><h3>${esc(m.name)}<small>${esc(m.kind)}${m.after ? ` · after ${esc(m.after)}` : ""}</small></h3><span data-pill-m="${esc(m.id)}">${pill(m.status)}</span></div>
+      <p class="card-sum">${txt(sum)}</p>
+      ${sounds(p, m)}
+      <details class="more">
+        <summary>details${icon("chevron-down")}</summary>
+        <div class="more-body">
+          ${rest ? `<p>${txt(rest)}</p>` : ""}
+          ${m.screen ? `<p class="scr">${esc(m.screen)}</p>` : ""}
+          ${m.kit ? `<div class="keys" aria-label="Machines in the kit">${m.kit.map(k => `<span>${esc(k)}</span>`).join("")}</div>` : ""}
+          <div class="ctrls">${ctrlRows(m)}</div>
+          <div class="meta" data-meta="${esc(m.id)}">${metaHtml(m)}</div>
+        </div>
+      </details>`;
+    if (m.media) zoomable($(".screen", el), m.media);
+    return el;
+  }
+
+  function projectView(p) {
+    const sec = document.createElement("article");
+    sec.className = "project wrap";
+    sec.dataset.project = p.id;
+    const solo = p.machines.length === 1 ? p.machines[0] : null;
+    const shelf = shelfOf(p);
+    const media = p.media || solo?.media;
+    const list = ordered(), at = list.indexOf(p);
+    const prev = list[at - 1], next = list[at + 1];
+    sec.innerHTML = `
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="#${esc(shelf.id)}">${icon("arrow-left")}all machines</a><span>${esc(shelf.title)}</span></nav>
+      <div class="steps" aria-hidden="true"></div>
+      <header class="sec-head">
+        <span class="num">${esc(p.kicker)}</span>
+        <h1 id="${esc(p.id)}-h">${esc(p.name)} <span class="ver">${verTag(p)}</span></h1>
+        <p class="sub">${txt(p.tagline)}</p>
+        <div class="sec-tools">${p.flagship ? flag : ""}<span data-pill-p="${esc(p.id)}">${pill(projectStatus(p))}</span><span class="tally" data-tally="${esc(p.id)}">${esc(tallyOf(p))}</span></div>
+      </header>
+      ${media ? `<figure class="device p-media${solo ? " solo" : ""}"><div class="screen"${media.aspect ? ` style="aspect-ratio: ${esc(media.aspect)}"` : ""}>${mediaHtml(media)}</div></figure>` : solo ? `<figure class="device p-media solo"><div class="screen">${blankScreen(solo)}</div></figure>` : ""}
+      <div class="p-body">
+        <div class="p-desc">
+          <p>${txt(p.description[0])}</p>
+          ${solo ? sounds(p, solo) : ""}
+          <p class="actions" data-actions="${esc(p.id)}" data-ink="1">${actionsHtml(p)}</p>
+        </div>
+        <details class="about">
+          <summary>${solo ? "more, with controls and specs" : `more about ${esc(p.name.toLowerCase())}, with specs`}${icon("chevron-down")}</summary>
+          <div class="about-body">
+            ${p.description.slice(1).map(t => `<p>${txt(t)}</p>`).join("")}
+            ${solo?.screen ? `<p class="scr">${esc(solo.screen)}</p>` : ""}
+            ${solo ? `<div class="ctrls">${ctrlRows(solo)}</div><div class="meta" data-meta="${esc(solo.id)}">${metaHtml(solo)}</div>` : ""}
+            ${p.specs ? specStrip(p.specs) : ""}
+          </div>
+        </details>
+      </div>
+      <div class="p-machines"></div>
+      <nav class="pager" aria-label="Projects">
+        ${prev ? `<a href="#${esc(prev.id)}" rel="prev"><small>${icon("arrow-left")}previous</small>${esc(prev.name)}</a>` : `<a href="#top" rel="prev"><small>${icon("arrow-left")}home</small>all machines</a>`}
+        ${next ? `<a href="#${esc(next.id)}" rel="next"><small>next${icon("arrow-right")}</small>${esc(next.name)}</a>` : `<a href="#top" rel="next"><small>home${icon("arrow-right")}</small>all machines</a>`}
+      </nav>`;
+    if (media) zoomable($(".p-media .screen", sec), media);
+    if (!solo) {
+      const host = $(".p-machines", sec);
+      // A jump list of the project's machines, when there are more than a few.
+      if (p.machines.length > 3) {
+        host.insertAdjacentHTML("beforeend", `<nav class="jump" aria-label="${esc(p.name)}'s machines">${inOrder(p).map(m => `<a href="#${esc(m.id)}" data-jump="${esc(m.id)}">${dot(m.status)}${esc(m.name.toLowerCase())}</a>`).join("")}</nav>`);
+      }
+      (p.groups || [{ title: "" }]).forEach((g, gi) => {
+        const ms = p.machines.filter(m => (m.group ?? 0) === gi);
+        if (g.title) host.insertAdjacentHTML("beforeend", `<div class="group-h"><h2>${esc(g.title)}</h2><span>${esc(g.note || "")}</span></div>`);
+        const grid = document.createElement("div");
+        grid.className = "cards";
+        ms.forEach(m => grid.append(card(m, p)));
+        host.append(grid);
       });
-      sec.hidden = !inSec;
-    });
-    // The index follows the filters too.
-    document.querySelectorAll("[data-index] li[data-machine]").forEach(el => { el.hidden = !on(el.dataset.machine); });
-    document.querySelectorAll(".ix-suite").forEach(el => {
-      const p = SITE.projects.find(x => x.id === el.dataset.project);
-      el.hidden = !p.machines.some(m => matches(m));
-    });
-    const shown = all().filter(m => matches(m)).length;
-    let empty = $("#empty");
-    if (!shown) {
-      if (!empty) { empty = document.createElement("p"); empty.id = "empty"; empty.className = "lead"; $("#projects").append(empty); }
-      empty.textContent = "No machines match these filters.";
-    } else if (empty) empty.remove();
-  }
-
-  function nav() {
-    $("#nav").innerHTML = SITE.projects.map(p => `<a href="#${p.id}" data-project="${p.id}">${esc(p.name.toLowerCase())}</a>`).join("") +
-      `<a class="opt" href="${SITE.github}">${icon("github")}github</a>`;
-  }
-
-  // Where you are: the section and machine crossing the reading line, marked in
-  // the bar, the rail and the phone's index button.
-  const crossing = new Set();
-  function mark() {
-    const els = [...crossing];
-    const sec = els.find(e => e.classList.contains("project"));
-    const card = els.find(e => e.classList.contains("card"));
-    const pid = sec?.dataset.project, mid = card?.dataset.machine;
-    document.querySelectorAll("#nav a[data-project], .ix-suite").forEach(a => a.classList.toggle("here", a.dataset.project === pid));
-    document.querySelectorAll("#nav a[data-project]").forEach(a => (a.dataset.project === pid ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")));
-    document.querySelectorAll("[data-index] li[data-machine]").forEach(li => li.classList.toggle("here", li.dataset.machine === mid));
-    const name = SITE.projects.find(p => p.id === pid)?.name.toLowerCase();
-    const m = mid && all().find(x => x.id === mid);
-    $("#where").textContent = name ? (m ? `${name} · ${m.name.toLowerCase()}` : name) : "all machines";
-    // Keep the marked line in sight in a rail too long for the window, without moving the page.
-    const rail = $(".rail-list"), line = rail && rail.querySelector("li[data-machine].here");
-    if (rail && line && rail.scrollHeight > rail.clientHeight) {
-      const r = rail.getBoundingClientRect(), l = line.getBoundingClientRect();
-      if (l.top < r.top || l.bottom > r.bottom) rail.scrollTop += l.top - r.top - r.height / 2;
     }
+    return sec;
   }
-  const spy = new IntersectionObserver(entries => {
-    for (const e of entries) e.isIntersecting ? crossing.add(e.target) : crossing.delete(e.target);
-    mark();
-  }, { rootMargin: "-30% 0px -65% 0px" });
 
   // ---- preset clips ----------------------------------------------------------
   // A project's clips (assets/audio/<project>.json: machine id -> [{preset, src, phrase}])
-  // become a row of buttons under each card. One clip plays at a time.
+  // become a row of buttons. One clip plays at a time.
   const player = new Audio();
   player.preload = "none";
   let playing = null;
@@ -410,72 +401,88 @@
   });
   function play(btn) {
     if (playing === btn) { player.pause(); setPlaying(null); return; }
-    $("#film video")?.pause();
     player.src = btn.dataset.src;
     player.play().then(() => setPlaying(btn)).catch(() => setPlaying(null));
   }
-  async function loadClips(p, sec) {
-    let clips;
-    try { clips = await json(p.audio); } catch { return; }
-    sec.querySelectorAll(".sounds[data-clips]").forEach(box => {
-      const list = clips[box.dataset.clips];
+  const clipCache = new Map();
+  const clipsOf = url => { if (!clipCache.has(url)) clipCache.set(url, json(url).catch(() => ({}))); return clipCache.get(url); };
+  function loadClips(root) {
+    return Promise.all($$(".sounds[data-clips]", root).map(async box => {
+      const list = (await clipsOf(box.dataset.audio))[box.dataset.clips];
       if (!list || !list.length) return;
       box.innerHTML = `<span class="label">listen</span>` + list.map(c =>
         `<button type="button" class="snd" aria-pressed="false" data-src="${esc(c.src)}" title="${esc(c.phrase || "")}" aria-label="Play ${esc(c.preset)}${c.phrase ? `: ${esc(c.phrase)}` : ""}">${icon("play")}${esc(c.preset)}</button>`).join("");
       box.hidden = false;
-      box.querySelectorAll(".snd").forEach(b => b.addEventListener("click", () => play(b)));
-    });
+      $$(".snd", box).forEach(b => b.addEventListener("click", () => play(b)));
+    }));
   }
 
-  function render() {
-    const host = $("#projects");
-    host.textContent = "";
-    const clips = SITE.projects.map((p, i) => {
-      const sec = project(p, i);
-      host.append(sec);
-      return p.audio ? loadClips(p, sec) : null;
-    });
-    wireVideos(host);
-    host.querySelectorAll(".project, .card").forEach(el => spy.observe(el));
-    drawIndex();
-    drawFilters(); applyFilter(); heroBuilder();
-    return Promise.all(clips);
+  // ---- the index: every project and machine, in a sheet ------------------------
+  function drawIndex() {
+    $("#index-list").innerHTML = SITE.shelves.map(s => `<li class="ix-shelf"><span class="ix-label">${esc(s.title)}</span><ul>` +
+      s.projects.map(project).filter(Boolean).map(p => `<li class="ix-suite" data-project="${p.id}">
+        <a class="ix-head" href="#${p.id}">${esc(p.name.toLowerCase())}<span>${p.machines.length > 1 ? p.machines.length : esc(p.kicker)}</span></a>
+        ${p.machines.length > 1 ? `<ul>${inOrder(p).map(m => `<li data-machine="${m.id}"><a href="#${m.id}">${dot(m.status)}${esc(m.name.toLowerCase())}</a></li>`).join("")}</ul>` : ""}
+      </li>`).join("") + `</ul></li>`).join("");
   }
 
-  // After the catalog: statuses and versions change in place, so nothing playing restarts.
-  function refresh() {
-    for (const p of SITE.projects) {
-      const sec = document.getElementById(p.id);
-      $(".sec-head .pill", sec).innerHTML = pill(projectStatus(p));
-      $(".tally", sec).textContent = tallyOf(p);
-      $(".ver", sec).innerHTML = versionHtml(p);
-      $(".actions", sec).innerHTML = actionsHtml(p);
-      for (const m of p.machines) {
-        const c = document.getElementById(m.id);
-        if (c?.classList.contains("card")) {
-          c.dataset.status = m.status;
-          $(".pill", c).innerHTML = pill(m.status);
-          $(".meta", c).innerHTML = metaHtml(m);
-        }
-        document.querySelectorAll(`[data-machine="${m.id}"] .dot`).forEach(d => { d.className = `dot st-${m.status}`; d.title = SITE.statuses[m.status].label; });
+  // The bar: a link per shelf, named for what's on it.
+  const navName = s => (s.id === "flagship" ? s.projects[0] : s.id === "more" ? "more" : s.title.replace(/^the /, ""));
+  function nav() {
+    $("#nav").innerHTML = SITE.shelves.map(s => `<a href="#${esc(s.id)}" data-shelf="${esc(s.id)}">${esc(navName(s))}</a>`).join("") +
+      `<a class="opt" href="${SITE.github}">${icon("github")}github</a>`;
+  }
+  // The bar marks the shelf you're on: on a project's page, the project's shelf.
+  function markNav(shelfId) {
+    $$("#nav a[data-shelf]").forEach(a => (a.dataset.shelf === shelfId ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")));
+  }
+
+  // ---- routing -------------------------------------------------------------------
+  const view = $("#view");
+  let current = null; // "home" or a project id
+  let shelfSpy = null;
+  function route() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const p = project(id) || ownerOf(id);
+    const machine = p && !project(id) ? id : null;
+    const want = p ? p.id : "home";
+    if (want !== current) {
+      unwireVideos(view);
+      if (playing) { player.pause(); setPlaying(null); }
+      shelfSpy?.disconnect();
+      view.textContent = "";
+      if (p) view.append(projectView(p));
+      else view.innerHTML = `<div class="home">${homeHtml()}</div>`;
+      $$("[data-zoom]", view).forEach(el => zoomable(el, all().find(x => x.id === el.dataset.zoom)?.media));
+      wireVideos(view);
+      current = want;
+      $(".intro").hidden = !!p;
+      document.title = p ? `${p.name} · OP–XY machines · ${SITE.owner}` : `OP–XY machines · ${SITE.owner}`;
+      // On the home, the bar follows the shelf you're reading.
+      if (!p) {
+        shelfSpy = new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting) markNav(e.target.id); }, { rootMargin: "-40% 0px -55% 0px" });
+        $$(".home > section", view).forEach(s => shelfSpy.observe(s));
       }
+      // Clips arrive later and push what's below down: land again once they're in.
+      const at = location.hash;
+      loadClips(view).then(() => { if (location.hash === at && !moved) land(id); });
     }
-    drawFilters(); applyFilter(); heroBuilder();
+    markNav(p ? shelfOf(p).id : SITE.shelves.some(s => s.id === id) ? id : null);
+    $("#where").textContent = p ? p.name.toLowerCase() : "all machines";
+    if (machine) { const d = $(`#${CSS.escape(machine)} details`); if (d) d.open = true; }
+    moved = false;
+    land(id);
   }
-
-  // The hero's button to the flagship project, beside the builder and GitHub.
-  function heroFlagship() {
-    const p = SITE.projects.find(x => x.flagship), at = $(".hero .actions");
-    if (!p || !at || $(".btn-flag", at)) return;
-    at.insertAdjacentHTML("beforeend", `<a class="btn btn-flag" href="#${esc(p.id)}">${icon("star")}${esc(p.name.toLowerCase())} · flagship synth</a>`);
+  // Land on the hash's target: a machine, a shelf, or the top of a new view.
+  function land(id) {
+    const el = id && document.getElementById(id);
+    if (el && el !== view.firstElementChild && !el.matches(".showcase")) el.scrollIntoView({ behavior: "instant", block: "start" });
+    else scrollTo({ top: 0, behavior: "instant" });
   }
-
-  // The hero's builder button: open-xy.com, which offers every live machine.
-  function heroBuilder() {
-    const a = $("#hero-builder");
-    a.href = SITE.builder;
-    a.firstChild.textContent = "open-xy builder";
-  }
+  // A reader who has scrolled since isn't moved again by a late landing.
+  let moved = false;
+  for (const ev of ["wheel", "touchmove", "keydown"]) addEventListener(ev, () => { moved = true; }, { passive: true });
+  addEventListener("hashchange", route);
 
   // ---- live status ---------------------------------------------------------
   async function json(url) {
@@ -499,56 +506,35 @@
     return changed;
   }
 
-  // The hero: the machines' film. It has a soundtrack, so it waits for a click and
-  // then plays with sound, with the browser's own controls for pausing, the volume
-  // and full screen. A preset clip and the film never play over each other.
-  const film = $("#film video"), filmPlay = $("#film-play");
-  // Until then the poster shows with one button on it, and the whole screen plays it.
-  if (film && filmPlay) {
-    const start = () => { film.muted = false; film.play().catch(() => {}); };
-    film.controls = false;
-    filmPlay.hidden = false;
-    filmPlay.addEventListener("click", start);
-    film.addEventListener("click", () => { if (!film.controls) start(); });
-    film.addEventListener("play", () => {
-      film.controls = true;
-      filmPlay.hidden = true;
-      if (playing) { player.pause(); setPlaying(null); }
-    });
-    film.addEventListener("ended", () => { film.controls = false; filmPlay.hidden = false; });
+  // After the catalog: statuses, versions and links change in place, so nothing playing restarts.
+  function refresh() {
+    for (const p of SITE.projects) {
+      $$(`[data-pill-p="${p.id}"]`).forEach(el => { el.innerHTML = pill(projectStatus(p)); });
+      $$(`[data-ver="${p.id}"]`).forEach(el => { el.textContent = version(p); });
+      $$(`[data-tally="${p.id}"]`).forEach(el => { el.textContent = tallyOf(p); });
+      $$(`[data-actions="${p.id}"]`).forEach(el => { el.innerHTML = actionsHtml(p, el.dataset.ink === "1"); });
+      for (const m of p.machines) {
+        $$(`[data-pill-m="${m.id}"]`).forEach(el => { el.innerHTML = pill(m.status); });
+        $$(`[data-meta="${m.id}"]`).forEach(el => { el.innerHTML = metaHtml(m); });
+        $$(`[data-machine="${m.id}"] .dot, [data-jump="${m.id}"] .dot`).forEach(d => { d.className = `dot st-${m.status}`; d.title = SITE.statuses[m.status].label; });
+      }
+    }
   }
-  nav();
-  heroFlagship();
-  // The clips' rows and the catalog's versions move later cards as they arrive, so
-  // a link into the page lands again after each, unless the reader has already moved.
-  // Scrolling turns smooth only after all that, so no animation races a landing.
-  let moved = false;
-  for (const ev of ["wheel", "touchstart", "keydown"]) addEventListener(ev, () => { moved = true; }, { once: true, passive: true });
-  const land = () => { if (!moved && location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({ behavior: "instant" }); };
-  land();
-  const drawn = render().then(land);
-  addEventListener("load", land);
 
-  // The phone's index: a sheet over the page, closed by choosing a machine.
+  // ---- start ---------------------------------------------------------------------
+  nav();
+  drawIndex();
+  route();
+
+  // The index: a sheet over the page, closed by choosing a machine.
   const sheet = $("#sheet");
   $("#index-btn").addEventListener("click", () => sheet.showModal());
-  sheet.addEventListener("click", e => { if (e.target === sheet || e.target.closest("[data-index] a")) sheet.close(); });
-
-  // A link to a machine the filters are hiding clears them.
-  function reveal() {
-    const id = decodeURIComponent(location.hash.slice(1));
-    const m = all().find(x => x.id === id);
-    if (id && m && !matches(m)) { filters.kind = filters.status = "all"; drawFilters(); applyFilter(); document.getElementById(id)?.scrollIntoView(); }
-  }
-  addEventListener("hashchange", reveal);
+  sheet.addEventListener("click", e => { if (e.target === sheet || e.target.closest("#index-list a")) sheet.close(); });
 
   $("#lightbox").addEventListener("click", e => { if (e.target.id === "lightbox") e.target.close(); });
   $("#lightbox").addEventListener("close", () => { $("#lb-media").textContent = ""; });
 
-  Promise.allSettled([syncCatalog(), drawn]).then(([cat]) => {
-    if (cat.status === "fulfilled" && cat.value) refresh();
-    land();
-    document.documentElement.classList.add("settled");
-    if (cat.status !== "fulfilled") $("#synced").textContent = "Statuses as last updated; the Open-XY catalog is unreachable.";
-  });
+  syncCatalog().then(changed => { if (changed) { refresh(); drawIndex(); } })
+    .catch(() => { $("#synced").textContent = "Statuses as last updated; the Open-XY catalog is unreachable."; })
+    .finally(() => document.documentElement.classList.add("settled"));
 })();

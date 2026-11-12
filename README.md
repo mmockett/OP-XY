@@ -24,10 +24,10 @@ A static page with no build step. GitHub Pages serves it from `main`.
    `[title, value]` pairs, values kept to about five characters. Without
    `media` the page draws a blank OP–XY screen with its real control labels.
    A project with one machine shows its screen and controls directly,
-   without a card.
-   A project with `flagship: true` is listed first and gets a flagship
-   label, its screen at the full width and a button in the hero.
-3. Commit and push. Pages republishes in about a minute.
+   without a card. `cover` is the image its tile shows on the home.
+3. Put the project on a shelf: add its `id` to one of `shelves` at the top of
+   `data.js` (flagship, the suites, MNMD, more machines).
+4. Commit and push. Pages republishes in about a minute.
 
 Open `index.html` straight from disk to check it first.
 
@@ -49,7 +49,7 @@ builder by a few days. A machine in open-xy.com links to its own page there
 (`#preview/machines/<catalog id>`) and shows its catalog tag, the version that
 builder installs; a project's heading shows those tags, each one when its
 machines are on different releases, and its `version` (latest release) only
-until the catalog loads. The hero's builder button points at open-xy.com.
+until the catalog loads.
 
 ## Screens
 
@@ -83,18 +83,28 @@ used for rendering only: it is never committed or served.
 
 ## The page
 
-The page opens on the machines' film, `assets/media/machines/machines.mp4`
-(16:9, with a soundtrack) and its poster `machines.jpg`, which is also the
-page's `og:image`. It waits for a click, then plays with sound and the
-browser's own controls; it loads nothing but the poster until then, and a
-preset clip pauses it. The filters, the rail beside the suites
-and the phone's index all draw from `data.js`, so a new
-machine needs nothing beyond its entry there. Every card has its machine's `id`
-as its anchor, so `#moth` and `#modfx` both link in.
+The page has two kinds of view, chosen by the address's hash, with no build
+step and no reload between them:
 
-A card's size comes from its entry. A `flagship` runs the full width. A machine
-with a `screen` line takes the suite's rhythm: one wide, then two side by side.
-One without a `screen` line sits three to a row.
+- **The home** (no hash, or a shelf's id: `#flagship`, `#suites`, `#mnmd`,
+  `#more`). A line on what the page is, then the flagship, Nexus, with its
+  screen, its sound and a way in. Then a tile per project, shelf by shelf:
+  its `cover`, name, kicker, tagline and machines' names. A project with
+  `groups` (MNMD) gets a wide tile with a way into each group.
+- **A project** (`#<project id>`, such as `#hexagon`). Its heading, screen
+  and first paragraph, with the rest of its description and its specs behind
+  "more about". Then its machines, each a screen, a summary (the
+  description's opening), its preset clips and "details": the rest of the
+  description, the screen line, its controls, CPU and links. Next and previous
+  lead through the projects in the home's order.
+
+A link to a machine (`#moth`, `#mdkit`) opens its project's page at that
+machine with its details open, so older links still land. The bar's links go
+to the shelves, and "all machines" opens an index of every project and
+machine. Everything draws from `data.js`, so a new machine needs nothing
+beyond its entry there.
+
+The machines' film (`assets/media/machines/`) isn't on the page for now.
 
 A video gets its poster when it nears the view, and its file only once it has
 stayed in view. Up to six play at once, two on a phone, and a reader saving

@@ -37,9 +37,21 @@ window.SITE = {
     dev:  { label: "in development", note: "In the works. Not yet installable." }
   },
 
+  // The home page, in order: a shelf per kind of project. The home shows each
+  // project as a tile (its cover, kicker and tagline); the project's own page
+  // (#<project id>) has its machines, controls, clips and specs. A link to a
+  // machine (#<machine id>) opens its project's page at that machine.
+  shelves: [
+    { id: "flagship", title: "flagship synth", projects: ["nexus"] },
+    { id: "suites", title: "the suites", note: "Machines made to be played together, with levels matched and layouts shared: two suites of synths and two of drum kits.", projects: ["hexagon", "nonagon", "trigon", "tetragon"] },
+    { id: "mnmd", title: "mnmd", projects: ["mnmd"] },
+    { id: "more", title: "more machines", note: "Effects, a granular sampler, a generative sequencer and an extension for the OP–XY's own Drumline.", projects: ["modfx", "grains", "conductor", "extensions"] }
+  ],
+
   projects: [
     {
       id: "nexus",
+      cover: "assets/media/nexus/nexus.jpg",
       flagship: true,
       audio: "assets/audio/nexus.json",
       name: "Nexus",
@@ -74,6 +86,7 @@ window.SITE = {
 
     {
       id: "hexagon",
+      cover: "assets/media/hexagon/wane.jpg",
       audio: "assets/audio/hexagon.json",
       name: "Hexagon Suite",
       kicker: "six synths",
@@ -156,6 +169,7 @@ window.SITE = {
 
     {
       id: "nonagon",
+      cover: "assets/media/nonagon/butterfly.jpg",
       audio: "assets/audio/nonagon.json",
       name: "Nonagon Suite",
       kicker: "nine experiments",
@@ -270,6 +284,7 @@ window.SITE = {
 
     {
       id: "trigon",
+      cover: "assets/media/trigon/dust.png",
       name: "Trigon Suite",
       kicker: "three drum kits",
       status: "live",
@@ -296,6 +311,7 @@ window.SITE = {
           pageNames: ["thud", ""],
           shift: ["machine", "choke", "pan", "level"],
           cpu: "3.4%",
+          media: { type: "image", src: "assets/media/trigon/felt.png", alt: "Felt's screen: three piano strings over an iron plate, with the hammer beneath and rubber wedged between the strings" },
           source: "https://github.com/mmockett/OP-XY-Trigon/tree/main/felt"
         },
         {
@@ -308,6 +324,7 @@ window.SITE = {
           pageNames: ["sweep", ""],
           shift: ["machine", "choke", "pan", "level"],
           cpu: "3.0%",
+          media: { type: "image", src: "assets/media/trigon/flicker.png", alt: "Flicker's screen: frames of 16 mm film on a slat, a sound drawn on the soundtrack and the gate's slit across the middle" },
           source: "https://github.com/mmockett/OP-XY-Trigon/tree/main/flicker"
         },
         {
@@ -320,6 +337,7 @@ window.SITE = {
           pageNames: ["kick", ""],
           shift: ["machine", "choke", "pan", "level"],
           cpu: "4.2%",
+          media: { type: "image", src: "assets/media/trigon/dust.png", alt: "Dust's screen: a record deck in isometric, a 7-inch single on its platter and the tonearm across it" },
           source: "https://github.com/mmockett/OP-XY-Trigon/tree/main/dust"
         }
       ]
@@ -327,6 +345,7 @@ window.SITE = {
 
     {
       id: "tetragon",
+      cover: "assets/media/tetragon/thunder.jpg",
       audio: "assets/audio/tetragon.json",
       name: "Tetragon Suite",
       kicker: "four drum kits",
@@ -398,6 +417,7 @@ window.SITE = {
 
     {
       id: "grains",
+      cover: "assets/media/grains/grains.jpg",
       name: "Grains",
       kicker: "granular sampler",
       status: "live",
@@ -425,6 +445,7 @@ window.SITE = {
 
     {
       id: "modfx",
+      cover: "assets/media/modfx/chroma.jpg",
       name: "ModFX",
       kicker: "mod + effect",
       status: "live",
@@ -480,6 +501,7 @@ window.SITE = {
 
     {
       id: "conductor",
+      cover: "assets/media/conductor/conductor.jpg",
       name: "Conductor",
       kicker: "generative sequencer",
       status: "lab",
@@ -537,6 +559,7 @@ window.SITE = {
 
     {
       id: "mnmd",
+      cover: "assets/media/mnmd/mdkit.jpg",
       name: "MNMD",
       kicker: "machinedrum + monomachine",
       status: "live",

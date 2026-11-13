@@ -82,8 +82,8 @@ HEXAGON = ["wane", "bloom", "hollow", "orbit", "bend", "moth"]
 NONAGON = ["sand", "cocoa", "ghost", "coin", "recur", "fermi", "mach", "butterfly", "drop"]
 # Nonagon's sample engines, and the files their screens are drawn from.
 NONAGON_SAMPLE = {
-    "ghost": ["display.cpp", "display.h", "captions.h", "figure.h", "tables.h", "ghost.h", "panel.svg.fragment"],
-    "recur": ["display.cpp", "display.h", "layout.h", "recur.h", "panel.svg.fragment"],
+    "ghost": ["display.cpp", "display.h", "captions.h", "figure.h", "tables.h", "ghost.h", "amp_curve.h", "sample_view.h", "panel.svg.fragment"],
+    "recur": ["display.cpp", "display.h", "layout.h", "recur.h", "amp_curve.h", "sample_view.h", "panel.svg.fragment"],
 }
 KITS = ["mde12"]
 # The Tetragon Suite: four drum kits on the per-key mixer channels' SDK.
@@ -159,8 +159,10 @@ def grains_wrap():
     source = HERE / "src" / "opxy-grains"
     # Grains' own files, renamed into the stand-in's namespace and artwork prefix.
     rename = lambda text: re.sub(r"\bnamespace grains\b", f"namespace {WRAP_ID}", text).replace("grains::", f"{WRAP_ID}::")
-    for name in ("display.cpp", "display.h", "tables.h"):
-        (wrap / name).write_text(rename((source / name).read_text()))
+    # (sample_view.h and amp_curve.h since v1.2.0: included inside the machine's namespace)
+    for name in ("display.cpp", "display.h", "tables.h", "sample_view.h", "amp_curve.h"):
+        if (source / name).exists():
+            (wrap / name).write_text(rename((source / name).read_text()))
     (wrap / "panel.svg.fragment").write_text((source / "panel.svg.fragment").read_text().replace('id="grains_', f'id="{WRAP_ID}_'))
     display = (wrap / "display.cpp").read_text().replace('#include "core.h"', '#include "grains_core.h"')
     (wrap / "display.cpp").write_text(display)

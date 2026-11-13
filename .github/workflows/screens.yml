@@ -9,6 +9,8 @@ on:
     branches: ['screens/**']
     paths: ['tools/render/**', '.github/workflows/screens.yml']
   workflow_dispatch:
+    inputs:
+      projects: { description: 'Projects to build (default: all)', required: false }
 permissions:
   contents: read
 jobs:
@@ -49,7 +51,7 @@ jobs:
           python -m pip install numpy
           git -C open-xy-staging log --oneline -1
       - name: Previews from each release
-        run: python OP-XY/tools/render/build.py hexagon nonagon grains modfx mnmd tetragon trigon
+        run: python OP-XY/tools/render/build.py ${{ github.event.inputs.projects || 'hexagon nonagon grains modfx mnmd tetragon trigon' }}
       - name: Sample engines and effects previewed directly, beside their stand-ins
         run: |
           d=OP-XY/tools/render/m-direct; mkdir -p $d

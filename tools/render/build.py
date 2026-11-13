@@ -23,6 +23,8 @@ archive); Tetragon itself is read from a checkout of mmockett/OP-XY-Tetragon at
 same branch, read at their release from ../opxy-trigon, or wherever XY_TRIGON points.
 Since the releases below, every machine builds on etcetc000/open-xy's staging (SDK
 1.10 and later), one SDK for all (XY_SDK, default ../open-xy-staging).
+The sample engines' stand-ins preview with --machine: --source (custom_preview) refuses
+artwork over 64 KB or with fill-opacity, which Recur and Grains now have.
 Building a preview compiles with clang: where host compiles can't run, build the
 previews in CI (.github/workflows/screens.yml runs this script with XY_NO_FONT=1 and
 uploads m/, sdk/ and kit-labels.json), put them here and render with render.mjs.
@@ -345,13 +347,13 @@ def build(projects):
     if wanted("grains"):
         source("opxy-grains")
         if (wrap := wrapped("grains", grains_wrap)):
-            preview("pr3", "--source", wrap, HERE / "m" / "grains")
+            preview("pr3", "--machine", wrap, HERE / "m" / "grains")
     if wanted("nonagon"):
         nonagon = source("opxy-nonagon")
         for mid in NONAGON:
             if mid in NONAGON_SAMPLE:
                 if (wrap := wrapped(mid, lambda: sample_wrap(mid, nonagon))):
-                    preview("pr3", "--source", wrap, HERE / "m" / mid)
+                    preview("pr3", "--machine", wrap, HERE / "m" / mid)
             else:
                 preview("staging", "--machine", nonagon / mid, HERE / "m" / mid)
     if wanted("modfx"):

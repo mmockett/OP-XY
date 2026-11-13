@@ -197,8 +197,13 @@ function timeline(id) {
   }
   // An effect's shift row (build.py writes it), for the header while Shift is held.
   const shift = join(ROOT, 'm', `${s.machine || id}-shift.json`);
+  // A synth's Shift row (SDK 1.13) at the preset's values, as Q31 words; an effect's row is its choices instead.
+  const Q31 = 0x7fffffff;
+  const shiftWords = def.shift?.length && !existsSync(shift)
+    ? def.shift.map(r => Math.round(Math.max(0, Math.min(1, preset && r.id in preset ? preset[r.id] : (r.default ?? 0))) * Q31))
+    : null;
   return { machine: s.machine || id, values, steps, sdk: s.sdk, sample: s.sample ? SAMPLE : null, labels: KIT_LABELS[id] || null,
-           shift: existsSync(shift) ? JSON.parse(readFileSync(shift)) : null };
+           shift: existsSync(shift) ? JSON.parse(readFileSync(shift)) : null, shiftWords };
 }
 
 // A harness's frames (Conductor): the scene as its cues, one a line, then each
@@ -262,8 +267,11 @@ function harnessFrames(id) {
 // ---- server + browser ----------------------------------------------------------
 const TYPES = { '.html': 'text/html', '.mjs': 'text/javascript', '.json': 'application/json', '.wasm': 'application/wasm', '.svg': 'image/svg+xml', '.ttf': 'font/ttf' };
 const server = http.createServer((req, res) => {
-  const path = join(ROOT, decodeURIComponent(new URL(req.url, 'http://x').pathname));
-  if (!path.startsWith(ROOT) || !existsSync(path)) { res.writeHead(404); return res.end(); }
+  let path = join(ROOT, decodeURIComponent(new URL(req.url, 'http://x').pathname));
+  // The screen font, read where XY_FONT points, so no copy of it sits in the checkout.
+  if (path === join(ROOT, 'font', 'UniversNextPro-Light.ttf') && process.env.XY_FONT) path = process.env.XY_FONT;
+  else if (!path.startsWith(ROOT)) { res.writeHead(404); return res.end(); }
+  if (!existsSync(path)) { res.writeHead(404); return res.end(); }
   res.writeHead(200, { 'Content-Type': TYPES[extname(path)] || 'application/octet-stream' });
   res.end(readFileSync(path));
 });
@@ -325,7 +333,7 @@ try {
     const tl = timeline(id);
     await cdp('Page.navigate', { url: `${base}/render.html?${id}` });
     for (let i = 0; i < 50 && !(await evaluate('window.ready === true').catch(() => false)); i++) await new Promise(r => setTimeout(r, 100));
-    const info = await evaluate(`setup(${JSON.stringify({ id: tl.machine, sdk: tl.sdk, values: tl.values, sample: tl.sample, labels: tl.labels, shift: tl.shift })})`);
+    const info = await evaluate(`setup(${JSON.stringify({ id: tl.machine, sdk: tl.sdk, values: tl.values, sample: tl.sample, labels: tl.labels, shift: tl.shift, shiftWords: tl.shiftWords })})`);
     const dir = join(OUT, id);
     rmSync(dir, { recursive: true, force: true });
     mkdirSync(dir, { recursive: true });

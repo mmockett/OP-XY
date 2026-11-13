@@ -70,6 +70,14 @@ node tools/render/render.mjs
 python3 tools/render/build.py --publish
 ```
 
+Every project is read at its latest release (`SOURCES` in `build.py`) and built
+on etcetc000/open-xy's `staging`. Where host compiles can't run, the first step
+runs in GitHub Actions instead: push a `screens/…` branch and the Screen
+previews workflow builds the previews (no font); fetch them with
+`gh run download <run> -n previews -D tools/render`, then run the second and
+third steps with `XY_FONT` pointing at the font, which `render.mjs` reads in
+place.
+
 The first builds each machine's browser preview, the second plays notes and
 turns controls through each one (the scenes are in `render.mjs`; name
 machines to render only those), and the third copies the MP4s and posters

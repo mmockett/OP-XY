@@ -13,7 +13,7 @@
 const Q31 = 0x7fffffff;
 let t;   // the machine being rendered
 
-// config: {id, sdk, values: [0..1 x8], model, sample, labels, shift}
+// config: {id, sdk, values: [0..1 x8], model, sample, labels, shift, shiftWords}
 window.setup = async config => {
   const { PreviewDisplay, SvgDisplay, headerSvg, NoteActivity } = await import(`./sdk/${config.sdk}/display.mjs`);
   const { controlPositions, editedShown, shownControls } = await import(`./sdk/${config.sdk}/controls.mjs`);
@@ -53,6 +53,8 @@ function writeSample(api, s) {
   const bins = s.levels.length;
   const low = new Int16Array(api.memory.buffer, at + 36, bins), high = new Int16Array(api.memory.buffer, at + 36 + 2 * bins, bins);
   s.levels.forEach((v, i) => { high[i] = Math.round(v * 32767); low[i] = -Math.round(v * 32767 * 0.94); });
+  // Its gain (SDK 1.10, after the bins): 0, as a sample is assigned.
+  new Int32Array(api.memory.buffer, at + 36 + 4 * bins, 1)[0] = 0;
 }
 
 const word = v => Math.round(Math.max(0, Math.min(1, v)) * Q31);
@@ -75,14 +77,17 @@ window.step = (events, elapsed) => {
   }
   const words = t.values.map(word);
   while (words.length < 8) words.push(0);
+  // staging's one tick (SDK 1.10 and later): the drum model, Shift and its choices
+  // (a kit's, or an effect's shift row), no amp envelope (as the SDK's own preview),
+  // a key at its own pan and level, the row the encoders are on, and a synth's Shift
+  // row at its preset's values.
+  const held = t.shiftRow ? t.shiftRow.shift : t.drumShift.shift;
+  const choices = t.shiftRow ? t.shiftRow.choices : t.drumShift.choices;
+  const line = Number(t.shown[0] >= 4);
+  const row = t.display.shiftRow && t.config.shiftWords ? { held: 0, line, values: t.config.shiftWords } : null;
   const frame = t.display.tick(t.shownControls(words, t.shown), Math.round(elapsed * 1.024),
-                               t.notes.note_on_serial >>> 0, 0, false, t.notes,
-                               ['aux', 'effects', 'pr3'].includes(t.config.sdk) ? t.shiftRow : t.model,
-                               ...(t.config.sdk === 'drum' ? [Number(t.drumShift.shift), t.drumShift.choices] : []),
-                               // A kit with per-key mixer channels (Tetragon): no amp envelope, the key
-                               // at its own pan and level, and the row the encoders are on.
-                               ...(t.config.sdk === 'pad' ? [Number(t.drumShift.shift), t.drumShift.choices, null,
-                                                             { pan: 0, level: 0 }, Number(t.shown[0] >= 4)] : []));
+                               t.notes.note_on_serial >>> 0, 0, false, t.notes, t.model,
+                               Number(held), choices, null, { pan: 0, level: 0 }, line, row);
   t.scene.apply(frame);
   const p = t.definition.parameters;
   const kitLabels = t.config.labels && t.config.labels[t.model];

@@ -1,0 +1,82 @@
+# Builds every machine's browser preview (WASM, compiled with clang) from each
+# project's release, for tools/render/render.mjs to draw the site's screens on a Mac
+# with the screen font. Host compiles don't run on that Mac, so they run here. The
+# font is never uploaded: this job only compiles. Download with
+#   gh run download <run> -n previews -D tools/render
+name: Screen previews
+on:
+  push:
+    branches: ['screens/**']
+    paths: ['tools/render/**', '.github/workflows/screens.yml']
+  workflow_dispatch:
+    inputs:
+      projects: { description: 'Projects to build (default: all)', required: false }
+permissions:
+  contents: read
+jobs:
+  previews:
+    runs-on: ubuntu-latest
+    env:
+      XY_NO_FONT: '1'
+      XY_KEEP_GOING: '1'
+      XY_PYTHON: python
+      XY_SDK: ${{ github.workspace }}/open-xy-staging
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: OP-XY }
+      - uses: actions/checkout@v4
+        with: { repository: etcetc000/open-xy, ref: staging, path: open-xy-staging }
+      # Each project beside the site under the name build.py reads it by, with its tags.
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-Hexagon, path: opxy-pads, fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-Nonagon, path: opxy-nonagon, fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-ModFX, path: OP-XY-Macro, fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-MNMD, path: OP-XY-MNMD, fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-Grains, path: opxy-grains, fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-Tetragon, path: OP-XY-Tetragon, fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-Trigon, path: opxy-trigon, fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Tools
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang lld
+          python -m pip install numpy
+          git -C open-xy-staging log --oneline -1
+      # Staging lets only a sample engine read a sample overview, and previews only synths
+      # and drums: the sample engines' screens (Grains, Ghost, Recur) are drawn through a
+      # stand-in synth, so this run's copy of the SDK drops that one check. The preview
+      # itself already supplies the overview (sdk/host/display_preview.cpp).
+      - name: Let the stand-ins read a sample overview (this run's SDK copy only)
+        run: |
+          python - <<'PY'
+          import pathlib
+          p = pathlib.Path("open-xy-staging/tooling/machines.py"); s = p.read_text()
+          check = "require(kind == 'sample' and display == 'drawing', \"Only a sample engine's own screen reads a sample overview\")"
+          assert check in s, "the check moved"
+          p.write_text(s.replace(check, "pass  # the site's stand-ins read it"))
+          # Recur's artwork (67 KB) passes a synth preview's 64 KB: a sample engine's may be larger.
+          p = pathlib.Path("open-xy-staging/tooling/preview.py"); s = p.read_text()
+          limit = "('panel.svg', 65536)"
+          assert limit in s, "the limit moved"
+          p.write_text(s.replace(limit, "('panel.svg', 131072)"))
+          PY
+      - name: Previews from each release
+        run: python OP-XY/tools/render/build.py ${{ github.event.inputs.projects || 'hexagon nonagon grains modfx mnmd tetragon trigon' }}
+      - name: Failures
+        run: cat OP-XY/tools/render/m/FAILED.txt 2>/dev/null || echo none
+      - uses: actions/upload-artifact@v4
+        with:
+          name: previews
+          path: |
+            OP-XY/tools/render/m
+            OP-XY/tools/render/sdk
+            OP-XY/tools/render/kit-labels.json
+          if-no-files-found: error

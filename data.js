@@ -65,8 +65,8 @@ window.SITE = {
       audio: "assets/audio/nexus.json",
       name: "Nexus",
       kicker: "two-layer polysynth",
-      status: "soon",
-      version: "",
+      status: "live",
+      version: "v1.0.0",
       repo: "https://github.com/mmockett/OP-XY-Nexus",
       links: [],
       tagline: "A two-layer polysynth after the CS-80, with brass that swells under your fingers.",
@@ -80,7 +80,7 @@ window.SITE = {
         [["output", "stereo"], ["footage", "16–2'"], ["sdk", "1.13"], ["licence", "MIT"]]
       ],
       machines: [
-        { id: "nexus", name: "Nexus", kind: "synth", catalog: "nexus", status: "soon",
+        { id: "nexus", name: "Nexus", kind: "synth", catalog: "nexus", status: "live",
           after: "the CS-80",
           description: "Two-layer polysynth: brass that swells under a held note, a bright bite at its start, ring-modulated bells and a stereo chorus.",
           screen: "Screen: an isometric city at night. A train runs on the monorail while you play, windows glow with the envelope and the fog rolls in with bright.",
@@ -578,7 +578,7 @@ window.SITE = {
       name: "MNMD",
       kicker: "machinedrum + monomachine",
       status: "live",
-      version: "v1.3.2",
+      version: "v1.3.4",
       repo: "https://github.com/mmockett/OP-XY-MNMD",
       links: [],
       tagline: "Elektron's Machinedrum and Monomachine, rebuilt for the OP–XY.",
@@ -588,7 +588,7 @@ window.SITE = {
       ],
       specs: [
         [["kits", "2"], ["synths", "14"], ["keys", "24"], ["os", "1.2.1"]],
-        [["drums", "49"], ["release", "v1.3.2"], ["screens", "16"], ["licence", "MIT"]]
+        [["drums", "49"], ["release", "v1.3.4"], ["screens", "16"], ["licence", "MIT"]]
       ],
       media: { type: "video", src: "assets/media/mnmd/overview.mp4", poster: "assets/media/mnmd/overview.jpg", alt: "Eight MNMD screens: MD KIT, MD E12, SID-6581, VO-6, FM STAT, SWAVE-PULSE, DPRO-WAVE and DPRO-DENS" },
       groups: [
@@ -700,10 +700,11 @@ window.SITE = {
           shift: ["kit", "machine", "choke", ""],
           media: { type: "video", aspect: "1448 / 668", src: "assets/media/mnmd/mdkit.mp4", poster: "assets/media/mnmd/mdkit.jpg", alt: "Nine of MD KIT's machines playing together: kick, cowbell and clap on top; FM tom, open hat and maracas in the middle; struck bar, tuning fork and noise below" } },
         { id: "mde12", group: 0, name: "MD E12", kind: "drum kit", catalog: "mde12", status: "diy",
-          description: "The E12 family's sixteen sampled machines, from your own ROM.",
+          description: "The E12 family's sixteen sampled machines, from your own ROM. Plays as MD KIT does: each key has its own pan, level, filter, sample-rate reduction and FX sends, with step locks and the track filter.",
           screen: "Screen: a strip of tape on a splicing block, with each machine's own recording.",
           kit: ["16 machines"],
           pages: [["ptch", "dec", "snap", "spln"], ["strt", "rtrg", "rtim", "bend"]],
+          shift: ["machine", "choke", "pan", "level"],
           media: { type: "video", src: "assets/media/mnmd/mde12.mp4", poster: "assets/media/mnmd/mde12.jpg", alt: "MD E12's screen, a strip of tape on a splicing block, as BD, SD, CP and OH are struck" },
           source: "https://github.com/mmockett/OP-XY-MNMD/tree/main/machines/mde12" }
       ]

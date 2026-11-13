@@ -330,7 +330,13 @@ def build(projects):
         if (checkout / "sdk" / "browser").exists():
             (HERE / "sdk" / name).mkdir(parents=True, exist_ok=True)
             for module in ("display.mjs", "controls.mjs"):
-                shutil.copy(checkout / "sdk" / "browser" / module, HERE / "sdk" / name / module)
+                text = (checkout / "sdk" / "browser" / module).read_text()
+                # A synth's artwork is at most 64 KB; Recur's, a sample engine's drawn through a
+                # stand-in, is 67 KB: the render's copy takes up to 128 KB.
+                if module == "display.mjs":
+                    assert "asset.length > 65536" in text, "the artwork limit moved"
+                    text = text.replace("asset.length > 65536", "asset.length > 131072")
+                (HERE / "sdk" / name / module).write_text(text)
     if wanted("hexagon"):
         pads = source("opxy-pads")
         for mid in HEXAGON:

@@ -21,9 +21,11 @@ mmockett/open-xy fork, fetched into ../open-xy as "fork" and read with git
 archive); Tetragon itself is read from a checkout of mmockett/OP-XY-Tetragon at
 ../OP-XY-Tetragon, or wherever XY_TETRAGON points. The Trigon kits build on the
 same branch, read at their release from ../opxy-trigon, or wherever XY_TRIGON points.
+Since the releases below, every machine builds on etcetc000/open-xy's staging (SDK
+1.10 and later), one SDK for all (XY_SDK, default ../open-xy-staging).
 Building a preview compiles with clang: where host compiles can't run, build the
-previews in CI (sdk.py preview --cxx clang++ --machine <kit> --out m/<kit>), put them
-in m/, write kit-labels.json and render here.
+previews in CI (.github/workflows/screens.yml runs this script with XY_NO_FONT=1 and
+uploads m/, sdk/ and kit-labels.json), put them here and render with render.mjs.
 Each suite is read at its commit in SOURCES with git archive, so its checkouts
 are left alone. MD KIT and MD E12 build on the drum kind's SDK (open-xy #143).
 The screen font is the OP-XY's, Univers Next Pro Light: set XY_FONT to its file.
@@ -43,13 +45,18 @@ HERE = pathlib.Path(__file__).resolve().parent
 SITE = HERE.parent.parent
 REPOS = SITE.parent
 FONT = pathlib.Path(os.environ.get("XY_FONT", pathlib.Path.home() / "Downloads/univers-next-pro/Univers Next Pro Light.ttf"))
+# In CI: no font (it is never uploaded), the runner's Python, and failures listed
+# rather than stopping the build.
+NO_FONT = bool(os.environ.get("XY_NO_FONT"))
+PYTHON = pathlib.Path(os.environ.get("XY_PYTHON", REPOS / "open-xy" / ".venv" / "bin" / "python"))
+KEEP_GOING = bool(os.environ.get("XY_KEEP_GOING"))
+FAILED = []
+SDK = pathlib.Path(os.environ.get("XY_SDK", REPOS / "open-xy-staging"))
 
 # Which SDK checkout each machine builds against, as each repository's README says.
-SDKS = {"staging": REPOS / "open-xy-staging", "fork": REPOS / "open-xy", "pr3": REPOS / "open-xy-pr3",
-        "aux": REPOS / "open-xy-aux-machines-lfo", "effects": REPOS / "open-xy-effects", "drum": HERE / "src" / "open-xy-upstream",
-        "control": REPOS / "open-xy-control-notes-2", "pad": HERE / "src" / "open-xy-pad-channel"}
-# The per-key mixer channels' SDK (open-xy #399), the Tetragon kits' (their README).
-PAD_SDK = ("fork", "drum/pad-channel")
+# Every release now builds on staging: the keys stay, as render.mjs's scenes name them.
+SDKS = {key: SDK for key in ("staging", "pr3", "aux", "effects", "drum", "pad")}
+SDKS["control"] = REPOS / "open-xy-control-notes-2"
 # These draw the waves captured from the owner's ROM, which no repository holds:
 # from a checkout they are flat lines, so their screens stay as first rendered.
 ROM_SCREENS = ["mmbbox", "mmdens", "mmwave", "mmddrw"]
@@ -59,15 +66,13 @@ MDKIT = ["mdkit", "mde12"]
 MDKIT_REPLACES = ["mdtrx", "mdefm", "mdpi"]
 # Its grid: nine of its machines, across its four families.
 MDKIT_GRID = ["mdkit-bd", "mdkit-cb", "mdkit-cp", "mdkit-xt", "mdkit-oh", "mdkit-ma", "mdkit-ml", "mdkit-sn", "mdkit-ns"]
-MODFX = REPOS / "OP-XY-Macro"
 # The commits the suites' screens are finalised at, read with git archive.
-SOURCES = {"opxy-pads": "v1.5.0", "opxy-nonagon": "v0.7.2", "OP-XY-Macro": "v1.8.0", "OP-XY-MNMD": "v1.2.3", "opxy-grains": "v1.1.0",
-           # Conductor's SDK 1.9 port (port/sdk-1.9), with M3's own voices and notes and M4's track and midi columns.
-           "opxy-conductor": "a80dde4",
-           # Tetragon's first public release, main at 70771ca.
-           "OP-XY-Tetragon": "70771ca",
-           # Trigon's release with Scramble's ranges.
-           "OP-XY-Trigon": "v1.1.1"}
+# Each project's latest release (2026-11-13).
+SOURCES = {"opxy-pads": "v1.7.1", "opxy-nonagon": "v0.9.1", "OP-XY-Macro": "v1.9.2", "OP-XY-MNMD": "v1.3.4", "opxy-grains": "v1.2.1",
+           # Conductor's release/v1.0.0; its screen code is unchanged since a80dde4, the port its screens were rendered from.
+           "opxy-conductor": "ec8631f",
+           "OP-XY-Tetragon": "v1.1.0",
+           "OP-XY-Trigon": "v1.1.2"}
 # Where each suite is checked out, when not beside this repository under its own name.
 CHECKOUTS = {"OP-XY-Tetragon": pathlib.Path(os.environ.get("XY_TETRAGON", REPOS / "OP-XY-Tetragon")),
              "OP-XY-Trigon": pathlib.Path(os.environ.get("XY_TRIGON", REPOS / "opxy-trigon"))}
@@ -113,14 +118,31 @@ def clang():
         return "clang++"
 
 
+def wrapped(name, make):
+    """A stand-in's folder, or None (listed as failed) when making it fails and XY_KEEP_GOING is set."""
+    try:
+        return make()
+    except (subprocess.CalledProcessError, OSError, KeyError, ValueError) as error:
+        if not KEEP_GOING:
+            raise
+        print(f"{name}: stand-in failed: {error}", flush=True)
+        FAILED.append(name)
+        return None
+
+
 def preview(sdk, flag, folder, out):
-    python = REPOS / "open-xy" / ".venv" / "bin" / "python"
+    python = PYTHON
     shutil.rmtree(out, ignore_errors=True)
     result = subprocess.run([str(python), str(SDKS[sdk] / "sdk.py"), "preview", "--cxx", clang(), flag, str(folder), "--out", str(out)],
                             capture_output=True, text=True)
     if result.returncode:
-        sys.exit(f"{folder.name}: preview failed\n{result.stdout[-2000:]}{result.stderr[-2000:]}")
-    print(f"built {out.name}")
+        message = f"{folder.name}: preview failed\n{result.stdout[-3000:]}{result.stderr[-3000:]}"
+        if not KEEP_GOING:
+            sys.exit(message)
+        print(message, flush=True)
+        FAILED.append(out.name)
+        return
+    print(f"built {out.name}", flush=True)
 
 
 def grains_wrap():
@@ -128,7 +150,7 @@ def grains_wrap():
     code goes into a stand-in synth, with the sample's overview written by render.html."""
     wrap = HERE / "grains-wrap"
     shutil.rmtree(wrap, ignore_errors=True)
-    python = REPOS / "open-xy" / ".venv" / "bin" / "python"
+    python = PYTHON
     # Made away from the checkouts: the SDK refuses an ID another local machine has.
     with tempfile.TemporaryDirectory() as scratch:
         run(python, SDKS["pr3"] / "sdk.py", "new", "--repository", "--kind", "synth", "--controls", "8",
@@ -160,29 +182,6 @@ def grains_wrap():
     return wrap
 
 
-def upstream():
-    """The drum kits' SDK: etcetc000/open-xy's staging, where drum kits are SDK 1.8,
-    fetched into open-xy-staging and read with git archive."""
-    out = SDKS["drum"]
-    run("git", "-C", REPOS / "open-xy-staging", "fetch", "-q", "origin", "staging")
-    shutil.rmtree(out, ignore_errors=True)
-    out.mkdir(parents=True)
-    archive = subprocess.run(["git", "-C", REPOS / "open-xy-staging", "archive", "origin/staging"], capture_output=True, check=True).stdout
-    subprocess.run(["tar", "-x", "-C", out], input=archive, check=True)
-
-
-def pad_sdk():
-    """The Tetragon kits' SDK: the per-key mixer channels' branch, fetched into
-    ../open-xy and read with git archive, so no checkout of it changes."""
-    remote, branch = PAD_SDK
-    out = SDKS["pad"]
-    run("git", "-C", REPOS / "open-xy", "fetch", "-q", remote, branch)
-    shutil.rmtree(out, ignore_errors=True)
-    out.mkdir(parents=True)
-    archive = subprocess.run(["git", "-C", REPOS / "open-xy", "archive", f"{remote}/{branch}"], capture_output=True, check=True).stdout
-    subprocess.run(["tar", "-x", "-C", out], input=archive, check=True)
-
-
 def source(repo):
     """A suite at its finalised commit, as files: its checkouts are left alone."""
     out = HERE / "src" / repo
@@ -199,7 +198,7 @@ def sample_wrap(mid, nonagon):
     takes its own ID, as Grains' does: the SDK refuses one a local machine has."""
     wrap = HERE / "nonagon-wrap" / mid
     shutil.rmtree(wrap, ignore_errors=True)
-    python = REPOS / "open-xy" / ".venv" / "bin" / "python"
+    python = PYTHON
     with tempfile.TemporaryDirectory() as scratch:
         run(python, SDKS["pr3"] / "sdk.py", "new", "--repository", "--kind", "synth", "--controls", "8",
             "--id", f"{mid}view", "--name", mid.capitalize(), "--out", pathlib.Path(scratch) / mid, stdout=subprocess.DEVNULL)
@@ -231,7 +230,7 @@ def effect_wrap(mid, modfx):
     as Grains' does: the catalog holds the effect's."""
     wrap = HERE / "effect-wrap" / mid
     shutil.rmtree(wrap, ignore_errors=True)
-    python = REPOS / "open-xy" / ".venv" / "bin" / "python"
+    python = PYTHON
     with tempfile.TemporaryDirectory() as scratch:
         run(python, SDKS["effects"] / "sdk.py", "new", "--repository", "--kind", "synth", "--controls", "8",
             "--id", f"{mid}view", "--name", mid.capitalize(), "--out", pathlib.Path(scratch) / mid, stdout=subprocess.DEVNULL)
@@ -316,16 +315,13 @@ def trigon():
 
 
 def build(projects):
-    if not FONT.exists():
+    if not NO_FONT and not FONT.exists():
         sys.exit(f"No screen font at {FONT}; set XY_FONT to Univers Next Pro Light")
     wanted = lambda project: not projects or project in projects
-    if wanted("mnmd"):
-        upstream()
-    if wanted("tetragon") or wanted("trigon"):
-        pad_sdk()
-    (HERE / "font").mkdir(exist_ok=True)
-    if FONT.resolve() != (HERE / "font" / "UniversNextPro-Light.ttf").resolve():
-        shutil.copy(FONT, HERE / "font" / "UniversNextPro-Light.ttf")
+    if not NO_FONT:
+        (HERE / "font").mkdir(exist_ok=True)
+        if FONT.resolve() != (HERE / "font" / "UniversNextPro-Light.ttf").resolve():
+            shutil.copy(FONT, HERE / "font" / "UniversNextPro-Light.ttf")
     for name, checkout in SDKS.items():
         if (checkout / "sdk" / "browser").exists():
             (HERE / "sdk" / name).mkdir(parents=True, exist_ok=True)
@@ -346,19 +342,22 @@ def build(projects):
             preview("drum", "--machine", machines / mid, HERE / "m" / mid)
     if wanted("grains"):
         source("opxy-grains")
-        preview("pr3", "--source", grains_wrap(), HERE / "m" / "grains")
+        if (wrap := wrapped("grains", grains_wrap)):
+            preview("pr3", "--source", wrap, HERE / "m" / "grains")
     if wanted("nonagon"):
         nonagon = source("opxy-nonagon")
         for mid in NONAGON:
             if mid in NONAGON_SAMPLE:
-                preview("pr3", "--source", sample_wrap(mid, nonagon), HERE / "m" / mid)
+                if (wrap := wrapped(mid, lambda: sample_wrap(mid, nonagon))):
+                    preview("pr3", "--source", wrap, HERE / "m" / mid)
             else:
                 preview("staging", "--machine", nonagon / mid, HERE / "m" / mid)
     if wanted("modfx"):
         modfx = source("OP-XY-Macro")
-        preview("aux", "--machine", MODFX / "omnifilter", HERE / "m" / "omnifilter")
+        preview("aux", "--machine", modfx / "omnifilter", HERE / "m" / "omnifilter")
         for mid in ("chroma", "lint"):
-            preview("effects", "--source", effect_wrap(mid, modfx), HERE / "m" / mid)
+            if (wrap := wrapped(mid, lambda: effect_wrap(mid, modfx))):
+                preview("effects", "--source", wrap, HERE / "m" / mid)
     if wanted("conductor"):
         conductor()
     if wanted("tetragon"):
@@ -420,3 +419,7 @@ if __name__ == "__main__":
     if unknown:
         parser.error(f"unknown project: {', '.join(sorted(unknown))}")
     publish(args.projects) if args.publish else build(args.projects)
+    if FAILED:
+        print("failed:", " ".join(FAILED))
+        (HERE / "m").mkdir(exist_ok=True)
+        (HERE / "m" / "FAILED.txt").write_text("\n".join(FAILED) + "\n")

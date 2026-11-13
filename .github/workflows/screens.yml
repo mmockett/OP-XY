@@ -1,0 +1,73 @@
+# Builds every machine's browser preview (WASM, compiled with clang) from each
+# project's release, for tools/render/render.mjs to draw the site's screens on a Mac
+# with the screen font. Host compiles don't run on that Mac, so they run here. The
+# font is never uploaded: this job only compiles. Download with
+#   gh run download <run> -n previews -D tools/render
+name: Screen previews
+on:
+  push:
+    branches: ['screens/**']
+    paths: ['tools/render/**', '.github/workflows/screens.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  previews:
+    runs-on: ubuntu-latest
+    env:
+      XY_NO_FONT: '1'
+      XY_KEEP_GOING: '1'
+      XY_PYTHON: python
+      XY_SDK: ${{ github.workspace }}/open-xy-staging
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: OP-XY }
+      - uses: actions/checkout@v4
+        with: { repository: etcetc000/open-xy, ref: staging, path: open-xy-staging }
+      # Each project beside the site under the name build.py reads it by, with its tags.
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-Hexagon, path: opxy-pads, fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-Nonagon, path: opxy-nonagon, fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-ModFX, path: OP-XY-Macro, fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-MNMD, path: OP-XY-MNMD, fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-Grains, path: opxy-grains, fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-Tetragon, path: OP-XY-Tetragon, fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: mmockett/OP-XY-Trigon, path: opxy-trigon, fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Tools
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang lld
+          python -m pip install numpy
+          git -C open-xy-staging log --oneline -1
+      - name: Previews from each release
+        run: python OP-XY/tools/render/build.py hexagon nonagon grains modfx mnmd tetragon trigon
+      - name: Sample engines and effects previewed directly, beside their stand-ins
+        run: |
+          d=OP-XY/tools/render/m-direct; mkdir -p $d
+          for pair in grains:OP-XY/tools/render/src/opxy-grains ghost:OP-XY/tools/render/src/opxy-nonagon/ghost \
+                      recur:OP-XY/tools/render/src/opxy-nonagon/recur chroma:OP-XY/tools/render/src/OP-XY-Macro/chroma \
+                      lint:OP-XY/tools/render/src/OP-XY-Macro/lint; do
+            id=${pair%%:*}; src=${pair#*:}
+            python open-xy-staging/sdk.py preview --cxx clang++ --machine "$src" --out "$d/$id" > "$d/$id.log" 2>&1 \
+              && echo "direct $id: built" || { echo "direct $id: failed"; tail -20 "$d/$id.log"; }
+          done
+      - name: Failures
+        run: cat OP-XY/tools/render/m/FAILED.txt 2>/dev/null || echo none
+      - uses: actions/upload-artifact@v4
+        with:
+          name: previews
+          path: |
+            OP-XY/tools/render/m
+            OP-XY/tools/render/m-direct
+            OP-XY/tools/render/sdk
+            OP-XY/tools/render/kit-labels.json
+          if-no-files-found: error

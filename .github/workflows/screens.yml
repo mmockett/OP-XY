@@ -62,6 +62,11 @@ jobs:
           check = "require(kind == 'sample' and display == 'drawing', \"Only a sample engine's own screen reads a sample overview\")"
           assert check in s, "the check moved"
           p.write_text(s.replace(check, "pass  # the site's stand-ins read it"))
+          # Recur's artwork (67 KB) passes a synth preview's 64 KB: a sample engine's may be larger.
+          p = pathlib.Path("open-xy-staging/tooling/preview.py"); s = p.read_text()
+          limit = "('panel.svg', 65536)"
+          assert limit in s, "the limit moved"
+          p.write_text(s.replace(limit, "('panel.svg', 131072)"))
           PY
       - name: Previews from each release
         run: python OP-XY/tools/render/build.py ${{ github.event.inputs.projects || 'hexagon nonagon grains modfx mnmd tetragon trigon' }}

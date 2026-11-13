@@ -53,6 +53,8 @@ function writeSample(api, s) {
   const bins = s.levels.length;
   const low = new Int16Array(api.memory.buffer, at + 36, bins), high = new Int16Array(api.memory.buffer, at + 36 + 2 * bins, bins);
   s.levels.forEach((v, i) => { high[i] = Math.round(v * 32767); low[i] = -Math.round(v * 32767 * 0.94); });
+  // Its gain (SDK 1.10, after the bins): 0, as a sample is assigned.
+  new Int32Array(api.memory.buffer, at + 36 + 4 * bins, 1)[0] = 0;
 }
 
 const word = v => Math.round(Math.max(0, Math.min(1, v)) * Q31);

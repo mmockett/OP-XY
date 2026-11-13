@@ -314,6 +314,7 @@ details[open] > summary .i { transform: rotate(180deg); }
 .snd { all: unset; cursor: pointer; position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 5px;
   font-size: 12px; line-height: 1; padding: 6px 9px 6px 7px; border: 1px solid var(--rule); border-radius: 999px; color: var(--ink); }
 .snd .i { width: 11px; height: 11px; fill: currentColor; stroke: none; }
+.snd .fx { font-size: 10px; color: var(--ink-3); margin-left: 1px; }
 .snd::after { content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: var(--done, 0%); background: var(--ink); }
 .snd:hover { border-color: var(--ink-3); }
 .snd[aria-pressed="true"] { border-color: var(--ink); }

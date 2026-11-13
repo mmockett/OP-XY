@@ -149,3 +149,11 @@ synthesised there too.
 
 Tetragon's cards play four bars of each kit's own demo grooves (the MP3s in
 each kit's `docs/`), cut and encoded as `.m4a` into `assets/audio/tetragon/`.
+
+Nexus's clips are rendered from its engine's Python model (the same voice,
+its CS-80 chorus and spread) in the private OP-XY-Dev repository
+(`media/flagship-synths/nexus_site_clips.py`, Tyrell from `nexus_cs80_demo.py`),
+each an original phrase in D minor, about 20 to 24 s, at −14 LUFS and under
+−1 dBTP. Sustained presets (pads, strings, choirs, bells) have a long hall
+added after Nexus; their manifest rows carry `"reverb": true`, and their
+buttons say "+ reverb". Bass and stabs play dry.

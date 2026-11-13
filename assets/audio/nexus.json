@@ -6,7 +6,60 @@
       "src": "assets/audio/nexus/tyrell.m4a",
       "role": "brass, the default",
       "phrase": "slow brass chords in D minor (Dm9–B♭maj7♯11–Gm9–Asus4–A–Dm), a lead joining halfway, in stereo",
-      "seconds": 24.1
+      "seconds": 24.1,
+      "reverb": true
+    },
+    {
+      "preset": "Afterglow",
+      "slug": "afterglow",
+      "src": "assets/audio/nexus/afterglow.m4a",
+      "role": "swell",
+      "phrase": "slow chords in D minor, each opening on the blip and blooming",
+      "seconds": 23.5,
+      "reverb": true
+    },
+    {
+      "preset": "Long Strings",
+      "slug": "long-strings",
+      "src": "assets/audio/nexus/long-strings.m4a",
+      "role": "strings",
+      "phrase": "a slow string progression in D minor (Dm–Gm–B♭maj7–Asus4–A)",
+      "seconds": 21.9,
+      "reverb": true
+    },
+    {
+      "preset": "Vapor Choir",
+      "slug": "vapor-choir",
+      "src": "assets/audio/nexus/vapor-choir.m4a",
+      "role": "choir",
+      "phrase": "four held choir chords in D minor (Dm–F–C–B♭), wide across the field",
+      "seconds": 22.7,
+      "reverb": true
+    },
+    {
+      "preset": "Ice Tower",
+      "slug": "ice-tower",
+      "src": "assets/audio/nexus/ice-tower.m4a",
+      "role": "glass bells",
+      "phrase": "glass bells in broken chords in D minor",
+      "seconds": 22.6,
+      "reverb": true
+    },
+    {
+      "preset": "Blip Brass",
+      "slug": "blip-brass",
+      "src": "assets/audio/nexus/blip-brass.m4a",
+      "role": "brass stabs",
+      "phrase": "brass stabs in D minor at 112 BPM, every note opening on the blip",
+      "seconds": 20.0
+    },
+    {
+      "preset": "Undercity",
+      "slug": "undercity",
+      "src": "assets/audio/nexus/undercity.m4a",
+      "role": "bass",
+      "phrase": "a bassline in D minor at 100 BPM, growling open on the held notes",
+      "seconds": 21.9
     }
   ]
 }

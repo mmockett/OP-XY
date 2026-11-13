@@ -415,8 +415,9 @@
   }
 
   // ---- preset clips ----------------------------------------------------------
-  // A project's clips (assets/audio/<project>.json: machine id -> [{preset, src, phrase}])
-  // become a row of buttons. One clip plays at a time.
+  // A project's clips (assets/audio/<project>.json: machine id -> [{preset, src, phrase, reverb}])
+  // become a row of buttons. One clip plays at a time. A clip with reverb: true has reverb
+  // added after the machine, and its button says so.
   const player = new Audio();
   player.preload = "none";
   let playing = null;
@@ -442,7 +443,7 @@
       const list = (await clipsOf(box.dataset.audio))[box.dataset.clips];
       if (!list || !list.length) return;
       box.innerHTML = `<span class="label">listen</span>` + list.map(c =>
-        `<button type="button" class="snd" aria-pressed="false" data-src="${esc(c.src)}" title="${esc(c.phrase || "")}" aria-label="Play ${esc(c.preset)}${c.phrase ? `: ${esc(c.phrase)}` : ""}">${icon("play")}${esc(c.preset)}</button>`).join("");
+        `<button type="button" class="snd" aria-pressed="false" data-src="${esc(c.src)}" title="${esc(c.phrase || "")}" aria-label="Play ${esc(c.preset)}${c.reverb ? ", with added reverb" : ""}${c.phrase ? `: ${esc(c.phrase)}` : ""}">${icon("play")}${esc(c.preset)}${c.reverb ? `<span class="fx" aria-hidden="true">+ reverb</span>` : ""}</button>`).join("");
       box.hidden = false;
       $$(".snd", box).forEach(b => b.addEventListener("click", () => play(b)));
     }));

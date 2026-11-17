@@ -45,7 +45,7 @@ window.SITE = {
     { id: "flagship", title: "flagship synth", projects: ["nexus"] },
     { id: "suites", title: "the suites", note: "Machines made to be played together, with levels matched and layouts shared: two suites of synths and two of drum kits.", projects: ["hexagon", "nonagon", "trigon", "tetragon"] },
     { id: "mnmd", title: "mnmd", projects: ["mnmd"] },
-    { id: "more", title: "more machines", note: "Effects, a granular sampler, a generative sequencer and an extension for the OP–XY's own Drumline.", projects: ["modfx", "grains", "conductor", "extensions"] }
+    { id: "more", title: "more machines", note: "Effects, a granular sampler, a generative sequencer, and extensions for the OP–XY's own Drumline and sample library.", projects: ["modfx", "grains", "conductor", "extensions"] }
   ],
 
   // The machines' film, on the home after the flagship.
@@ -558,17 +558,26 @@ window.SITE = {
       tagline: "Extensions change how the OP–XY itself behaves.",
       description: [
         "Drumline page 2 gives every Drumline key a second page, with its own filter, sample rate and effect sends. One Drumline track can hold a dark, crunchy kick, a bright open hat and a snare drowned in reverb.",
-        "Press any encoder on a Drumline track's engine page to switch pages. Hold a step and turn a page 2 encoder to lock that setting for that key. With every key at its default, Drumline sounds as stock."
+        "Press any encoder on a Drumline track's engine page to switch pages. Hold a step and turn a page 2 encoder to lock that setting for that key. With every key at its default, Drumline sounds as stock.",
+        "Sample Studio is a sample editor inside the sample library. Trim, slice, retime and process a sample, hear each change on the keys as you turn, then save it beside the original, as slices, or as a new drum kit, with the effects on FX I and FX II recorded in."
       ],
       specs: [
-        [["pages", "2"], ["controls", "4"], ["filter", "L/H"], ["locks", "step"]],
-        [["release", "v1.0.0"], ["tracks", "all"], ["keys", "each"], ["licence", "MIT"]]
+        [["extensions", "2"], ["pages", "2 + 4"], ["slices", "24"], ["locks", "step"]],
+        [["release", "v1.0.0"], ["os", "1.2.1"], ["saves", "90 s"], ["licence", "MIT"]]
       ],
       machines: [
         { id: "drumline_page", name: "Drumline page 2", kind: "extension", status: "soon",
           description: "A second page for every Drumline key: filter, sample rate and the two effect sends, with step locks.",
           pages: [["filter", "srr", "fx i", "fx ii"]],
-          source: "https://github.com/mmockett/OP-XY-Extensions" }
+          source: "https://github.com/mmockett/OP-XY-Extensions" },
+        { id: "sample_studio", name: "Sample Studio", kind: "extension", status: "soon",
+          description: "A sample editor in the sample library: trim, slice, retime and process, heard live on the keys, saved as new files, slices or a drum kit.",
+          pages: [["start", "end", "fade in", "fade out"], ["level", "normal", "reverse", "snap"],
+                  ["slices", "mode", "sens", "slice"], ["fade", "snap", "", ""],
+                  ["speed", "pitch", "mode", "fit"], ["grain", "", "", ""],
+                  ["rate", "bits", "drive", "filter"], ["fx i", "fx ii", "tail", "comp"]],
+          pageNames: ["trim", "", "slice", "", "retime", "", "process", ""],
+          source: "https://github.com/mmockett/OP-XY-SampleStudio" }
       ]
     },
 

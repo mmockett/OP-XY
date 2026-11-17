@@ -577,6 +577,7 @@ window.SITE = {
                   ["speed", "pitch", "mode", "fit"], ["grain", "", "", ""],
                   ["rate", "bits", "drive", "filter"], ["fx i", "fx ii", "tail", "comp"]],
           pageNames: ["trim", "", "slice", "", "retime", "", "process", ""],
+          media: { type: "video", src: "assets/media/extensions/sample_studio.mp4", poster: "assets/media/extensions/sample_studio.jpg", alt: "Sample Studio's pages drawn by its own code: trim, trim reversed, slice at the transients, tape retime, process and its sends, the Shift row, the save slices card and a print through the effects" },
           source: "https://github.com/mmockett/OP-XY-SampleStudio" }
       ]
     },

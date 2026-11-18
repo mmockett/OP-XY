@@ -554,6 +554,7 @@ window.SITE = {
       status: "soon",
       version: "v1.0.0",
       repo: "https://github.com/mmockett/OP-XY-Extensions",
+      cover: "assets/media/extensions/sample_studio.jpg",
       links: [],
       tagline: "Extensions change how the OP–XY itself behaves.",
       description: [

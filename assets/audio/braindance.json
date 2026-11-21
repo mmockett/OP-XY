@@ -1,0 +1,84 @@
+{
+  "braindance": [
+    {
+      "preset": "Shred",
+      "slug": "shred",
+      "src": "assets/audio/braindance/shred.m4a",
+      "role": "the default: a bass shredding in sixes against eights",
+      "phrase": "C held, then G, C and G above it joining one by one: twelve bars at 180 BPM",
+      "seconds": 16.0
+    },
+    {
+      "preset": "Gate Storm",
+      "slug": "gate-storm",
+      "src": "assets/audio/braindance/gate-storm.m4a",
+      "role": "shred at full tilt, in blocks of gated reverb",
+      "phrase": "C held, then G, C and G above it joining one by one: twelve bars at 180 BPM",
+      "seconds": 16.0
+    },
+    {
+      "preset": "Sub Hold",
+      "slug": "sub-hold",
+      "src": "assets/audio/braindance/sub-hold.m4a",
+      "role": "longer, rounder sweeps that land and hold",
+      "phrase": "C held, then G, C and G above it joining one by one: ten bars at 160 BPM",
+      "seconds": 15.0
+    },
+    {
+      "preset": "Comb Teeth",
+      "slug": "comb-teeth",
+      "src": "assets/audio/braindance/comb-teeth.m4a",
+      "role": "wide leaps through a comb ringing at the key",
+      "phrase": "C held, then G, C and G above it joining one by one: ten bars at 170 BPM",
+      "seconds": 14.1
+    },
+    {
+      "preset": "Synapse",
+      "slug": "synapse",
+      "src": "assets/audio/braindance/synapse.m4a",
+      "role": "four lanes drifting against each other",
+      "phrase": "C held, then G, C and G above it joining one by one: eight bars at 140 BPM",
+      "seconds": 13.7
+    },
+    {
+      "preset": "Amen Lobe",
+      "slug": "amen-lobe",
+      "src": "assets/audio/braindance/amen-lobe.m4a",
+      "role": "a chopped two-bar break",
+      "phrase": "C held, then G, C and G above it joining one by one: twelve bars at 170 BPM",
+      "seconds": 16.9
+    },
+    {
+      "preset": "Drill",
+      "slug": "drill",
+      "src": "assets/audio/braindance/drill.m4a",
+      "role": "a jungle chop, shredded and driven",
+      "phrase": "C held, then G, C and G above it joining one by one: twelve bars at 174 BPM",
+      "seconds": 16.6
+    },
+    {
+      "preset": "Datamatic",
+      "slug": "datamatic",
+      "src": "assets/audio/braindance/datamatic.m4a",
+      "role": "sine pulses and bit noise under hard gates",
+      "phrase": "C held, then G, C and G above it joining one by one: eight bars at 130 BPM",
+      "seconds": 14.8
+    },
+    {
+      "preset": "Spike Train",
+      "slug": "spike-train",
+      "src": "assets/audio/braindance/spike-train.m4a",
+      "role": "interlocking pulses on the grid",
+      "phrase": "C held, then G, C and G above it joining one by one: eight bars at 150 BPM",
+      "seconds": 12.8
+    },
+    {
+      "preset": "Resonance",
+      "slug": "resonance",
+      "src": "assets/audio/braindance/resonance.m4a",
+      "role": "long lanes through the comb: the beat sings the key",
+      "phrase": "C held, then G, C and G above it joining one by one: eight bars at 140 BPM",
+      "seconds": 13.7
+    }
+  ]
+}

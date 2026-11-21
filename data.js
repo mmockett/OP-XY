@@ -45,7 +45,7 @@ window.SITE = {
     { id: "flagship", title: "flagship synth", projects: ["nexus"] },
     { id: "suites", title: "the suites", note: "Machines made to be played together, with levels matched and layouts shared: two suites of synths and two of drum kits.", projects: ["hexagon", "nonagon", "trigon", "tetragon"] },
     { id: "mnmd", title: "mnmd", projects: ["mnmd"] },
-    { id: "more", title: "more machines", note: "Effects, a granular sampler, a generative sequencer, and extensions for the OP–XY's own Drumline and sample library.", projects: ["modfx", "grains", "conductor", "extensions"] }
+    { id: "more", title: "more machines", note: "Effects, a granular sampler, a glitch-beat generator, a generative sequencer, and extensions for the OP–XY's own Drumline and sample library.", projects: ["modfx", "grains", "braindance", "conductor", "extensions"] }
   ],
 
   // The machines' film, on the home after the flagship.
@@ -455,6 +455,39 @@ window.SITE = {
           pages: [["pos", "scan", "size", "dens"], ["spry", "chrd", "shpe", "mode"]],
           media: { type: "video", src: "assets/media/grains/grains.mp4", poster: "assets/media/grains/grains.jpg", alt: "Grains' screen: a note held, pos scanned, then a minor chord" },
           source: "https://github.com/mmockett/OP-XY-Grains" }
+      ]
+    },
+
+    {
+      id: "braindance",
+      cover: "assets/media/braindance/braindance.jpg",
+      audio: "assets/audio/braindance.json",
+      name: "Brain Dance",
+      kicker: "glitch-beat generator",
+      status: "soon",
+      version: "v1.0.0",
+      repo: "https://github.com/mmockett/OP-XY-BrainDance",
+      links: [],
+      tagline: "Hold a key and it plays glitch beats. Hold more and they multiply.",
+      description: [
+        "Brain Dance plays frantic, polyrhythmic beats on the project's tempo, tuned to the keys you hold. One key is the foundation. Each key after it adds a busier part with a cycle of its own length, so a chord becomes a whole pattern grinding against itself.",
+        "The first encoder steps through sixty patterns: six algorithms, from drifting euclidean lanes and chopped breaks to a bass shredding in sixes against eights, with ten variants of each. Dense, chaos and glitch set how many hits there are, how far they mutate and how they stutter. Tone, color, ring and crush shape them, through a gated, chopped reverb, a comb that rings at the key and a hard clip.",
+        "Load a sample and it builds its kit from it: it finds the kicks, snares, ticks, tones and noise inside and gives each lane its own, tuned to the key. With none loaded it plays its own synthesis. Sixteen presets, with Shred, the bass on every 16th at 180 BPM, as the default."
+      ],
+      specs: [
+        [["algorithms", "6"], ["patterns", "60"], ["controls", "8"], ["presets", "16"]],
+        [["lanes", "4"], ["output", "stereo"], ["sdk", "1.17"], ["licence", "MIT"]]
+      ],
+      machines: [
+        { id: "braindance", name: "Brain Dance", kind: "sample engine", catalog: "braindance", status: "soon",
+          after: "Autechre, Aphex Twin and Ryoji Ikeda",
+          description: "Generator of glitch beats: six algorithms with ten variants each, on the project's tempo and tuned to the held keys. Each key adds a part, and a loaded sample becomes the kit. Shift trims the sample and sets its gain.",
+          screen: "Screen: a turning cloud of points in the shape of a brain. Links join the points as the playing gets denser, and each key fires a red or blue cluster whose wave runs out through the cloud.",
+          pages: [["algo", "dense", "chaos", "glitch"], ["tone", "color", "ring", "crush"]],
+          presets: ["Shred", "Gate Storm", "Sub Hold", "Comb Teeth", "Threes", "Long Count", "Synapse", "Amen Lobe",
+                    "Two Step", "Drill", "Datamatic", "Pulse Five", "Odd Wheel", "Spike Train", "Overload", "Resonance"],
+          media: { type: "video", src: "assets/media/braindance/braindance.mp4", poster: "assets/media/braindance/braindance.jpg", alt: "Brain Dance's screen with Shred playing: a cloud of points in the shape of a brain turning, links joining the points as keys are added, and waves running out from its red and blue clusters" },
+          source: "https://github.com/mmockett/OP-XY-BrainDance" }
       ]
     },
 

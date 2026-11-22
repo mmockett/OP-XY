@@ -465,7 +465,7 @@ window.SITE = {
       name: "Brain Dance",
       kicker: "glitch-beat generator",
       status: "soon",
-      version: "v1.0.0",
+      version: "v1.0.1",
       repo: "https://github.com/mmockett/OP-XY-BrainDance",
       links: [],
       tagline: "Hold a key and it plays glitch beats. Hold more and they multiply.",
